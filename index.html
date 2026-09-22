@@ -529,9 +529,10 @@ h2 {
   --yellow-soft: #fff7cc;
   --charcoal: #202020;
 }
-body { background:#0d0d0d; }
-.app { background:#f7f7f7; }
-.header { padding:18px 16px 13px; border-bottom:3px solid var(--yellow); }
+html, body { min-height:100%; background:#f7f7f7; }
+body { background:#f7f7f7; }
+.app { background:#f7f7f7; min-height:100vh; min-height:100dvh; padding-bottom:env(safe-area-inset-bottom, 0px); }
+.header { padding:calc(18px + env(safe-area-inset-top, 0px)) 16px 13px; border-bottom:3px solid var(--yellow); }
 .logo { font-size:27px; letter-spacing:.4px; }
 .logo .slash { color:var(--yellow); padding:0 2px; }
 .version { color:var(--yellow); opacity:1; font-weight:800; letter-spacing:1.2px; margin-top:2px; }
@@ -565,8 +566,12 @@ body { background:#0d0d0d; }
 .jump-bar { display:grid; grid-template-columns:.8fr 1.35fr; gap:8px; background:white; border:1px solid var(--border); border-radius:12px; padding:8px; margin-bottom:9px; }
 .jump-bar label { min-width:0; }
 .jump-bar label > span { display:block; color:var(--gray); font-size:9px; font-weight:900; letter-spacing:.8px; margin:0 0 3px 3px; }
-.jump-bar select { width:100%; min-height:38px; border:0; border-radius:8px; background:#f1f1f1; padding:7px 9px; font-weight:850; color:var(--black); }
-.jump-bar label:first-child select { background:var(--yellow); }
+.jump-picker { width:100%; min-height:38px; border:0; border-radius:8px; background:#f1f1f1; padding:7px 10px; font-weight:900; color:var(--black); text-align:left; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.jump-bar label:first-child .jump-picker { background:var(--yellow); }
+.jump-picker::after { content:"⌄"; font-size:16px; }
+.picker-list { display:grid; gap:7px; }
+.picker-option { width:100%; border:1px solid var(--border); border-radius:11px; background:white; padding:12px; text-align:left; font-weight:800; }
+.picker-option.active { background:var(--yellow); border-color:var(--yellow); }
 
 .exercise-shell { background:white; border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:10px; }
 .day-kicker { font-size:11px; font-weight:900; letter-spacing:.55px; text-transform:uppercase; color:#555; }
@@ -686,8 +691,8 @@ body { background:#0d0d0d; }
     </div>
 
     <div class="jump-bar">
-      <label><span>DAY</span><select id="workoutDaySelect"></select></label>
-      <label><span>EXERCISE</span><select id="workoutExerciseSelect"></select></label>
+      <label><span>DAY</span><button type="button" class="jump-picker" id="workoutDayPicker">D1</button></label>
+      <label><span>EXERCISE</span><button type="button" class="jump-picker" id="workoutExercisePicker">1 of 8</button></label>
     </div>
     <div id="workoutDayTabs" class="day-tabs legacy-hidden"></div>
 
@@ -833,6 +838,17 @@ body { background:#0d0d0d; }
   </div>
 </div>
 
+<!-- WORKOUT JUMP PICKER -->
+<div class="modal" id="jumpPickerModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="jumpPickerTitle">Choose</h3>
+      <button class="close-btn" data-close="jumpPickerModal">×</button>
+    </div>
+    <div id="jumpPickerList" class="picker-list"></div>
+  </div>
+</div>
+
 <!-- EDIT EXERCISE MODAL -->
 <div class="modal" id="editModal">
   <div class="modal-box">
@@ -844,10 +860,15 @@ body { background:#0d0d0d; }
 
     <div class="notice" id="editNotice"></div>
 
-    <div class="form-field">
+    <div class="form-field" id="quickExerciseWrap">
+      <label>Exercise</label>
+      <select id="editExerciseQuick"></select>
+      <button type="button" class="btn outline small" id="browseEditLibraryBtn" style="margin-top:8px">Browse Full Library</button>
+    </div>
+
+    <div class="form-field" id="customExerciseNameWrap" style="display:none">
       <label>Exercise Name</label>
-      <input id="editExerciseName" list="exerciseLibraryNames" autocomplete="off" placeholder="Search or type an exercise...">
-      <datalist id="exerciseLibraryNames"></datalist>
+      <input id="editExerciseName" autocomplete="off" placeholder="Type an exercise name...">
     </div>
 
     <div class="form-grid">
@@ -1395,17 +1416,42 @@ function renderWorkout(){
 }
 
 function renderWorkoutJumpers(){
-  const daySelect=document.getElementById("workoutDaySelect");
-  const exerciseSelect=document.getElementById("workoutExerciseSelect");
-  if(!daySelect || !exerciseSelect) return;
-  daySelect.innerHTML=program.map((d,i)=>`<option value="${i}" ${i===currentDay?"selected":""}>D${i+1} · ${d.name}</option>`).join("");
+  const dayPicker=document.getElementById("workoutDayPicker");
+  const exercisePicker=document.getElementById("workoutExercisePicker");
+  if(!dayPicker || !exercisePicker) return;
   const day=program[currentDay];
-  exerciseSelect.innerHTML=day.exercises.map((base,i)=>{
-    const item=exerciseFor(currentDay,i);
-    const log=ensureLog(currentDay,i,item.sets);
-    const complete=log.sets.slice(0,item.sets).length>0 && log.sets.slice(0,item.sets).every(s=>s.done);
-    return `<option value="${i}" ${i===currentExercise?"selected":""}>${complete?"✓ ":""}${i+1} of ${day.exercises.length} · ${item.name}</option>`;
-  }).join("");
+  dayPicker.textContent=`D${currentDay+1}`;
+  exercisePicker.textContent=day.exercises.length ? `${currentExercise+1} of ${day.exercises.length}` : "0 of 0";
+}
+
+function openJumpPicker(type){
+  const title=document.getElementById("jumpPickerTitle");
+  const list=document.getElementById("jumpPickerList");
+  list.innerHTML="";
+  if(type==="day") {
+    title.textContent="Choose Training Day";
+    program.forEach((day,i)=>{
+      const b=document.createElement("button");
+      b.type="button"; b.className="picker-option"+(i===currentDay?" active":"");
+      b.textContent=`D${i+1} · ${day.name}`;
+      b.onclick=()=>{ currentDay=i; currentExercise=0; closeModal("jumpPickerModal"); renderWorkout(); };
+      list.appendChild(b);
+    });
+  } else {
+    title.textContent="Choose Exercise";
+    const day=program[currentDay];
+    day.exercises.forEach((base,i)=>{
+      const item=exerciseFor(currentDay,i);
+      const log=ensureLog(currentDay,i,item.sets);
+      const complete=log.sets.slice(0,item.sets).length>0 && log.sets.slice(0,item.sets).every(s=>s.done);
+      const b=document.createElement("button");
+      b.type="button"; b.className="picker-option"+(i===currentExercise?" active":"");
+      b.textContent=`${complete?"✓ ":""}${i+1} of ${day.exercises.length} · ${item.name}`;
+      b.onclick=()=>{ currentExercise=i; closeModal("jumpPickerModal"); renderWorkout(); };
+      list.appendChild(b);
+    });
+  }
+  openModal("jumpPickerModal");
 }
 
 function renderWorkoutDays(){
@@ -1550,12 +1596,8 @@ function renderLiveResult(exercise){
   box.innerHTML=messages.join("<br>");
 }
 
-document.getElementById("workoutDaySelect").onchange=e=>{
-  currentDay=Number(e.target.value); currentExercise=0; renderWorkout();
-};
-document.getElementById("workoutExerciseSelect").onchange=e=>{
-  currentExercise=Number(e.target.value); renderWorkout();
-};
+document.getElementById("workoutDayPicker").onclick=()=>openJumpPicker("day");
+document.getElementById("workoutExercisePicker").onclick=()=>openJumpPicker("exercise");
 
 // Compact timer drawer: either timer chip opens/closes the same controls.
 ["workoutTimerChip","restTimerChip"].forEach(id=>{
@@ -1846,14 +1888,42 @@ fillSelect("movementFilter",unique("movement"),"All Movements");
 
 fillSelect("editMuscle",unique("muscle"));
 fillSelect("editEquipment",unique("equipment"));
-document.getElementById("exerciseLibraryNames").innerHTML=LIBRARY.map(x=>`<option value="${x.name}"></option>`).join("");
-document.getElementById("editExerciseName").addEventListener("input",e=>{
-  const match=LIBRARY.find(x=>x.name.toLowerCase()===e.target.value.trim().toLowerCase());
+
+function fillQuickExerciseOptions(exercise){
+  const select=document.getElementById("editExerciseQuick");
+  const matches=LIBRARY.filter(x=>x.muscle===exercise.muscle);
+  const ordered=[...matches].sort((a,b)=>{
+    if(a.name===exercise.name) return -1;
+    if(b.name===exercise.name) return 1;
+    if(a.equipment===exercise.equipment && b.equipment!==exercise.equipment) return -1;
+    if(b.equipment===exercise.equipment && a.equipment!==exercise.equipment) return 1;
+    return a.name.localeCompare(b.name);
+  });
+  const currentInLibrary=ordered.some(x=>x.name===exercise.name);
+  select.innerHTML=(currentInLibrary?"":`<option value="${exercise.name}">${exercise.name}</option>`)+ordered.map(x=>`<option value="${x.name}">${x.name}</option>`).join("");
+  select.value=exercise.name;
+}
+
+document.getElementById("editExerciseQuick").onchange=e=>{
+  const match=LIBRARY.find(x=>x.name===e.target.value);
   if(match){
+    document.getElementById("editExerciseName").value=match.name;
     document.getElementById("editMuscle").value=match.muscle;
     document.getElementById("editEquipment").value=match.equipment;
   }
-});
+};
+
+document.getElementById("browseEditLibraryBtn").onclick=()=>{
+  editorMode="edit-replace";
+  document.getElementById("libraryTitle").textContent="Choose Replacement Exercise";
+  const current=program[programDay].exercises[editingIndex];
+  document.getElementById("muscleFilter").value=current.muscle;
+  document.getElementById("equipmentFilter").value="";
+  document.getElementById("styleFilter").value="";
+  document.getElementById("movementFilter").value="";
+  document.getElementById("librarySearch").value="";
+  openModal("libraryModal"); renderLibrary();
+};
 
 document.getElementById("editSets").innerHTML=
   [1,2,3,4,5,6].map(x=>`<option>${x}</option>`).join("");
@@ -1940,7 +2010,7 @@ function renderLibrary(){
       </div>
 
       <button class="btn small">
-        ${editorMode==="swap" ? "Swap" : "Add"}
+        ${editorMode==="swap" ? "Swap" : editorMode==="edit-replace" ? "Choose" : "Add"}
       </button>
     `;
 
@@ -1962,6 +2032,17 @@ function selectLibraryExercise(item){
     item.style==="Accessory" ? "12-15" :
     "8-12"
   );
+
+  if(editorMode==="edit-replace") {
+    const existing=program[programDay].exercises[editingIndex];
+    document.getElementById("editExerciseName").value=item.name;
+    document.getElementById("editMuscle").value=item.muscle;
+    document.getElementById("editEquipment").value=item.equipment;
+    fillQuickExerciseOptions({name:item.name,muscle:item.muscle,equipment:item.equipment});
+    closeModal("libraryModal");
+    editorMode="edit";
+    return;
+  }
 
   if(editorMode==="swap"){
 
@@ -1997,6 +2078,8 @@ document.getElementById("createCustomBtn").onclick=()=>{
   editingIndex=null;
 
   document.getElementById("editModalTitle").textContent="Create Custom Exercise";
+  document.getElementById("quickExerciseWrap").style.display="none";
+  document.getElementById("customExerciseNameWrap").style.display="block";
   document.getElementById("editExerciseName").value="";
   document.getElementById("editMuscle").value="Full Body";
   document.getElementById("editEquipment").value="Dumbbell";
@@ -2015,7 +2098,10 @@ function openEdit(index){
   const exercise=program[programDay].exercises[index];
 
   document.getElementById("editModalTitle").textContent="Edit Exercise";
+  document.getElementById("quickExerciseWrap").style.display="block";
+  document.getElementById("customExerciseNameWrap").style.display="none";
   document.getElementById("editExerciseName").value=exercise.name;
+  fillQuickExerciseOptions(exercise);
   document.getElementById("editMuscle").value=exercise.muscle;
   document.getElementById("editEquipment").value=exercise.equipment;
   document.getElementById("editSets").value=exercise.sets;
