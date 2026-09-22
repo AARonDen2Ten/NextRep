@@ -525,6 +525,25 @@ h2 {
 .pr-meta { font-size:12px; color:var(--gray); }
 
 
+
+.stats-hero { background:var(--black); color:white; border-radius:16px; padding:18px; margin-bottom:12px; text-align:center; }
+.stats-hero .stats-label { font-size:11px; font-weight:850; letter-spacing:1px; color:#aaa; }
+.stats-hero .stats-number { font-size:34px; line-height:1.1; font-weight:900; color:var(--yellow); margin:6px 0 3px; }
+.stats-hero .stats-sub { font-size:12px; color:#bbb; }
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-bottom:12px; }
+.stat-card { border:1px solid var(--border); border-radius:14px; padding:13px; background:white; }
+.stat-card .stats-label { font-size:10px; font-weight:850; letter-spacing:.7px; color:var(--gray); }
+.stat-card .stat-value { font-size:20px; font-weight:900; margin-top:4px; }
+.milestone-card { border:1px solid var(--border); border-radius:14px; padding:14px; background:var(--yellow-soft); }
+.milestone-title { font-size:13px; font-weight:900; }
+.milestone-big { font-size:22px; font-weight:900; margin:5px 0; }
+.milestone-track { height:10px; background:#e4e4e4; border-radius:999px; overflow:hidden; margin:9px 0 6px; }
+.milestone-fill { height:100%; background:var(--yellow); border-radius:999px; }
+.milestone-note { font-size:12px; color:#555; font-weight:700; }
+.badge-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.milestone-badge { padding:6px 8px; border-radius:999px; font-size:10px; font-weight:850; background:#eee; color:#777; }
+.milestone-badge.unlocked { background:var(--yellow); color:var(--black); }
+
 /* =========================================================
    NEXTREP V3 VISUAL SYSTEM
 ========================================================= */
@@ -823,9 +842,11 @@ body { background:#f7f7f7; }
       <div class="history-tabs">
         <button class="btn active" id="historyWorkoutsTab">WORKOUTS</button>
         <button class="btn outline" id="historyPRsTab">PRs</button>
+        <button class="btn outline" id="historyStatsTab">STATS</button>
       </div>
       <div id="historyList"></div>
       <div id="prList" style="display:none"></div>
+      <div id="statsList" style="display:none"></div>
     </div>
 
   </section>
@@ -2276,15 +2297,20 @@ document.getElementById("resetDayBtn").onclick=()=>{
 let historyView="workouts";
 document.getElementById("historyWorkoutsTab").onclick=()=>{ historyView="workouts"; renderHistory(); };
 document.getElementById("historyPRsTab").onclick=()=>{ historyView="prs"; renderHistory(); };
+document.getElementById("historyStatsTab").onclick=()=>{ historyView="stats"; renderHistory(); };
 function renderHistory(){
   const workouts=document.getElementById("historyList");
   const prs=document.getElementById("prList");
-  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab");
+  const stats=document.getElementById("statsList");
+  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab");
   wt.className="btn "+(historyView==="workouts"?"active":"outline");
   pt.className="btn "+(historyView==="prs"?"active":"outline");
+  st.className="btn "+(historyView==="stats"?"active":"outline");
   workouts.style.display=historyView==="workouts"?"block":"none";
   prs.style.display=historyView==="prs"?"block":"none";
+  stats.style.display=historyView==="stats"?"block":"none";
   if(historyView==="prs"){ renderPRs(); return; }
+  if(historyView==="stats"){ renderStats(); return; }
   if(!history.length){ workouts.innerHTML='<div class="empty">Finish your first workout and it will show up here.</div>'; return; }
   workouts.innerHTML="";
   [...history].reverse().forEach(workout=>{
@@ -2316,6 +2342,47 @@ function renderPRs(){
   });
   wrap.innerHTML=cards.length?cards.join(""):'<div class="empty">Complete sets with weight and reps to build your PR board.</div>';
 }
+
+function workoutVolume(workout){
+  return workout.exercises.reduce((total,ex)=>total+ex.sets.reduce((sum,set)=>{
+    if(!set.done) return sum;
+    const weight=Number(set.weight)||0, reps=Number(set.reps)||0;
+    return sum+(weight>0 && reps>0 ? weight*reps : 0);
+  },0),0);
+}
+function renderStats(){
+  const wrap=document.getElementById("statsList");
+  const now=new Date();
+  const lifetime=history.reduce((sum,w)=>sum+workoutVolume(w),0);
+  const monthWorkouts=history.filter(w=>{ const d=new Date(w.date); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth(); });
+  const monthVolume=monthWorkouts.reduce((sum,w)=>sum+workoutVolume(w),0);
+  const weekStart=new Date(now); weekStart.setHours(0,0,0,0); weekStart.setDate(now.getDate()-((now.getDay()+6)%7));
+  const weekVolume=history.filter(w=>new Date(w.date)>=weekStart).reduce((sum,w)=>sum+workoutVolume(w),0);
+  const completedSets=history.reduce((sum,w)=>sum+w.exercises.reduce((n,e)=>n+e.sets.filter(s=>s.done).length,0),0);
+  const milestones=[10000,25000,50000,100000,250000,500000,1000000,2000000,5000000];
+  let next=milestones.find(m=>lifetime<m);
+  if(!next) next=Math.ceil(lifetime/1000000+1)*1000000;
+  const previous=[0,...milestones].filter(m=>m<=lifetime).pop()||0;
+  const progress=Math.max(0,Math.min(100,((lifetime-previous)/(next-previous))*100));
+  const remaining=Math.max(0,next-lifetime);
+  const badges=milestones.map(m=>`<span class="milestone-badge ${lifetime>=m?'unlocked':''}">${lifetime>=m?'🏆 ':'🔒 '}${formatWeight(m)}</span>`).join('');
+  wrap.innerHTML=`
+    <div class="stats-hero"><div class="stats-label">LIFETIME WEIGHT LIFTED</div><div class="stats-number">${formatWeight(lifetime)} LB</div><div class="stats-sub">Every completed weighted set in NextRep</div></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stats-label">THIS MONTH</div><div class="stat-value">${formatWeight(monthVolume)} lb</div></div>
+      <div class="stat-card"><div class="stats-label">THIS WEEK</div><div class="stat-value">${formatWeight(weekVolume)} lb</div></div>
+      <div class="stat-card"><div class="stats-label">WORKOUTS</div><div class="stat-value">${history.length}</div></div>
+      <div class="stat-card"><div class="stats-label">SETS COMPLETED</div><div class="stat-value">${completedSets}</div></div>
+    </div>
+    <div class="milestone-card">
+      <div class="milestone-title">NEXT LIFETIME MILESTONE</div>
+      <div class="milestone-big">${formatWeight(next)} LB</div>
+      <div class="milestone-track"><div class="milestone-fill" style="width:${progress}%"></div></div>
+      <div class="milestone-note">${formatWeight(remaining)} lb to go · ${Math.round(progress)}% of this milestone level</div>
+      <div class="badge-row">${badges}</div>
+    </div>`;
+}
+function formatWeight(n){ return Math.round(Number(n)||0).toLocaleString(); }
 
 /* =========================================================
    MODALS
