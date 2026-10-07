@@ -552,9 +552,33 @@ h2 {
   --yellow-soft: #fff7cc;
   --charcoal: #202020;
 }
-html, body { min-height:100%; background:#f7f7f7; }
-body { background:#f7f7f7; }
-.app { background:#f7f7f7; min-height:100vh; min-height:100dvh; padding-bottom:env(safe-area-inset-bottom, 0px); }
+html, body { min-height:100%; background:#111; }
+body {
+  background:
+    linear-gradient(135deg, rgba(244,196,0,.08) 0 12%, transparent 12% 36%, rgba(255,255,255,.035) 36% 48%, transparent 48% 72%, rgba(244,196,0,.05) 72% 82%, transparent 82%),
+    repeating-linear-gradient(155deg, #151515 0 44px, #191919 44px 88px, #131313 88px 132px);
+  background-attachment:fixed;
+}
+.app { background:linear-gradient(180deg,rgba(247,247,247,.97),rgba(239,239,239,.97)); min-height:100vh; min-height:100dvh; padding-bottom:env(safe-area-inset-bottom, 0px); box-shadow:0 0 45px rgba(0,0,0,.45); }
+.workout-screen { position:relative; overflow:hidden; }
+.workout-screen::before { content:""; position:absolute; width:260px; height:260px; border:42px solid rgba(244,196,0,.07); transform:rotate(35deg); right:-170px; top:90px; pointer-events:none; }
+.workout-screen::after { content:""; position:absolute; width:340px; height:90px; background:rgba(17,17,17,.035); transform:rotate(-18deg); left:-120px; bottom:120px; pointer-events:none; }
+.workout-screen > * { position:relative; z-index:1; }
+.mode-card { background:var(--black); color:white; border:0; }
+.mode-card .subtle { color:#bdbdbd; }
+.mode-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.mode-btn { border:1px solid #3b3b3b; background:#242424; color:white; border-radius:12px; padding:12px 9px; font-weight:850; text-align:left; }
+.mode-btn.active { background:var(--yellow); color:var(--black); border-color:var(--yellow); }
+.variant-strip { display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; margin-bottom:9px; }
+.variant-strip button { flex:0 0 auto; }
+.category-strip { display:flex; gap:6px; overflow-x:auto; padding:2px 0 12px; }
+.category-strip .btn { white-space:nowrap; }
+.superset-badge { display:inline-block; background:var(--yellow-soft); color:#665200; border-radius:999px; padding:4px 7px; font-size:10px; font-weight:900; margin-bottom:6px; }
+.warm-block { border:1px dashed #b9b9b9; border-radius:13px; padding:10px 12px; margin-bottom:9px; background:rgba(255,255,255,.82); font-size:12px; }
+.library-workout { border:1px solid var(--border); border-radius:14px; padding:13px; margin-bottom:9px; background:white; }
+.library-workout h3 { margin:0 0 5px; font-size:16px; }
+.random-controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+@media(max-width:430px){ .random-controls{grid-template-columns:1fr;} }
 .header { padding:calc(18px + env(safe-area-inset-top, 0px)) 16px 13px; border-bottom:3px solid var(--yellow); }
 .logo { font-size:27px; letter-spacing:.4px; }
 .logo .slash { color:var(--yellow); padding:0 2px; }
@@ -688,7 +712,7 @@ body { background:#f7f7f7; }
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST.</div>
+        <div class="version">BEAT YOUR LAST. · V4</div>
       </div>
       <div id="headerDayCount">0/5</div>
     </div>
@@ -702,6 +726,7 @@ body { background:#f7f7f7; }
     <button class="active" data-screen="workout">WORKOUT</button>
     <button data-screen="program">PROGRAM</button>
     <button data-screen="history">HISTORY</button>
+    <button data-screen="libraryworkouts">LIBRARY</button>
   </nav>
 
   <!-- WORKOUT -->
@@ -753,8 +778,8 @@ body { background:#f7f7f7; }
     </div>
     <div id="workoutDayTabs" class="day-tabs legacy-hidden"></div>
 
-    <div class="exercise-shell" id="exerciseCard">
-      <div class="day-kicker"><span id="workoutDayLabel"></span> · <span id="workoutDayName"></span></div>
+    <div id="warmupBlock"></div><div class="exercise-shell" id="exerciseCard">
+      <div id="workoutModeBadge"></div><div class="day-kicker"><span id="workoutDayLabel"></span> · <span id="workoutDayName"></span></div>
       <div class="subtle focus-line" id="workoutFocus"></div>
       <div class="progress-bar compact-progress"><div class="progress-fill" id="exerciseProgress"></div></div>
       <div class="subtle counter-line" id="exerciseCounter"></div>
@@ -776,7 +801,7 @@ body { background:#f7f7f7; }
       </div>
     </div>
 
-    <div class="finish-strip">
+    <div id="cooldownBlock"></div><div class="finish-strip">
       <button class="btn" id="finishWorkoutBtn">Finish Workout</button>
       <button class="btn danger small" id="clearCurrentBtn">Clear Entries</button>
     </div>
@@ -828,6 +853,41 @@ body { background:#f7f7f7; }
 
   </section>
 
+
+
+  <!-- WORKOUT LIBRARY -->
+  <section id="libraryworkoutsScreen" class="screen">
+    <div class="card mode-card">
+      <div class="section-label" style="color:#aaa">Workout Library</div>
+      <h2>Choose Your Training</h2>
+      <p class="subtle">Your five-day program, four variations per day, preset circuits, saved custom workouts, and smart random days.</p>
+    </div>
+    <div class="card">
+      <div class="section-label">My Program</div>
+      <div id="variantLibrary"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Preset Circuits</div>
+      <div id="presetLibrary"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Custom Day</div>
+      <div class="form-field"><label>Workout Name</label><input id="customWorkoutName" placeholder="Example: Saturday Full Body"></div>
+      <div class="button-row"><button class="btn" id="startBlankCustom">Build Blank Workout</button><button class="btn outline" id="saveCurrentCustom">Save Current Day</button></div>
+      <div id="savedWorkoutLibrary" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Smart Random Workout</div>
+      <div class="random-controls">
+        <div class="form-field"><label>Focus</label><select id="randomFocus"><option>Full Body</option><option>Upper</option><option>Lower</option></select></div>
+        <div class="form-field"><label>Exercises</label><select id="randomCount"><option>4</option><option selected>6</option><option>8</option></select></div>
+        <div class="form-field"><label>Equipment</label><select id="randomEquipment"><option value="">Anything</option><option>Dumbbell</option><option>Machine</option><option>Cable</option><option>Bodyweight</option><option>Smith Machine</option><option>Resistance Band</option><option>Medicine Ball</option><option>BOSU</option><option>TRX</option></select></div>
+      </div>
+      <button class="btn" id="generateRandomBtn">Generate Smart Workout</button>
+      <div id="randomPreview" style="margin-top:12px"></div>
+    </div>
+  </section>
+
   <!-- HISTORY -->
   <section id="historyScreen" class="screen">
 
@@ -844,11 +904,26 @@ body { background:#f7f7f7; }
         <button class="btn active" id="historyWorkoutsTab">WORKOUTS</button>
         <button class="btn outline" id="historyPRsTab">PRs</button>
         <button class="btn outline" id="historyStatsTab">STATS</button>
-        <button class="btn outline" id="backupOnlyBtn">BACKUP DATA</button>
+        <button class="btn outline" id="historyDataTab">DATA</button>
       </div>
       <div id="historyList"></div>
       <div id="prList" style="display:none"></div>
       <div id="statsList" style="display:none"></div>
+       <div id="dataList" style="display:none">
+         <div class="card" style="margin:10px 0 0">
+           <div class="section-label">Profile + Backup</div>
+           <div class="form-field"><label>Name</label><input id="profileName" placeholder="Your name"></div>
+           <div class="form-field"><label>Default Rest</label>
+             <select id="profileRest"><option value="30">30 sec</option><option value="60">60 sec</option><option value="90">90 sec</option><option value="120">2 min</option><option value="180">3 min</option></select>
+           </div>
+           <div class="button-row">
+             <button class="btn" id="saveProfileBtn">Save Profile</button>
+             <button class="btn outline" id="exportDataBtn">Export My Data</button>
+             <label class="btn outline" style="display:inline-flex;align-items:center">Import Backup<input id="importDataInput" type="file" accept="application/json" style="display:none"></label>
+           </div>
+           <p class="subtle" id="backupStatus" style="margin-top:10px"></p>
+         </div>
+       </div>
     </div>
 
   </section>
@@ -1099,6 +1174,31 @@ const LIBRARY = [
 ["Suitcase Hold","Core","Dumbbell","Stability","Anti-Lateral Flexion"],
 ["Cable Chop","Core","Cable","Stability","Rotation"],
 
+["BOSU Balance Squat","Quads","BOSU","Stability","Balance"],
+["BOSU Goblet Squat","Quads","BOSU","Stability","Balance"],
+["BOSU Split Squat","Quads","BOSU","Stability","Unilateral"],
+["Medicine Ball Push-Up","Chest","Medicine Ball","Stability","Compound"],
+["Medicine Ball Elevated Push-Up","Chest","Medicine Ball","Stability","Compound"],
+["Medicine Ball Slam","Full Body","Medicine Ball","Conditioning","Power"],
+["Medicine Ball Squat to Press","Full Body","Medicine Ball","Functional","Compound"],
+["Medicine Ball Russian Twist","Core","Medicine Ball","Functional","Rotation"],
+["Resistance Band Lateral Walk","Glutes","Resistance Band","Accessory","Lateral"],
+["Resistance Band Pull-Apart","Shoulders","Resistance Band","Accessory","Isolation"],
+["Resistance Band Row","Back","Resistance Band","Hypertrophy","Compound"],
+["Resistance Band Pallof Press","Core","Resistance Band","Stability","Anti-Rotation"],
+["TRX Row","Back","TRX","Functional","Compound"],
+["TRX Overhead Tricep Extension","Triceps","TRX","Functional","Isolation"],
+["TRX Chest Press","Chest","TRX","Stability","Compound"],
+["TRX Split Squat","Quads","TRX","Stability","Unilateral"],
+["Lower Back Extension","Full Body","Machine","Accessory","Extension"],
+["V-Bar Cable Curl","Biceps","Cable","Hypertrophy","Isolation"],
+["Barbell Skull Crusher","Triceps","Barbell","Hypertrophy","Isolation"],
+["Barbell Bent-Over Row","Back","Barbell","Strength","Compound"],
+["Barbell Curl","Biceps","Barbell","Hypertrophy","Isolation"],
+["Flat Dumbbell Ergo Press","Chest","Dumbbell","Hypertrophy","Compound"],
+["Incline Dumbbell Twisting Press","Chest","Dumbbell","Functional","Compound"],
+["King Kong Curl","Biceps","Dumbbell","Hypertrophy","Isolation"],
+["Cable Superman Curl","Biceps","Cable","Functional","Compound"],
 ["Dumbbell Squat to Press","Full Body","Dumbbell","Conditioning","Compound"],
 ["Dumbbell Romanian Deadlift to Row","Full Body","Dumbbell","Conditioning","Compound"],
 ["Reverse Lunge to Press","Full Body","Dumbbell","Conditioning","Compound"],
@@ -1204,6 +1304,81 @@ const ORIGINAL_PROGRAM = [
 ];
 
 
+
+/* =========================================================
+   V4 WORKOUT VARIATIONS + CIRCUITS
+========================================================= */
+const V4_VARIANTS = [
+  [
+    {label:"V1 Classic",exercises:["Incline Dumbbell Press","Machine Chest Press","Cable Chest Fly","Rope Tricep Pushdown","Overhead Rope Extension","Low-to-High Cable Fly","Single-Arm Cable Pushdown","Assisted Dip"]},
+    {label:"V2 Machine",exercises:["Machine Chest Press","Incline Machine Press","Machine Chest Press","Assisted Dip","Rope Tricep Pushdown","Overhead Rope Extension","Cable Chest Fly","Straight-Bar Tricep Pushdown"]},
+    {label:"V3 Dumbbell + Cable",exercises:["Incline Dumbbell Press","Flat Dumbbell Press","Dumbbell Squeeze Press","Cable Chest Fly","Dumbbell Overhead Extension","Single-Arm Cable Pushdown","Low-to-High Cable Fly","Close-Grip Dumbbell Press"]},
+    {label:"V4 Functional + Stability",exercises:["Medicine Ball Elevated Push-Up","TRX Chest Press","Incline Push-Up","Medicine Ball Push-Up","TRX Overhead Tricep Extension","Resistance Band Pull-Apart","Cable Chest Fly","Bench Dip"]}
+  ],
+  [
+    {label:"V1 Classic",exercises:["Lat Pulldown","Seated Cable Row","High Row Machine","Incline Hammer Curl","Cable Curl","Straight-Arm Pulldown","Single-Arm Lat Pulldown","Bayesian Cable Curl"]},
+    {label:"V2 Machine",exercises:["Chest-Supported Machine Row","High Row Machine","Low Row Machine","Assisted Pull-Up","Machine Bicep Curl","Preacher Curl","Lat Pulldown","Close-Grip Lat Pulldown"]},
+    {label:"V3 Dumbbell + Cable",exercises:["Chest-Supported Dumbbell Row","One-Arm Dumbbell Row","Seated Cable Row","Single-Arm Lat Pulldown","Incline Dumbbell Curl","Hammer Curl","Cable Curl","Bayesian Cable Curl"]},
+    {label:"V4 Functional + Stability",exercises:["TRX Row","Resistance Band Row","Assisted Pull-Up","Single-Arm Cable Row","Cross-Body Hammer Curl","Cable Curl","Straight-Arm Pulldown","Resistance Band Pull-Apart"]}
+  ],
+  [
+    {label:"V1 Classic",exercises:["Hack Squat","Leg Press","Romanian Deadlift","Leg Extension","Seated Leg Curl","Hip Abduction Machine","Reverse Lunge","Cable Pull-Through"]},
+    {label:"V2 Machine",exercises:["Hack Squat","Leg Press","Leg Extension","Seated Leg Curl","Lying Leg Curl","Hip Abduction Machine","Glute-Biased Back Extension","Standing Calf Raise"]},
+    {label:"V3 Dumbbell",exercises:["Goblet Squat","Romanian Deadlift","Walking Lunge","Bulgarian Split Squat","Heel-Elevated Goblet Squat","Step-Up","Dumbbell Good Morning","Sumo Goblet Squat"]},
+    {label:"V4 Balance + Unilateral",exercises:["BOSU Balance Squat","BOSU Goblet Squat","BOSU Split Squat","Reverse Lunge","Step-Up to Knee Drive","Single-Leg Curl","Single-Leg Glute Bridge","Single-Leg Calf Raise"]}
+  ],
+  [
+    {label:"V1 Classic",exercises:["Seated Dumbbell Shoulder Press","Dumbbell Lateral Raise","Reverse Fly Machine","Pallof Press","Dead Bug","Single-Arm Cable Lateral Raise","Face Pull","Bird Dog"]},
+    {label:"V2 Machine + Cable",exercises:["Machine Shoulder Press","Machine Lateral Raise","Cable Reverse Fly","Cable Lateral Raise","Face Pull","Pallof Press","Standing Cable March","Cable Chop"]},
+    {label:"V3 Dumbbell",exercises:["Seated Dumbbell Shoulder Press","Arnold Press","Dumbbell Lateral Raise","Dumbbell Reverse Fly","Front Raise","Suitcase Hold","Dead Bug","Bird Dog"]},
+    {label:"V4 Stability + Functional",exercises:["TRX Row","Resistance Band Pull-Apart","BOSU Balance Squat","Pallof Press","Resistance Band Pallof Press","Bear Plank Hold","Standing Cable March","Cable Chop"]}
+  ],
+  [
+    {label:"V1 Classic",exercises:["Hip Thrust","Bulgarian Split Squat","Cable Glute Kickback","Single-Arm Cable Row","Flat Dumbbell Press","Face Pull","Step-Up","Goblet Squat"]},
+    {label:"V2 Glute Machine",exercises:["Hip Thrust","Hip Abduction Machine","Glute-Biased Back Extension","Leg Press","Seated Leg Curl","Cable Glute Kickback","Machine Chest Press","High Row Machine"]},
+    {label:"V3 Dumbbell",exercises:["Dumbbell Hip Thrust","Glute-Biased Bulgarian Split Squat","Romanian Deadlift","Sumo Goblet Squat","One-Arm Dumbbell Row","Flat Dumbbell Press","Step-Up","Dumbbell Squat to Press"]},
+    {label:"V4 Full-Body Functional",exercises:["Medicine Ball Squat to Press","Medicine Ball Slam","TRX Row","Medicine Ball Elevated Push-Up","Reverse Lunge to Press","Step-Up to Knee Drive","Resistance Band Lateral Walk","Cable Squat to Row"]}
+  ]
+];
+
+const PRESET_CIRCUITS=[
+ {name:"Full Body Circuit A",focus:"Superset Circuit",warm:"Ski, bike, treadmill, or row · 2–10 min",cool:"Ski, bike, treadmill, or row · 2–10 min · STRETCH!",pairs:[
+  ["Seated Leg Curl","Side Plank"],["Machine Chest Press","Cable Superman Curl"],["Barbell Skull Crusher","Barbell Bent-Over Row"],["Flat Dumbbell Ergo Press","King Kong Curl"]
+ ]},
+ {name:"Full Body Circuit B",focus:"Superset Circuit",warm:"Ski, bike, treadmill, or row · 2–10 min",cool:"Ski, bike, treadmill, or row · 2–10 min · STRETCH!",pairs:[
+  ["Lower Back Extension","Walking Lunge"],["Medicine Ball Push-Up","V-Bar Cable Curl"],["TRX Row","TRX Overhead Tricep Extension"],["Incline Dumbbell Twisting Press","Barbell Curl"]
+ ]},
+ {name:"Full Body Circuit C",focus:"Strength + Glutes",warm:"Ski, bike, treadmill, or row · 2–10 min",cool:"Ski, bike, treadmill, or row · 2–10 min · STRETCH!",pairs:[
+  ["Romanian Deadlift","Incline Dumbbell Press"],["Goblet Squat","One-Arm Dumbbell Row"],["Cable Glute Kickback","Seated Dumbbell Shoulder Press"],["Hip Thrust","Cable Curl"]
+ ]},
+ {name:"Full Body Circuit D",focus:"Functional + Stability",warm:"Ski, bike, treadmill, or row · 2–10 min",cool:"Ski, bike, treadmill, or row · 2–10 min · STRETCH!",pairs:[
+  ["BOSU Balance Squat","TRX Row"],["Medicine Ball Squat to Press","Resistance Band Lateral Walk"],["Step-Up to Knee Drive","Medicine Ball Elevated Push-Up"],["Pallof Press","TRX Overhead Tricep Extension"]
+ ]}
+];
+
+function libraryItemByName(name){
+ const x=LIBRARY.find(i=>i.name===name);
+ if(x) return x;
+ const fallbacks={
+  "Side Plank":{name:"Side Plank",muscle:"Core",equipment:"Bodyweight",style:"Stability"},
+  "Walking Lunge":{name:"Walking Lunge",muscle:"Quads",equipment:"Dumbbell",style:"Hypertrophy"}
+ };
+ return fallbacks[name]||{name,muscle:"Full Body",equipment:"Bodyweight",style:"Functional"};
+}
+function makeExerciseFromName(name){
+ const i=libraryItemByName(name);
+ return ex(i.name,i.muscle,i.equipment,3,(i.style==="Strength"?"5-8":i.style==="Stability"?"10-15":"8-12"));
+}
+function workoutFromNames(name,focus,names){
+ return {name,focus,exercises:names.map(makeExerciseFromName)};
+}
+function loadWorkoutIntoDay(workout,dayIndex=0){
+ program[dayIndex]=clone(workout); currentDay=dayIndex; currentExercise=0; programDay=dayIndex;
+ saveAll(); renderWorkout(); renderProgram();
+ document.querySelector('[data-screen="workout"]').click();
+}
+
+
 /* =========================================================
    STATE
 ========================================================= */
@@ -1245,6 +1420,7 @@ let completedDays =
 
 let temporarySwaps =
   JSON.parse(localStorage.getItem("nextrep_swaps")) || {};
+let savedWorkouts = JSON.parse(localStorage.getItem("nextrep_savedWorkouts")) || [];
 
 let currentDay = 0;
 let currentExercise = 0;
@@ -1265,6 +1441,7 @@ function saveAll(){
   localStorage.setItem("nextrep_current",JSON.stringify(currentLog));
   localStorage.setItem("nextrep_completedDays",JSON.stringify(completedDays));
   localStorage.setItem("nextrep_swaps",JSON.stringify(temporarySwaps));
+  localStorage.setItem("nextrep_savedWorkouts",JSON.stringify(savedWorkouts));
 }
 
 
@@ -1282,6 +1459,7 @@ document.querySelectorAll(".nav button").forEach(btn=>{
 
     if(btn.dataset.screen==="program") renderProgram();
     if(btn.dataset.screen==="history") renderHistory();
+    if(btn.dataset.screen==="libraryworkouts") renderWorkoutLibrary();
   });
 });
 
@@ -1292,10 +1470,33 @@ document.querySelectorAll(".nav button").forEach(btn=>{
 
 let timerSeconds = Number(localStorage.getItem("nextrep_timerSeconds")) || 0;
 let timerInterval = null;
+let timerStartedAt = Number(localStorage.getItem("nextrep_timerStartedAt")) || 0;
+let timerRunning = localStorage.getItem("nextrep_timerRunning")==="true";
+
+function syncWorkoutTimer(){
+  if(timerRunning && timerStartedAt){
+    timerSeconds=Math.max(0, Math.floor((Date.now()-timerStartedAt)/1000));
+    localStorage.setItem("nextrep_timerSeconds",timerSeconds);
+  }
+  paintTimer();
+}
+function startWorkoutClock(){
+  if(timerRunning) return;
+  timerStartedAt=Date.now()-(timerSeconds*1000);
+  timerRunning=true;
+  localStorage.setItem("nextrep_timerStartedAt",timerStartedAt);
+  localStorage.setItem("nextrep_timerRunning","true");
+  clearInterval(timerInterval);
+  timerInterval=setInterval(syncWorkoutTimer,1000);
+  syncWorkoutTimer();
+}
 let restDefault = Number(localStorage.getItem("nextrep_restDefault")) || 90;
 let restSeconds = Number(localStorage.getItem("nextrep_restSeconds"));
 if(!Number.isFinite(restSeconds) || restSeconds < 0) restSeconds = restDefault;
 let restInterval = null;
+let restEndAt = Number(localStorage.getItem("nextrep_restEndAt")) || 0;
+let restRunning = localStorage.getItem("nextrep_restRunning")==="true";
+let restAlerted = false;
 let autoRestEnabled = localStorage.getItem("nextrep_autoRest") !== "false";
 
 function formatTimer(s){
@@ -1312,26 +1513,21 @@ function paintTimer(){
   document.getElementById("timerDisplay").textContent=formatTimer(timerSeconds);
 }
 
-document.getElementById("timerStart").onclick=()=>{
-  if(timerInterval) return;
-
-  timerInterval=setInterval(()=>{
-    timerSeconds++;
-    localStorage.setItem("nextrep_timerSeconds",timerSeconds);
-    paintTimer();
-  },1000);
-};
+document.getElementById("timerStart").onclick=startWorkoutClock;
 
 document.getElementById("timerPause").onclick=()=>{
-  clearInterval(timerInterval);
-  timerInterval=null;
+  syncWorkoutTimer();
+  timerRunning=false;
+  localStorage.setItem("nextrep_timerRunning","false");
+  clearInterval(timerInterval); timerInterval=null;
 };
 
 document.getElementById("timerReset").onclick=()=>{
-  clearInterval(timerInterval);
-  timerInterval=null;
-  timerSeconds=0;
+  clearInterval(timerInterval); timerInterval=null;
+  timerRunning=false; timerStartedAt=0; timerSeconds=0;
   localStorage.setItem("nextrep_timerSeconds",0);
+  localStorage.setItem("nextrep_timerStartedAt",0);
+  localStorage.setItem("nextrep_timerRunning","false");
   paintTimer();
 };
 
@@ -1346,12 +1542,30 @@ function formatRest(s){
 }
 function paintRest(){
   document.getElementById("restDisplay").textContent=formatRest(restSeconds);
-  document.getElementById("restToggle").textContent=restInterval ? "Pause" : "Start";
-  const chip=document.getElementById("restTimerChip"); if(chip) chip.classList.toggle("active",!!restInterval);
+  document.getElementById("restToggle").textContent=restRunning ? "Pause" : "Start";
+  const chip=document.getElementById("restTimerChip"); if(chip) chip.classList.toggle("active",restRunning);
   document.querySelectorAll("[data-rest]").forEach(b=>b.classList.toggle("active",Number(b.dataset.rest)===restDefault));
   localStorage.setItem("nextrep_restSeconds",restSeconds);
 }
-function stopRest(){ clearInterval(restInterval); restInterval=null; paintRest(); }
+function stopRest(){
+  clearInterval(restInterval); restInterval=null; restRunning=false;
+  localStorage.setItem("nextrep_restRunning","false");
+  localStorage.setItem("nextrep_restEndAt","0");
+  paintRest();
+}
+function syncRestTimer(){
+  if(!restRunning || !restEndAt){ paintRest(); return; }
+  restSeconds=Math.max(0,Math.ceil((restEndAt-Date.now())/1000));
+  localStorage.setItem("nextrep_restSeconds",restSeconds);
+  paintRest();
+  if(restSeconds===0){
+    clearInterval(restInterval); restInterval=null; restRunning=false;
+    localStorage.setItem("nextrep_restRunning","false");
+    localStorage.setItem("nextrep_restEndAt","0");
+    const d=document.getElementById("restDisplay"); d.textContent="REST COMPLETE";
+    if(!restAlerted){ restAlerted=true; restCompleteAlert(); }
+  }
+}
 
 let restAudioCtx=null;
 function playRestChime(){
@@ -1401,30 +1615,35 @@ function unlockRestAudio(){
 }
 function startRest(reset=true){
   unlockRestAudio();
-  stopRest();
+  clearInterval(restInterval); restInterval=null;
   if(reset) restSeconds=restDefault;
   if(restSeconds<=0) restSeconds=restDefault;
-  restInterval=setInterval(()=>{
-    restSeconds=Math.max(0,restSeconds-1); paintRest();
-    if(restSeconds===0){
-      stopRest();
-      const d=document.getElementById("restDisplay");
-      d.textContent="REST COMPLETE";
-      restCompleteAlert();
-    }
-  },1000);
-  paintRest();
+  restEndAt=Date.now()+restSeconds*1000;
+  restRunning=true; restAlerted=false;
+  localStorage.setItem("nextrep_restEndAt",restEndAt);
+  localStorage.setItem("nextrep_restRunning","true");
+  restInterval=setInterval(syncRestTimer,500);
+  syncRestTimer();
 }
 document.querySelectorAll("[data-rest]").forEach(b=>b.onclick=()=>{
   restDefault=Number(b.dataset.rest); restSeconds=restDefault;
   localStorage.setItem("nextrep_restDefault",restDefault); stopRest();
 });
-document.getElementById("restToggle").onclick=()=>{ restInterval ? stopRest() : startRest(false); };
+document.getElementById("restToggle").onclick=()=>{
+  if(restRunning){ syncRestTimer(); stopRest(); }
+  else startRest(false);
+};
 document.getElementById("restMinus").onclick=()=>{ restSeconds=Math.max(0,restSeconds-15); paintRest(); };
 document.getElementById("restPlus").onclick=()=>{ restSeconds=Math.min(3600,restSeconds+15); paintRest(); };
 document.getElementById("restReset").onclick=()=>{ stopRest(); restSeconds=restDefault; paintRest(); };
 document.getElementById("autoRest").checked=autoRestEnabled;
 document.getElementById("autoRest").onchange=e=>{ autoRestEnabled=e.target.checked; localStorage.setItem("nextrep_autoRest",autoRestEnabled); };
+
+["visibilitychange","pageshow","focus"].forEach(evt=>{
+  window.addEventListener(evt,()=>{ syncWorkoutTimer(); syncRestTimer(); });
+});
+if(timerRunning){ clearInterval(timerInterval); timerInterval=setInterval(syncWorkoutTimer,1000); }
+if(restRunning && restEndAt){ clearInterval(restInterval); restInterval=setInterval(syncRestTimer,500); syncRestTimer(); }
 
 /* =========================================================
    WORKOUT HELPERS
@@ -1491,7 +1710,11 @@ function renderWorkout(){
 
   document.getElementById("workoutDayLabel").textContent="DAY "+(currentDay+1);
   document.getElementById("workoutDayName").textContent=day.name;
+  const modeBadge=document.getElementById("workoutModeBadge");
+  modeBadge.innerHTML=day.modeLabel?`<span class="superset-badge">${day.modeLabel}</span>`:"";
   document.getElementById("workoutFocus").textContent=day.focus;
+  document.getElementById("warmupBlock").innerHTML=day.warm?`<div class="warm-block"><b>WARM UP</b> · ${day.warm}</div>`:"";
+  document.getElementById("cooldownBlock").innerHTML=day.cool?`<div class="warm-block"><b>COOL DOWN</b> · ${day.cool}</div>`:"";
 
   if(!day.exercises.length){
 
@@ -1779,8 +2002,10 @@ document.getElementById("finishWorkoutBtn").onclick=()=>{
 
   clearInterval(timerInterval);
   timerInterval=null;
-  timerSeconds=0;
+  timerSeconds=0; timerRunning=false; timerStartedAt=0;
   localStorage.setItem("nextrep_timerSeconds",0);
+  localStorage.setItem("nextrep_timerRunning","false");
+  localStorage.setItem("nextrep_timerStartedAt",0);
   paintTimer();
   stopRest(); restSeconds=restDefault; paintRest();
 
@@ -2300,19 +2525,24 @@ let historyView="workouts";
 document.getElementById("historyWorkoutsTab").onclick=()=>{ historyView="workouts"; renderHistory(); };
 document.getElementById("historyPRsTab").onclick=()=>{ historyView="prs"; renderHistory(); };
 document.getElementById("historyStatsTab").onclick=()=>{ historyView="stats"; renderHistory(); };
+document.getElementById("historyDataTab").onclick=()=>{ historyView="data"; renderHistory(); };
 function renderHistory(){
   const workouts=document.getElementById("historyList");
   const prs=document.getElementById("prList");
   const stats=document.getElementById("statsList");
-  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab");
+  const data=document.getElementById("dataList");
+  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab"), dt=document.getElementById("historyDataTab");
   wt.className="btn "+(historyView==="workouts"?"active":"outline");
   pt.className="btn "+(historyView==="prs"?"active":"outline");
   st.className="btn "+(historyView==="stats"?"active":"outline");
+  dt.className="btn "+(historyView==="data"?"active":"outline");
   workouts.style.display=historyView==="workouts"?"block":"none";
   prs.style.display=historyView==="prs"?"block":"none";
   stats.style.display=historyView==="stats"?"block":"none";
+  data.style.display=historyView==="data"?"block":"none";
   if(historyView==="prs"){ renderPRs(); return; }
   if(historyView==="stats"){ renderStats(); return; }
+  if(historyView==="data"){ renderDataPanel(); return; }
   if(!history.length){ workouts.innerHTML='<div class="empty">Finish your first workout and it will show up here.</div>'; return; }
   workouts.innerHTML="";
   [...history].reverse().forEach(workout=>{
@@ -2330,7 +2560,11 @@ function renderHistory(){
 }
 function renderPRs(){
   const wrap=document.getElementById("prList");
-  const names=[...new Set(history.flatMap(w=>w.exercises.map(e=>e.name)))].sort();
+  const allExercises=history.flatMap(w=>w.exercises);
+  const categories=[...new Set(allExercises.map(e=>e.muscle).filter(Boolean))].sort();
+  const active=window.nextrepPRCategory||"All";
+  const categoryBar=`<div class="category-strip"><button class="btn small ${active==="All"?"":"outline"}" data-prcat="All">All</button>${categories.map(c=>`<button class="btn small ${active===c?"":"outline"}" data-prcat="${c}">${c}</button>`).join("")}</div>`;
+  const names=[...new Set(allExercises.filter(e=>active==="All"||e.muscle===active).map(e=>e.name))].sort();
   if(!names.length){ wrap.innerHTML='<div class="empty">Your PRs will appear after you finish workouts with weight and reps logged.</div>'; return; }
   const cards=[];
   names.forEach(name=>{
@@ -2342,7 +2576,8 @@ function renderPRs(){
     }).join("");
     cards.push(`<div class="pr-card"><div class="pr-name">${name}</div><div class="pr-best">🏆 ${best.weight} lb × ${best.reps}</div><div class="pr-meta">Best recorded ${new Date(best.date).toLocaleDateString()}</div><div style="margin-top:9px"><strong style="font-size:11px">RECENT PROGRESS</strong>${recent}</div></div>`);
   });
-  wrap.innerHTML=cards.length?cards.join(""):'<div class="empty">Complete sets with weight and reps to build your PR board.</div>';
+  wrap.innerHTML=categoryBar+(cards.length?cards.join(""):'<div class="empty">Complete sets with weight and reps to build your PR board.</div>');
+  wrap.querySelectorAll("[data-prcat]").forEach(b=>b.onclick=()=>{window.nextrepPRCategory=b.dataset.prcat;renderPRs();});
 }
 
 function workoutVolume(workout){
@@ -2386,6 +2621,100 @@ function renderStats(){
 }
 function formatWeight(n){ return Math.round(Number(n)||0).toLocaleString(); }
 
+
+function renderDataPanel(){
+  const profile=JSON.parse(localStorage.getItem("nextrep_profile")||"{}");
+  const n=document.getElementById("profileName"), r=document.getElementById("profileRest");
+  if(n) n.value=profile.name||"";
+  if(r) r.value=String(profile.defaultRest||restDefault);
+  const last=localStorage.getItem("nextrep_lastBackup");
+  const s=document.getElementById("backupStatus");
+  if(s) s.textContent=last ? "Last backup: "+new Date(last).toLocaleString() : "No backup exported yet.";
+}
+document.getElementById("saveProfileBtn").onclick=()=>{
+  const p={name:document.getElementById("profileName").value.trim(),defaultRest:Number(document.getElementById("profileRest").value)};
+  localStorage.setItem("nextrep_profile",JSON.stringify(p));
+  restDefault=p.defaultRest; localStorage.setItem("nextrep_restDefault",restDefault);
+  restSeconds=restDefault; paintRest(); alert("Profile saved.");
+};
+document.getElementById("exportDataBtn").onclick=()=>{
+  const keys=Object.keys(localStorage).filter(k=>k.startsWith("nextrep_"));
+  const payload={app:"NextRep",version:4,exportedAt:new Date().toISOString(),data:{}};
+  keys.forEach(k=>payload.data[k]=localStorage.getItem(k));
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="NextRep-backup-"+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+  localStorage.setItem("nextrep_lastBackup",new Date().toISOString()); renderDataPanel();
+};
+document.getElementById("importDataInput").onchange=e=>{
+  const file=e.target.files&&e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const payload=JSON.parse(reader.result);
+      if(!payload || payload.app!=="NextRep" || !payload.data) throw new Error("Not a NextRep backup");
+      if(!confirm("Restore this NextRep backup? Your current NextRep data will be replaced by the backup.")) return;
+      Object.entries(payload.data).forEach(([k,v])=>{ if(k.startsWith("nextrep_")) localStorage.setItem(k,v); });
+      alert("Backup restored. NextRep will reload now."); location.reload();
+    }catch(err){ alert("That file could not be restored as a NextRep backup."); }
+  };
+  reader.readAsText(file);
+};
+
+
+function renderWorkoutLibrary(){
+ const v=document.getElementById("variantLibrary"); if(!v) return;
+ v.innerHTML=V4_VARIANTS.map((variants,day)=>`<div class="library-workout"><h3>D${day+1} · ${ORIGINAL_PROGRAM[day].name}</h3><div class="variant-strip">${variants.map((x,i)=>`<button class="btn ${i?"outline":""} small" data-variant="${day}-${i}">${x.label}</button>`).join("")}</div></div>`).join("");
+ v.querySelectorAll("[data-variant]").forEach(b=>b.onclick=()=>{
+   const [d,i]=b.dataset.variant.split("-").map(Number), spec=V4_VARIANTS[d][i];
+   const w=workoutFromNames(ORIGINAL_PROGRAM[d].name,ORIGINAL_PROGRAM[d].focus,spec.exercises); w.modeLabel=spec.label;
+   loadWorkoutIntoDay(w,d);
+ });
+ const p=document.getElementById("presetLibrary");
+ p.innerHTML=PRESET_CIRCUITS.map((c,i)=>`<div class="library-workout"><h3>${c.name}</h3><div class="subtle">${c.focus} · 4 paired blocks</div><button class="btn small" data-circuit="${i}" style="margin-top:8px">Load Circuit</button></div>`).join("");
+ p.querySelectorAll("[data-circuit]").forEach(b=>b.onclick=()=>{
+   const c=PRESET_CIRCUITS[Number(b.dataset.circuit)], names=c.pairs.flat();
+   const w=workoutFromNames(c.name,c.focus,names); w.modeLabel="SUPERSET"; w.warm=c.warm; w.cool=c.cool; w.supersetPairs=c.pairs;
+   loadWorkoutIntoDay(w,4);
+ });
+ renderSavedWorkouts();
+}
+function renderSavedWorkouts(){
+ const wrap=document.getElementById("savedWorkoutLibrary"); if(!wrap) return;
+ if(!savedWorkouts.length){wrap.innerHTML='<div class="subtle">No saved custom workouts yet.</div>';return;}
+ wrap.innerHTML=savedWorkouts.map((w,i)=>`<div class="library-workout"><h3>${w.name}</h3><div class="subtle">${w.exercises.length} exercises</div><div class="button-row" style="margin-top:7px"><button class="btn small" data-loadsaved="${i}">Load</button><button class="btn danger small" data-delsaved="${i}">Delete</button></div></div>`).join("");
+ wrap.querySelectorAll("[data-loadsaved]").forEach(b=>b.onclick=()=>loadWorkoutIntoDay(clone(savedWorkouts[Number(b.dataset.loadsaved)]),4));
+ wrap.querySelectorAll("[data-delsaved]").forEach(b=>b.onclick=()=>{savedWorkouts.splice(Number(b.dataset.delsaved),1);saveAll();renderSavedWorkouts();});
+}
+document.getElementById("startBlankCustom").onclick=()=>{
+ const name=document.getElementById("customWorkoutName").value.trim()||"Custom Day";
+ loadWorkoutIntoDay({name,focus:"Custom Workout",modeLabel:"CUSTOM",exercises:[]},4);
+};
+document.getElementById("saveCurrentCustom").onclick=()=>{
+ const name=document.getElementById("customWorkoutName").value.trim()||program[currentDay].name||"Custom Workout";
+ const w=clone(program[currentDay]); w.name=name; w.modeLabel="SAVED CUSTOM"; savedWorkouts.push(w); saveAll(); renderWorkoutLibrary(); alert("Custom workout saved.");
+};
+function smartRandom(){
+ const focus=document.getElementById("randomFocus").value, count=Number(document.getElementById("randomCount").value), eq=document.getElementById("randomEquipment").value;
+ const upper=["Chest","Back","Shoulders","Biceps","Triceps","Core"], lower=["Quads","Hamstrings","Glutes","Calves","Core"];
+ let allowed=focus==="Upper"?upper:focus==="Lower"?lower:[...upper,...lower,"Full Body"];
+ let pool=LIBRARY.filter(x=>allowed.includes(x.muscle)&&(!eq||x.equipment===eq));
+ const chosen=[], used=new Set();
+ while(chosen.length<count && pool.length){
+   let candidates=pool.filter(x=>!used.has(x.name));
+   candidates.sort((a,b)=>(chosen.filter(c=>c.muscle===a.muscle).length)-(chosen.filter(c=>c.muscle===b.muscle).length));
+   const slice=candidates.slice(0,Math.max(1,Math.ceil(candidates.length/3)));
+   const pick=slice[Math.floor(Math.random()*slice.length)];
+   if(!pick) break; chosen.push(pick); used.add(pick.name); pool=pool.filter(x=>x.name!==pick.name);
+ }
+ const preview=document.getElementById("randomPreview");
+ preview.innerHTML=`<div class="library-workout"><h3>${focus} Random</h3>${chosen.map((x,i)=>`<div class="history-set">${i+1}. ${x.name} · ${x.muscle} · ${x.equipment}</div>`).join("")}<button class="btn" id="loadRandomBtn" style="margin-top:10px">Start This Workout</button></div>`;
+ document.getElementById("loadRandomBtn").onclick=()=>loadWorkoutIntoDay({name:focus+" Random",focus:"Smart Random Workout",modeLabel:"RANDOM",exercises:chosen.map(x=>makeExerciseFromName(x.name))},4);
+}
+document.getElementById("generateRandomBtn").onclick=smartRandom;
+
+
 /* =========================================================
    MODALS
 ========================================================= */
@@ -2416,43 +2745,10 @@ document.querySelectorAll(".modal").forEach(modal=>{
 renderWorkout();
 renderProgram();
 renderHistory();
+renderWorkoutLibrary();
 paintTimer();
 paintRest();
 
-</script>
-
-
-<script>
-(function(){
-  const btn=document.getElementById("backupOnlyBtn");
-  if(!btn) return;
-  btn.addEventListener("click", function(){
-    const data={};
-    for(let i=0;i<localStorage.length;i++){
-      const key=localStorage.key(i);
-      if(key && (key.startsWith("nextrep_") || key.startsWith("workoutV2_"))){
-        data[key]=localStorage.getItem(key);
-      }
-    }
-    const payload={
-      app:"NEXT//REP",
-      backupFormatVersion:1,
-      exportedAt:new Date().toISOString(),
-      origin:location.origin,
-      data:data
-    };
-    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;
-    a.download="NEXTREP-BACKUP-"+new Date().toISOString().slice(0,10)+".json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
-    alert("NEXT//REP backup created. Save the JSON file somewhere safe, then upload it to this chat so I can verify your workout history before V4.");
-  });
-})();
 </script>
 
 </body>
