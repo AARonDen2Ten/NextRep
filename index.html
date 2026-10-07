@@ -757,6 +757,146 @@ body[data-theme="light"] #clearCurrentBtn { background:#fff; border-color:#d2d2d
   .finish-strip #clearCurrentBtn { flex:0 0 auto; }
 }
 
+
+
+/* =========================================================
+   NEXT//REP V4.3 — GLOBAL BRAND POLISH
+   One palette, consistent controls, no stray red UI.
+========================================================= */
+:root {
+  --nr-gold:#f4c400;
+  --nr-gold-muted:#c9a93a;
+  --nr-gold-soft:#fff3b0;
+  --nr-ink:#151515;
+  --nr-warm-white:#f7f5ef;
+  --nr-soft-gray:#a7a39a;
+}
+
+/* Typography hierarchy */
+body[data-theme="dark"] { --text:var(--nr-warm-white); --muted:#aaa79f; }
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] .exercise-title,
+body[data-theme="dark"] .exercise-item-name,
+body[data-theme="dark"] .library-name { color:var(--nr-warm-white); }
+body[data-theme="dark"] .section-label,
+body[data-theme="dark"] .field label,
+body[data-theme="dark"] .form-field label,
+body[data-theme="dark"] .category-select-label,
+body[data-theme="dark"] .jump-bar label > span { color:var(--nr-gold-muted); }
+body[data-theme="light"] .section-label,
+body[data-theme="light"] .category-select-label { color:#8a7000; }
+
+/* Branded native selects/dropdowns everywhere */
+.form-field select,
+.field select,
+.variant-select,
+.category-select,
+#programDaySelect,
+#profileRest,
+#editExerciseQuick,
+#editMuscle,
+#editEquipment,
+#editSets,
+#editReps,
+#randomFocus,
+#randomCount,
+#randomEquipment,
+#muscleFilter,
+#equipmentFilter,
+#styleFilter,
+#movementFilter {
+  -webkit-appearance:none;
+  appearance:none;
+  color:var(--text);
+  border:1px solid var(--line);
+  background-color:var(--surface-2);
+  background-image:linear-gradient(45deg,transparent 50%,var(--nr-gold-muted) 50%),linear-gradient(135deg,var(--nr-gold-muted) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 12px) 50%;
+  background-size:6px 6px,6px 6px;
+  background-repeat:no-repeat;
+  padding-right:38px;
+  font-weight:750;
+}
+body[data-theme="dark"] .form-field select,
+body[data-theme="dark"] .field select,
+body[data-theme="dark"] .variant-select,
+body[data-theme="dark"] .category-select,
+body[data-theme="dark"] #programDaySelect,
+body[data-theme="dark"] #profileRest,
+body[data-theme="dark"] #editExerciseQuick,
+body[data-theme="dark"] #editMuscle,
+body[data-theme="dark"] #editEquipment,
+body[data-theme="dark"] #editSets,
+body[data-theme="dark"] #editReps,
+body[data-theme="dark"] #randomFocus,
+body[data-theme="dark"] #randomCount,
+body[data-theme="dark"] #randomEquipment,
+body[data-theme="dark"] #muscleFilter,
+body[data-theme="dark"] #equipmentFilter,
+body[data-theme="dark"] #styleFilter,
+body[data-theme="dark"] #movementFilter {
+  background-color:#292929;
+  border-color:#4a4535;
+  color:var(--nr-warm-white);
+}
+body[data-theme="light"] .form-field select,
+body[data-theme="light"] .field select,
+body[data-theme="light"] .variant-select,
+body[data-theme="light"] .category-select { background-color:#fbfaf6; border-color:#d8d2c2; }
+
+/* Summary pills/tags: readable, branded, never yellow-on-yellow */
+.summary-pill {
+  background:transparent;
+  border:1px solid rgba(138,112,0,.35);
+  color:#6f5b00;
+}
+body[data-theme="dark"] .summary-pill {
+  background:#25241f;
+  border:1px solid #6c5d24;
+  color:var(--nr-warm-white);
+}
+body[data-theme="dark"] .summary-pill:first-child { color:#f0cf4c; }
+.tag { background:#f1efe8; color:#5f5b51; border:1px solid #ded9ca; }
+body[data-theme="dark"] .tag { background:#262521; color:#c9c4b9; border:1px solid #454133; }
+
+/* Remove red/pink destructive styling across the app */
+.btn.danger,
+body[data-theme="dark"] .btn.danger,
+body[data-theme="light"] .btn.danger {
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--line);
+}
+body[data-theme="dark"] .btn.danger { background:#1b1b1b; border-color:#555044; color:var(--nr-warm-white); }
+body[data-theme="light"] .btn.danger { background:#fbfaf6; border-color:#d5d0c3; color:#24231f; }
+.btn.danger:active { border-color:var(--yellow); }
+
+/* Buttons follow the same primary/secondary language */
+body[data-theme="dark"] .btn { color:var(--nr-warm-white); }
+body[data-theme="dark"] .btn:not(.outline):not(.secondary):not(.danger):not(#nextExercise):not(#finishWorkoutBtn):not(.active) {
+  background:#171717;
+}
+body[data-theme="dark"] .btn.outline,
+body[data-theme="dark"] .btn.secondary { background:#202020; color:var(--nr-warm-white); border:1px solid #555044; }
+body[data-theme="light"] .btn.outline,
+body[data-theme="light"] .btn.secondary { background:#fbfaf6; color:#24231f; border:1px solid #d5d0c3; }
+
+/* Inputs share the same warm palette as dropdowns */
+body[data-theme="dark"] .field input,
+body[data-theme="dark"] .form-field input { background:#292929; border-color:#4a4535; color:var(--nr-warm-white); }
+body[data-theme="light"] .field input,
+body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d8d2c2; color:#24231f; }
+
+/* Keep active/primary actions unmistakably NEXT//REP yellow */
+#nextExercise,
+#finishWorkoutBtn,
+.appearance-btn.active,
+.history-tabs .btn.active,
+.rest-presets button.active,
+.check-btn.done { background:var(--yellow) !important; color:#111 !important; border-color:var(--yellow) !important; }
+
 </style>
 </head>
 
