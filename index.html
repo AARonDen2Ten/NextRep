@@ -844,6 +844,7 @@ body { background:#f7f7f7; }
         <button class="btn active" id="historyWorkoutsTab">WORKOUTS</button>
         <button class="btn outline" id="historyPRsTab">PRs</button>
         <button class="btn outline" id="historyStatsTab">STATS</button>
+        <button class="btn outline" id="backupOnlyBtn">BACKUP DATA</button>
       </div>
       <div id="historyList"></div>
       <div id="prList" style="display:none"></div>
@@ -2418,6 +2419,40 @@ renderHistory();
 paintTimer();
 paintRest();
 
+</script>
+
+
+<script>
+(function(){
+  const btn=document.getElementById("backupOnlyBtn");
+  if(!btn) return;
+  btn.addEventListener("click", function(){
+    const data={};
+    for(let i=0;i<localStorage.length;i++){
+      const key=localStorage.key(i);
+      if(key && (key.startsWith("nextrep_") || key.startsWith("workoutV2_"))){
+        data[key]=localStorage.getItem(key);
+      }
+    }
+    const payload={
+      app:"NEXT//REP",
+      backupFormatVersion:1,
+      exportedAt:new Date().toISOString(),
+      origin:location.origin,
+      data:data
+    };
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="NEXTREP-BACKUP-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    alert("NEXT//REP backup created. Save the JSON file somewhere safe, then upload it to this chat so I can verify your workout history before V4.");
+  });
+})();
 </script>
 
 </body>
