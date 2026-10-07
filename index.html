@@ -569,10 +569,10 @@ body {
 .mode-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
 .mode-btn { border:1px solid #3b3b3b; background:#242424; color:white; border-radius:12px; padding:12px 9px; font-weight:850; text-align:left; }
 .mode-btn.active { background:var(--yellow); color:var(--black); border-color:var(--yellow); }
-.variant-strip { display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; margin-bottom:9px; }
-.variant-strip button { flex:0 0 auto; }
-.category-strip { display:flex; gap:6px; overflow-x:auto; padding:2px 0 12px; }
-.category-strip .btn { white-space:nowrap; }
+.variant-select, .category-select { width:100%; min-height:46px; border:1px solid var(--border); border-radius:12px; background:var(--surface); color:var(--text); padding:10px 38px 10px 12px; font-weight:850; -webkit-appearance:none; appearance:none; background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%); background-position:calc(100% - 18px) 19px,calc(100% - 12px) 19px; background-size:6px 6px,6px 6px; background-repeat:no-repeat; }
+.variant-select-wrap, .category-select-wrap { position:relative; margin:7px 0 4px; }
+.category-select-wrap { margin:2px 0 14px; }
+.category-select-label { display:block; color:var(--muted); font-size:10px; font-weight:900; letter-spacing:.8px; margin:0 0 5px 3px; text-transform:uppercase; }
 .superset-badge { display:inline-block; background:var(--yellow-soft); color:#665200; border-radius:999px; padding:4px 7px; font-size:10px; font-weight:900; margin-bottom:6px; }
 .warm-block { border:1px dashed #b9b9b9; border-radius:13px; padding:10px 12px; margin-bottom:9px; background:rgba(255,255,255,.82); font-size:12px; }
 .library-workout { border:1px solid var(--border); border-radius:14px; padding:13px; margin-bottom:9px; background:white; }
@@ -681,6 +681,24 @@ body {
 .form-field input:focus, .form-field select:focus, .field input:focus, .jump-bar select:focus { outline:2px solid var(--yellow); outline-offset:1px; }
 .history-tabs .btn.active { background:var(--yellow); color:var(--black); }
 .pr-best { color:#6b5600; }
+
+/* V4.1 appearance */
+:root { --page:#eeeeee; --surface:#ffffff; --surface-2:#f4f4f4; --text:#111111; --muted:#747474; --line:#dedede; }
+body[data-theme="light"] .app { background:linear-gradient(180deg,rgba(247,247,247,.96),rgba(235,235,235,.97)); }
+body[data-theme="light"] .screen { background-image:linear-gradient(135deg,rgba(244,196,0,.035) 0 12%,transparent 12% 72%,rgba(17,17,17,.018) 72% 82%,transparent 82%); }
+body[data-theme="dark"] { color:#f5f5f5; --border:#3a3a3a; --light:#242424; --white:#1b1b1b; --gray:#aaa; --page:#121212; --surface:#202020; --surface-2:#292929; --text:#f5f5f5; --muted:#aaa; --line:#3a3a3a; }
+body[data-theme="dark"] .app { background:linear-gradient(180deg,rgba(25,25,25,.985),rgba(15,15,15,.985)); }
+body[data-theme="dark"] .screen { background-image:linear-gradient(145deg,rgba(244,196,0,.035) 0 10%,transparent 10% 58%,rgba(255,255,255,.018) 58% 68%,transparent 68%); }
+body[data-theme="dark"] .card, body[data-theme="dark"] .exercise-shell, body[data-theme="dark"] .library-workout, body[data-theme="dark"] .timer-drawer, body[data-theme="dark"] .jump-bar, body[data-theme="dark"] .picker-option, body[data-theme="dark"] .pr-card, body[data-theme="dark"] .stat-card, body[data-theme="dark"] .history-item, body[data-theme="dark"] .modal-box { background:#202020; border-color:#3a3a3a; color:#f5f5f5; }
+body[data-theme="dark"] .history-exercise, body[data-theme="dark"] .form-field input, body[data-theme="dark"] .form-field select, body[data-theme="dark"] .field input, body[data-theme="dark"] .jump-picker { background:#292929; border-color:#3a3a3a; color:#f5f5f5; }
+body[data-theme="dark"] .subtle, body[data-theme="dark"] .history-meta, body[data-theme="dark"] .pr-meta, body[data-theme="dark"] .history-set, body[data-theme="dark"] .focus-line, body[data-theme="dark"] .counter-line, body[data-theme="dark"] .exercise-meta, body[data-theme="dark"] .day-kicker { color:#aaa; }
+body[data-theme="dark"] .btn.outline { background:#202020; color:#f5f5f5; border-color:#555; }
+body[data-theme="dark"] .warm-block { background:#242424; border-color:#555; }
+body[data-theme="dark"] .summary-pill, body[data-theme="dark"] .compact-last, body[data-theme="dark"] .milestone-card { color:#e5c84c; }
+body[data-theme="dark"] .pr-best { color:#f4c400; }
+.appearance-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:7px 0 14px; }
+.appearance-btn { border:1px solid var(--border); border-radius:12px; padding:11px; background:var(--surface); color:var(--text); font-weight:850; }
+.appearance-btn.active { background:var(--yellow); color:#111; border-color:var(--yellow); }
 
 @media(max-width: 430px) {
   .timer-drawer.open { grid-template-columns:1fr; }
@@ -912,6 +930,7 @@ body {
        <div id="dataList" style="display:none">
          <div class="card" style="margin:10px 0 0">
            <div class="section-label">Profile + Backup</div>
+           <div class="form-field"><label>Appearance</label><div class="appearance-row"><button type="button" class="appearance-btn" id="themeLightBtn">Light</button><button type="button" class="appearance-btn" id="themeDarkBtn">Dark</button></div></div>
            <div class="form-field"><label>Name</label><input id="profileName" placeholder="Your name"></div>
            <div class="form-field"><label>Default Rest</label>
              <select id="profileRest"><option value="30">30 sec</option><option value="60">60 sec</option><option value="90">90 sec</option><option value="120">2 min</option><option value="180">3 min</option></select>
@@ -2563,7 +2582,7 @@ function renderPRs(){
   const allExercises=history.flatMap(w=>w.exercises);
   const categories=[...new Set(allExercises.map(e=>e.muscle).filter(Boolean))].sort();
   const active=window.nextrepPRCategory||"All";
-  const categoryBar=`<div class="category-strip"><button class="btn small ${active==="All"?"":"outline"}" data-prcat="All">All</button>${categories.map(c=>`<button class="btn small ${active===c?"":"outline"}" data-prcat="${c}">${c}</button>`).join("")}</div>`;
+  const categoryBar=`<div class="category-select-wrap"><label class="category-select-label" for="prCategorySelect">Muscle Group</label><select class="category-select" id="prCategorySelect"><option value="All" ${active==="All"?"selected":""}>All</option>${categories.map(c=>`<option value="${c}" ${active===c?"selected":""}>${c}</option>`).join("")}</select></div>`;
   const names=[...new Set(allExercises.filter(e=>active==="All"||e.muscle===active).map(e=>e.name))].sort();
   if(!names.length){ wrap.innerHTML='<div class="empty">Your PRs will appear after you finish workouts with weight and reps logged.</div>'; return; }
   const cards=[];
@@ -2577,7 +2596,7 @@ function renderPRs(){
     cards.push(`<div class="pr-card"><div class="pr-name">${name}</div><div class="pr-best">🏆 ${best.weight} lb × ${best.reps}</div><div class="pr-meta">Best recorded ${new Date(best.date).toLocaleDateString()}</div><div style="margin-top:9px"><strong style="font-size:11px">RECENT PROGRESS</strong>${recent}</div></div>`);
   });
   wrap.innerHTML=categoryBar+(cards.length?cards.join(""):'<div class="empty">Complete sets with weight and reps to build your PR board.</div>');
-  wrap.querySelectorAll("[data-prcat]").forEach(b=>b.onclick=()=>{window.nextrepPRCategory=b.dataset.prcat;renderPRs();});
+  const prSelect=wrap.querySelector("#prCategorySelect"); if(prSelect) prSelect.onchange=()=>{window.nextrepPRCategory=prSelect.value;renderPRs();};
 }
 
 function workoutVolume(workout){
@@ -2622,6 +2641,16 @@ function renderStats(){
 function formatWeight(n){ return Math.round(Number(n)||0).toLocaleString(); }
 
 
+function applyTheme(theme){
+  const chosen=theme==="light"?"light":"dark";
+  document.body.dataset.theme=chosen;
+  localStorage.setItem("nextrep_theme",chosen);
+  const light=document.getElementById("themeLightBtn"), dark=document.getElementById("themeDarkBtn");
+  if(light) light.classList.toggle("active",chosen==="light");
+  if(dark) dark.classList.toggle("active",chosen==="dark");
+}
+applyTheme(localStorage.getItem("nextrep_theme")||"dark");
+
 function renderDataPanel(){
   const profile=JSON.parse(localStorage.getItem("nextrep_profile")||"{}");
   const n=document.getElementById("profileName"), r=document.getElementById("profileRest");
@@ -2630,6 +2659,10 @@ function renderDataPanel(){
   const last=localStorage.getItem("nextrep_lastBackup");
   const s=document.getElementById("backupStatus");
   if(s) s.textContent=last ? "Last backup: "+new Date(last).toLocaleString() : "No backup exported yet.";
+  const light=document.getElementById("themeLightBtn"), dark=document.getElementById("themeDarkBtn");
+  if(light) light.onclick=()=>applyTheme("light");
+  if(dark) dark.onclick=()=>applyTheme("dark");
+  applyTheme(localStorage.getItem("nextrep_theme")||"dark");
 }
 document.getElementById("saveProfileBtn").onclick=()=>{
   const p={name:document.getElementById("profileName").value.trim(),defaultRest:Number(document.getElementById("profileRest").value)};
@@ -2653,7 +2686,7 @@ document.getElementById("importDataInput").onchange=e=>{
   reader.onload=()=>{
     try{
       const payload=JSON.parse(reader.result);
-      if(!payload || payload.app!=="NextRep" || !payload.data) throw new Error("Not a NextRep backup");
+      if(!payload || !["NextRep","NEXT//REP"].includes(payload.app) || !payload.data) throw new Error("Not a NextRep backup");
       if(!confirm("Restore this NextRep backup? Your current NextRep data will be replaced by the backup.")) return;
       Object.entries(payload.data).forEach(([k,v])=>{ if(k.startsWith("nextrep_")) localStorage.setItem(k,v); });
       alert("Backup restored. NextRep will reload now."); location.reload();
@@ -2665,9 +2698,9 @@ document.getElementById("importDataInput").onchange=e=>{
 
 function renderWorkoutLibrary(){
  const v=document.getElementById("variantLibrary"); if(!v) return;
- v.innerHTML=V4_VARIANTS.map((variants,day)=>`<div class="library-workout"><h3>D${day+1} · ${ORIGINAL_PROGRAM[day].name}</h3><div class="variant-strip">${variants.map((x,i)=>`<button class="btn ${i?"outline":""} small" data-variant="${day}-${i}">${x.label}</button>`).join("")}</div></div>`).join("");
- v.querySelectorAll("[data-variant]").forEach(b=>b.onclick=()=>{
-   const [d,i]=b.dataset.variant.split("-").map(Number), spec=V4_VARIANTS[d][i];
+ v.innerHTML=V4_VARIANTS.map((variants,day)=>`<div class="library-workout"><h3>D${day+1} · ${ORIGINAL_PROGRAM[day].name}</h3><div class="variant-select-wrap"><select class="variant-select" data-variant-day="${day}" aria-label="Choose ${ORIGINAL_PROGRAM[day].name} variation"><option value="" selected disabled>Choose a variation…</option>${variants.map((x,i)=>`<option value="${i}">${x.label}</option>`).join("")}</select></div></div>`).join("");
+ v.querySelectorAll("[data-variant-day]").forEach(sel=>sel.onchange=()=>{
+   const d=Number(sel.dataset.variantDay), i=Number(sel.value), spec=V4_VARIANTS[d][i];
    const w=workoutFromNames(ORIGINAL_PROGRAM[d].name,ORIGINAL_PROGRAM[d].focus,spec.exercises); w.modeLabel=spec.label;
    loadWorkoutIntoDay(w,d);
  });
