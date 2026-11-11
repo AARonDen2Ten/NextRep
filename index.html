@@ -1126,13 +1126,39 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-pr-entry summary b{font-size:14px}
 .nr-pr-entry summary span{color:#ffcc00;font-weight:900;white-space:nowrap}
 .nr-pr-entry .nr-pr-progress{border-top:1px solid #3f3f3f;padding:10px 14px;color:#bbb;font-size:12px}
+
+/* V6.3: compact, readable History action */
+#nrHistoryShortcut.nr-history-shortcut{width:auto!important;min-width:112px!important;height:43px!important;padding:4px 9px!important;border:1px solid #74601a!important;border-radius:12px!important;background:linear-gradient(145deg,#292929,#141414)!important;display:flex;align-items:center;gap:7px;filter:none!important;box-shadow:inset 0 1px 0 #ffffff18,0 3px 8px #0006}
+.nr-history-symbol{display:grid;place-items:center;color:#f4c400;width:28px;height:28px;flex:none;background:#393018;border-radius:8px}
+.nr-history-symbol svg{width:20px!important;height:20px!important;filter:none!important}
+.nr-history-word{font-size:11px;letter-spacing:.8px;font-weight:1000;line-height:1.15;color:#fff;text-align:left}
+.nr-history-word small{display:block;font-size:7px;letter-spacing:.3px;color:#e3bc25;margin-top:3px}
+/* Tutorial floats near its target, never fixed over the same middle section */
+#nrTutorial{display:block!important;pointer-events:none;padding:0!important}
+#nrTutorial[hidden]{display:none!important}
+#nrTutorial .nr-tutorial-card{position:fixed;left:12px;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);width:calc(100vw - 24px);max-width:420px;max-height:40dvh;overflow-y:auto;padding:14px 17px;border-color:#a88c22;box-shadow:0 12px 40px #000d;transition:top .18s,left .18s}
+#nrTutorial .nr-tutorial-card h2{font-size:19px;margin:0 0 6px}
+#nrTutorial .nr-tutorial-progress{margin:9px 0 6px}
+#nrTutorial #nrTutorialBody{min-height:0;font-size:13px}
+#nrTutorial .nr-tutorial-emoji{font-size:20px;margin:4px 0}
+#nrTutorial .nr-tutorial-actions{margin-top:8px}
+#nrTutorial .nr-tutorial-actions button{padding:9px}
+#nrTourPointer{position:fixed;z-index:1199;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:12px solid #f4c400;display:none;pointer-events:none;filter:drop-shadow(0 0 5px #f4c40066)}
+/* Selectable image region */
+.nr-crop-wrap{position:relative;touch-action:none;user-select:none;margin:10px auto 12px;border:1px solid #666;border-radius:10px;overflow:hidden;max-width:100%;background:#111;line-height:0}
+#nrGymCropCanvas{display:block;width:100%;height:auto;touch-action:none}
+#nrGymCropSelection{position:absolute;border:2px solid #f4c400;box-shadow:0 0 0 100vmax #0007,inset 0 0 0 1px #111;pointer-events:none;border-radius:2px}
+.nr-crop-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+.nr-crop-actions label{font-size:12px;color:#ccc}
+#nrGymReadMode{background:#252525;color:#fff;border:1px solid #777;border-radius:8px;padding:9px;max-width:100%}
+
 </style>
 </head>
 
 <body>
 
 <div id="nrSplash" aria-hidden="true"><div class="nr-splash-center"><div class="nr-splash-logo">NEXT<span>//</span>REP</div><div class="nr-splash-tag">BEAT YOUR LAST.</div><div class="nr-splash-line"></div></div></div>
-<div id="nrTourSpotlight" aria-hidden="true"></div><div id="nrTutorial" hidden role="dialog" aria-modal="true" aria-label="NEXT REP tutorial">
+<div id="nrTourSpotlight" aria-hidden="true"></div><div id="nrTourPointer" aria-hidden="true"></div><div id="nrTutorial" hidden role="dialog" aria-modal="true" aria-label="NEXT REP tutorial">
  <div class="nr-tutorial-card">
   <div class="nr-tutorial-top"><strong>GETTING STARTED</strong><button type="button" id="nrTutorialClose" aria-label="Close tutorial">×</button></div>
   <div class="nr-tutorial-progress"><div id="nrTutorialProgress"></div></div>
@@ -1149,9 +1175,9 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V6.2 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V6.3 TEST</div>
       </div>
-      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 150 58" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History, open training calendar"><defs><linearGradient id="plateMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7a7a7"/><stop offset=".25" stop-color="#3b3b3b"/><stop offset=".55" stop-color="#101010"/><stop offset=".82" stop-color="#555"/><stop offset="1" stop-color="#181818"/></linearGradient><linearGradient id="barMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ddd"/><stop offset=".48" stop-color="#555"/><stop offset="1" stop-color="#aaa"/></linearGradient></defs><rect x="10" y="25" width="130" height="8" rx="4" fill="url(#barMetal)"/><g fill="url(#plateMetal)" stroke="#b6b6b6" stroke-width="1.2"><rect x="7" y="18" width="8" height="22" rx="2"/><rect x="16" y="9" width="12" height="40" rx="3"/><rect x="29" y="4" width="12" height="50" rx="3"/><rect x="109" y="4" width="12" height="50" rx="3"/><rect x="122" y="9" width="12" height="40" rx="3"/><rect x="135" y="18" width="8" height="22" rx="2"/></g><path d="M43 17 L107 17 L114 29 L107 41 L43 41 L36 29 Z" fill="#101010" stroke="#ffcc00" stroke-width="2.6"/><path d="M46 20 H104" stroke="#6b5c1a" stroke-width="1"/><text x="75" y="33.8" text-anchor="middle" font-family="Arial,sans-serif" font-size="12.2" font-weight="900" letter-spacing=".7" fill="#ffcc00">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
+      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
 
     <div class="week-progress" id="weeklyText">
@@ -1367,7 +1393,11 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
         </div>
         <input id="nrGymCameraInput" type="file" accept="image/*" capture="environment" hidden>
         <input id="nrGymUploadInput" type="file" accept="image/*" hidden>
-        <div id="nrGymPhotoPreview" hidden><img id="nrGymPhoto" alt="Gym workout board preview"><button class="btn outline small" type="button" id="nrGymReadPhoto">Read Exercises From Photo</button><p class="subtle">Photo reading needs an internet connection and may make mistakes. Your photo is processed on your device; review everything before saving.</p></div>
+        <div id="nrGymPhotoPreview" hidden><img id="nrGymPhoto" alt="Gym workout board preview" hidden>
+ <p class="subtle">Drag across the board to highlight only the workout text. Crop out the TV frame, wall, and glare. You can also read left and right columns separately.</p>
+ <div class="nr-crop-wrap"><canvas id="nrGymCropCanvas" aria-label="Photo crop selector"></canvas><div id="nrGymCropSelection"></div></div>
+ <div class="nr-crop-actions"><button type="button" class="btn outline small" id="nrGymCropReset">Reset Selection</button><label for="nrGymReadMode">Reading mode</label><select id="nrGymReadMode"><option value="columns">Two columns (recommended)</option><option value="whole">One area</option><option value="left">Left half only</option><option value="right">Right half only</option></select></div>
+ <button class="btn outline small" type="button" id="nrGymReadPhoto">Read Selected Workout</button><p class="subtle">Photo recognition runs on your device but downloads its reader first. Results may need corrections; review each station and exercise before saving.</p></div>
         <p class="subtle" id="nrGymStatus" role="status">Or type below, using your iPhone keyboard microphone to dictate.</p>
         <div class="form-field"><label for="nrGymText">Talk / Type Class Workout</label><textarea id="nrGymText" rows="5" placeholder="Goblet squat 3 x 12&#10;Dumbbell row 3 x 10&#10;Kettlebell swing 4 x 15"></textarea></div>
         <button type="button" class="btn outline" id="nrGymParse">Build Class From Text</button>
@@ -3590,42 +3620,43 @@ function nrTourNavigate(screen){
  if(btn)btn.click();
  else if(screen==="history")document.getElementById("nrHistoryShortcut").click();
 }
+let nrTourRenderToken=0;
 function nrTourLocate(){
- const step=nrTutorialIndex;
- // Each step takes the user to the actual screen or control being described.
+ const token=++nrTourRenderToken,step=nrTutorialIndex;
  const screens=["workout","workout","program","build","build","build","build","libraryworkouts","workout","history","workout","workout"];
  if(step!==11)closeModal("settingsModal");
  nrTourNavigate(screens[step]);
- if(step===4||step===6){
-   nrBuildSelect("describe");
- }else if(step===5){
-   nrBuildSelect("surprise");
- }
+ if(step===4||step===6)nrBuildSelect("describe");
+ else if(step===5)nrBuildSelect("surprise");
  if(step===11)openModal("settingsModal");
- const targets=[
-  ".header","#workoutScreen .card","#programScreen .card",
-  ".nr-build-choices",'[data-build-choice="describe"]',
-  '[data-build-choice="surprise"]',"#nrBuildDescribe",
-  "#libraryworkoutsScreen .card","#workoutScreen .card",
-  "#nrHistoryShortcut","#workoutScreen","#settingsModal .modal-content"
- ];
+ const targets=[".header","#workoutScreen .card","#programScreen .card",".nr-build-choices",'[data-build-choice="describe"]','[data-build-choice="surprise"]',"#nrBuildDescribe","#libraryworkoutsScreen .card","#workoutScreen .card","#nrHistoryShortcut","#workoutScreen","#settingsModal .modal-content"];
  let el=document.querySelector(targets[step]);
- if(!el||el.hidden||el.getClientRects().length===0){
-   el=document.getElementById(screens[step]+"Screen")||document.querySelector(".header");
- }
+ if(!el||el.hidden||el.getClientRects().length===0)el=document.getElementById(screens[step]+"Screen")||document.querySelector(".header");
  if(!el)return;
- if(step!==11 && step!==0 && step!==9){
-   el.scrollIntoView({block:"start",behavior:"instant"});
- }
- requestAnimationFrame(()=>{
-   const r=el.getBoundingClientRect(), spot=document.getElementById("nrTourSpotlight");
-   const pad=5, top=Math.max(3,r.top-pad), left=Math.max(3,r.left-pad);
-   spot.style.top=top+"px";spot.style.left=left+"px";
-   spot.style.width=Math.max(0,Math.min(innerWidth-left-3,r.width+pad*2))+"px";
-   spot.style.height=Math.max(0,Math.min(innerHeight-top-3,r.height+pad*2))+"px";
-   spot.style.display="block";
- });
+ if(step!==0&&step!==9)el.scrollIntoView({block:"center",behavior:"instant"});
+ setTimeout(()=>{
+  if(token!==nrTourRenderToken||document.getElementById("nrTutorial").hidden)return;
+  const r=el.getBoundingClientRect(),spot=document.getElementById("nrTourSpotlight"),card=document.querySelector("#nrTutorial .nr-tutorial-card"),pointer=document.getElementById("nrTourPointer");
+  const vw=innerWidth,vh=innerHeight,margin=10,pad=5;
+  const top=Math.max(margin,r.top-pad),left=Math.max(margin,r.left-pad);
+  const width=Math.min(vw-left-margin,Math.max(36,r.width+pad*2));
+  const height=Math.min(vh-top-margin,Math.max(25,r.height+pad*2));
+  spot.style.cssText=`display:block;top:${top}px;left:${left}px;width:${width}px;height:${height}px`;
+  const cw=Math.min(420,vw-24);card.style.width=cw+'px';
+  const ch=card.getBoundingClientRect().height;
+  const safeTop= Math.max(15,Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top'))||15);
+  const roomBelow=vh-(top+height)-90,roomAbove=top-20;
+  const putBelow=roomBelow>=ch+18||(roomBelow>=roomAbove&&roomBelow>=ch*.7);
+  let cardTop=putBelow?top+height+16:top-ch-16;
+  cardTop=Math.max(safeTop,Math.min(vh-ch-16,cardTop));
+  const cardLeft=Math.max(12,Math.min(vw-cw-12,left+width/2-cw/2));
+  card.style.top=cardTop+'px';card.style.bottom='auto';card.style.left=cardLeft+'px';
+  const px=Math.max(15,Math.min(vw-15,left+width/2));
+  pointer.style.left=(px-9)+'px';pointer.style.top=(putBelow?cardTop-11:cardTop+ch-1)+'px';
+  pointer.style.transform=putBelow?'none':'rotate(180deg)';pointer.style.display='block';
+ },180);
 }
+
 function nrTutorialRender(){
  const step=nrTutorialSteps[nrTutorialIndex];
  document.getElementById("nrTutorialCount").textContent="Step "+(nrTutorialIndex+1)+" of "+nrTutorialSteps.length;
@@ -3641,6 +3672,7 @@ function nrTutorialOpen(){nrTutorialIndex=0;document.getElementById("nrTutorial"
 function nrTutorialClose(){
  document.getElementById("nrTutorial").hidden=true;
  document.getElementById("nrTourSpotlight").style.display="none";
+ document.getElementById("nrTourPointer").style.display="none";
  closeModal("settingsModal");
  localStorage.setItem("nextrep_tutorialSeen","1");
  nrTourNavigate("workout");
@@ -3747,7 +3779,31 @@ function nrGymApplyParsed(parsed,source){
 }
 document.getElementById('nrGymParse').onclick=()=>nrGymApplyParsed(nrGymParseLines(document.getElementById('nrGymText').value),'Text parsed');
 let nrGymImageUrl=null;let nrGymCurrentFile=null;
-function nrGymImageChosen(file){if(!file)return;nrGymCurrentFile=file;if(!file.type.startsWith('image/')){nrGymMessage('Please choose an image.');return}if(nrGymImageUrl)URL.revokeObjectURL(nrGymImageUrl);nrGymImageUrl=URL.createObjectURL(file);document.getElementById('nrGymPhoto').src=nrGymImageUrl;document.getElementById('nrGymPhotoPreview').hidden=false;nrGymMessage('Photo selected. Tap Read Exercises From Photo, or type the class manually.');}
+let nrGymCropImage=null,nrGymCrop={x:0.05,y:0.05,w:.9,h:.9},nrGymDragStart=null;
+const nrGymCropCanvas=document.getElementById('nrGymCropCanvas');
+const nrGymCropSelect=document.getElementById('nrGymCropSelection');
+function nrGymCropDraw(){
+ if(!nrGymCropImage)return;
+ const maxW=760,scale=Math.min(1,maxW/nrGymCropImage.naturalWidth);
+ nrGymCropCanvas.width=Math.max(1,Math.round(nrGymCropImage.naturalWidth*scale));nrGymCropCanvas.height=Math.max(1,Math.round(nrGymCropImage.naturalHeight*scale));
+ nrGymCropCanvas.getContext('2d').drawImage(nrGymCropImage,0,0,nrGymCropCanvas.width,nrGymCropCanvas.height);
+ nrGymCropUpdate();
+}
+function nrGymCropUpdate(){const c=nrGymCrop;nrGymCropSelect.style.cssText=`left:${c.x*100}%;top:${c.y*100}%;width:${c.w*100}%;height:${c.h*100}%`;}
+function nrGymCropCoords(e){const r=nrGymCropCanvas.getBoundingClientRect();return {x:Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/r.height))};}
+nrGymCropCanvas.addEventListener('pointerdown',e=>{if(!nrGymCropImage)return;e.preventDefault();nrGymCropCanvas.setPointerCapture(e.pointerId);nrGymDragStart=nrGymCropCoords(e);nrGymCrop={...nrGymDragStart,w:0,h:0};nrGymCropUpdate()});
+nrGymCropCanvas.addEventListener('pointermove',e=>{if(!nrGymDragStart)return;e.preventDefault();const p=nrGymCropCoords(e),s=nrGymDragStart;nrGymCrop={x:Math.min(s.x,p.x),y:Math.min(s.y,p.y),w:Math.abs(s.x-p.x),h:Math.abs(s.y-p.y)};nrGymCropUpdate()});
+nrGymCropCanvas.addEventListener('pointerup',()=>{nrGymDragStart=null;if(nrGymCrop.w<.03||nrGymCrop.h<.03)nrGymCrop={x:.05,y:.05,w:.9,h:.9};nrGymCropUpdate()});
+document.getElementById('nrGymCropReset').onclick=()=>{nrGymCrop={x:.05,y:.05,w:.9,h:.9};nrGymCropUpdate()};
+function nrGymCropBlob(part){return new Promise((resolve,reject)=>{
+ const im=nrGymCropImage;if(!im)return reject(new Error('No photo selected'));
+ let {x,y,w,h}=nrGymCrop;if(part==='left')w*=.5;if(part==='right'){x+=w*.5;w*=.5;}
+ const sx=Math.round(x*im.naturalWidth),sy=Math.round(y*im.naturalHeight),sw=Math.max(1,Math.round(w*im.naturalWidth)),sh=Math.max(1,Math.round(h*im.naturalHeight));
+ const factor=Math.min(2,2200/sw,2200/sh);const out=document.createElement('canvas');out.width=Math.max(1,Math.round(sw*factor));out.height=Math.max(1,Math.round(sh*factor));
+ const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(im,sx,sy,sw,sh,0,0,out.width,out.height);
+ out.toBlob(b=>b?resolve(b):reject(new Error('Could not crop photo')),'image/png');
+})}
+function nrGymImageChosen(file){if(!file)return;nrGymCurrentFile=file;if(!file.type.startsWith('image/')){nrGymMessage('Please choose an image.');return}if(nrGymImageUrl)URL.revokeObjectURL(nrGymImageUrl);nrGymImageUrl=URL.createObjectURL(file);document.getElementById('nrGymPhoto').src=nrGymImageUrl;document.getElementById('nrGymPhotoPreview').hidden=false;nrGymCropImage=new Image();nrGymCropImage.onload=()=>{nrGymCrop={x:.05,y:.05,w:.9,h:.9};nrGymCropDraw()};nrGymCropImage.src=nrGymImageUrl;nrGymMessage('Photo selected. Drag to highlight the workout, then choose a reading mode.');}
 for(const [btn,input] of [['nrGymCameraBtn','nrGymCameraInput'],['nrGymUploadBtn','nrGymUploadInput']]){document.getElementById(btn).onclick=()=>document.getElementById(input).click();document.getElementById(input).onchange=e=>nrGymImageChosen(e.target.files[0]);}
 function nrGymLoadOCR(){return new Promise((resolve,reject)=>{
  if(window.Tesseract){resolve();return}
@@ -3757,10 +3813,14 @@ document.getElementById('nrGymReadPhoto').onclick=async()=>{
  const file=nrGymCurrentFile;if(!file){nrGymMessage('Choose a photo first.');return}
  const btn=document.getElementById('nrGymReadPhoto');btn.disabled=true;nrGymMessage('Reading photo… this can take a minute on an iPhone.');let worker=null;
  try{
-  await nrGymLoadOCR();worker=await Tesseract.createWorker('eng');const result=await worker.recognize(file);const raw=result.data.text||'';
+  await nrGymLoadOCR();worker=await Tesseract.createWorker('eng');
+  const mode=document.getElementById('nrGymReadMode').value;
+  const parts=mode==='columns'?['left','right']:[mode];let pieces=[];
+  for(const part of parts){nrGymMessage('Reading '+(part==='whole'?'selected area':part+' section')+'…');const crop=await nrGymCropBlob(part);const result=await worker.recognize(crop);pieces.push(result.data.text||'');}
+  const raw=pieces.join('\n');
   document.getElementById('nrGymText').value=raw;
   nrGymApplyParsed(nrGymParseLines(raw),'Photo read');
-  nrGymMessage('Photo read. Review station numbers, exercise names, and each set. Two-column boards may still need manual corrections.');
+  nrGymMessage('Photo read by selected area. Review every station and exercise, then enter weights. OCR can still misread text.');
  }catch(err){nrGymMessage('Photo reading unavailable: '+(err.message||'Unknown error')+'. You can still enter the class manually.')}finally{if(worker)try{await worker.terminate()}catch(e){}btn.disabled=false}
 };
 document.getElementById('nrGymSave').onclick=()=>{
