@@ -1081,6 +1081,37 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 /* consistent dark cards with yellow accents */
 #historyScreen .history-tabs{gap:6px}
 #historyScreen .history-tabs .btn{font-size:11px;letter-spacing:.3px;padding:10px 5px}
+
+/* V6.1 — brand-consistent gym class + PR organization */
+.nr-history-shortcut{width:120px!important;min-width:120px!important}
+.nr-history-shortcut svg{height:48px!important}
+.nr-gym-choice{border-color:#a88b15!important;background:linear-gradient(120deg,#282414,#1d1d1d)!important}
+.nr-gym-choice .nr-choice-icon{color:#ffcc00!important}
+.nr-gym-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.nr-gym-inputs .btn{font-size:12px;padding:13px 6px}
+#nrGymPhoto{width:100%;max-height:270px;object-fit:contain;background:#111;border:1px solid #454545;border-radius:12px;margin-bottom:10px}
+#nrGymPhotoPreview{margin:12px 0}
+.nr-gym-ex{background:#242424;border:1px solid #414141;border-radius:14px;padding:12px;margin:10px 0;color:#fff}
+.nr-gym-ex-head{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.nr-gym-ex-head input{flex:1;min-width:0}
+.nr-gym-ex .form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.nr-gym-ex input{width:100%;min-width:0;border-radius:9px;padding:10px 7px;background:#151515;color:#fff;border:1px solid #555;font-size:15px}
+.nr-gym-ex label{font-size:11px;color:#bdbdbd;font-weight:700}
+.nr-gym-remove{border:1px solid #666;background:#303030;color:#fff;border-radius:8px;font-size:17px;width:34px;height:36px}
+.nr-gym-save{background:#ffcc00!important;color:#111!important;font-weight:900}
+.nr-cal-day.has-class{border-color:#b99c2a;background:#27251c}
+.nr-cal-classmark{font-size:11px;line-height:12px;color:#ffcc00;font-weight:900}
+.nr-cal-day.selected .nr-cal-classmark{color:#111}
+.nr-pr-search{width:100%;background:#252525;color:white;border:1px solid #565656;border-radius:10px;padding:12px;font-size:15px;margin:9px 0}
+.nr-pr-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.nr-pr-stat{background:#252525;border:1px solid #414141;border-radius:13px;padding:14px;color:#fff}
+.nr-pr-stat strong{display:block;color:#ffcc00;font-size:28px;margin-top:5px}
+.nr-pr-entry{border:1px solid #494949;background:#242424;border-radius:13px;margin:9px 0;color:white;overflow:hidden}
+.nr-pr-entry summary{padding:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.nr-pr-entry summary::-webkit-details-marker{display:none}
+.nr-pr-entry summary b{font-size:14px}
+.nr-pr-entry summary span{color:#ffcc00;font-weight:900;white-space:nowrap}
+.nr-pr-entry .nr-pr-progress{border-top:1px solid #3f3f3f;padding:10px 14px;color:#bbb;font-size:12px}
 </style>
 </head>
 
@@ -1104,9 +1135,9 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V6.0 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V6.1 TEST</div>
       </div>
-      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 128 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History dumbbell"><defs><linearGradient id="nrSteel" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f1f1f1"/><stop offset=".5" stop-color="#757575"/><stop offset="1" stop-color="#d1d1d1"/></linearGradient></defs><rect x="9" y="21" width="110" height="6" rx="2" fill="url(#nrSteel)"/><rect x="4" y="16" width="9" height="16" rx="2" fill="#666" stroke="#aaa"/><rect x="13" y="8" width="13" height="32" rx="3" fill="#222" stroke="#999" stroke-width="1.5"/><rect x="102" y="8" width="13" height="32" rx="3" fill="#222" stroke="#999" stroke-width="1.5"/><rect x="115" y="16" width="9" height="16" rx="2" fill="#666" stroke="#aaa"/><rect x="28" y="14" width="72" height="20" rx="7" fill="#111" stroke="#f4c400" stroke-width="2"/><text x="64" y="27.7" text-anchor="middle" font-family="Arial,sans-serif" font-size="12.3" font-weight="900" letter-spacing=".7" fill="#f4c400">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
+      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 150 58" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History, open training calendar"><defs><linearGradient id="plateMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7a7a7"/><stop offset=".25" stop-color="#3b3b3b"/><stop offset=".55" stop-color="#101010"/><stop offset=".82" stop-color="#555"/><stop offset="1" stop-color="#181818"/></linearGradient><linearGradient id="barMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ddd"/><stop offset=".48" stop-color="#555"/><stop offset="1" stop-color="#aaa"/></linearGradient></defs><rect x="10" y="25" width="130" height="8" rx="4" fill="url(#barMetal)"/><g fill="url(#plateMetal)" stroke="#b6b6b6" stroke-width="1.2"><rect x="7" y="18" width="8" height="22" rx="2"/><rect x="16" y="9" width="12" height="40" rx="3"/><rect x="29" y="4" width="12" height="50" rx="3"/><rect x="109" y="4" width="12" height="50" rx="3"/><rect x="122" y="9" width="12" height="40" rx="3"/><rect x="135" y="18" width="8" height="22" rx="2"/></g><path d="M43 17 L107 17 L114 29 L107 41 L43 41 L36 29 Z" fill="#101010" stroke="#ffcc00" stroke-width="2.6"/><path d="M46 20 H104" stroke="#6b5c1a" stroke-width="1"/><text x="75" y="33.8" text-anchor="middle" font-family="Arial,sans-serif" font-size="12.2" font-weight="900" letter-spacing=".7" fill="#ffcc00">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
 
     <div class="week-progress" id="weeklyText">
@@ -1257,6 +1288,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
         <button type="button" class="nr-build-choice" data-build-choice="describe"><span class="nr-choice-icon">🎙</span><span><strong>Describe My Workout</strong><small>Speak or type what you want to train</small></span><span>›</span></button>
         <button type="button" class="nr-build-choice" data-build-choice="surprise"><span class="nr-choice-icon">✦</span><span><strong>Surprise Me</strong><small>Generate a workout from your preferences</small></span><span>›</span></button>
         <button type="button" class="nr-build-choice" data-build-choice="blank"><span class="nr-choice-icon">＋</span><span><strong>Start From Scratch</strong><small>Pick every exercise yourself</small></span><span>›</span></button>
+        <button type="button" class="nr-build-choice nr-gym-choice" data-build-choice="gym"><span class="nr-choice-icon">▣</span><span><strong>Gym Class</strong><small>Photo, upload, or talk/type an instructor-led workout</small></span><span>›</span></button>
       </div>
     </div>
     <div id="nrBuildDescribe" class="nr-build-panel" hidden>
@@ -1308,6 +1340,29 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
         <p class="subtle">Start with an empty workout, then add exercises in Program. Your other training days won't change.</p>
         <div class="form-field"><label>Workout Name</label><input id="customWorkoutName" placeholder="Example: Saturday Full Body"></div>
         <button type="button" class="btn nr-quick-primary" id="startBlankCustom">Create Blank Workout</button>
+      </div>
+    </div>
+    <div id="nrBuildGym" class="nr-build-panel" hidden>
+      <div class="card nr-gym-card">
+        <div class="section-label">GYM CLASS · BLACK & YELLOW</div>
+        <h2>Log a Gym Class</h2>
+        <p class="subtle">Snap the workout board, choose a screenshot, or dictate/type the class. Review the exercises and log your actual weights before saving.</p>
+        <div class="nr-gym-inputs">
+          <button type="button" class="btn outline" id="nrGymCameraBtn">📷 Take Photo</button>
+          <button type="button" class="btn outline" id="nrGymUploadBtn">▧ Upload Photo</button>
+        </div>
+        <input id="nrGymCameraInput" type="file" accept="image/*" capture="environment" hidden>
+        <input id="nrGymUploadInput" type="file" accept="image/*" hidden>
+        <div id="nrGymPhotoPreview" hidden><img id="nrGymPhoto" alt="Gym workout board preview"><button class="btn outline small" type="button" id="nrGymReadPhoto">Read Exercises From Photo</button><p class="subtle">Photo reading needs an internet connection and may make mistakes. Your photo is processed on your device; review everything before saving.</p></div>
+        <p class="subtle" id="nrGymStatus" role="status">Or type below, using your iPhone keyboard microphone to dictate.</p>
+        <div class="form-field"><label for="nrGymText">Talk / Type Class Workout</label><textarea id="nrGymText" rows="5" placeholder="Goblet squat 3 x 12&#10;Dumbbell row 3 x 10&#10;Kettlebell swing 4 x 15"></textarea></div>
+        <button type="button" class="btn outline" id="nrGymParse">Build Class From Text</button>
+        <div class="form-grid" style="margin-top:15px"><div class="form-field"><label for="nrGymName">Class name</label><input id="nrGymName" value="Gym Class" placeholder="Strength Circuit"></div><div class="form-field"><label for="nrGymDate">Class date</label><input type="date" id="nrGymDate"></div></div>
+        <div class="section-label" style="margin-top:16px">REVIEW & LOG WEIGHTS</div>
+        <div id="nrGymRows"></div>
+        <button type="button" class="btn outline" id="nrGymAdd">+ Add Exercise</button>
+        <button type="button" class="btn nr-gym-save" id="nrGymSave" style="margin-top:14px">Save Gym Class to Calendar</button>
+        <p class="subtle">Gym classes stay separate from your program and count toward History, Stats, and eligible weight PRs. Saved locally on this device.</p>
       </div>
     </div>
   </section>
@@ -1945,7 +2000,7 @@ document.getElementById("nrHistoryShortcut").onclick=()=>{
  window.scrollTo(0,0);
 };
 function nrBuildSelect(which){
- for(const name of ["describe","surprise","blank"]){
+ for(const name of ["describe","surprise","blank","gym"]){
    const el=document.getElementById("nrBuild"+name[0].toUpperCase()+name.slice(1));
    el.hidden=name!==which;
  }
@@ -3051,8 +3106,8 @@ function nrHistorySessionCard(workout){
   const name=document.createElement("span");name.textContent=ex.name||"Exercise";
   return `<div class="history-exercise"><div class="history-exercise-name">${name.innerHTML}</div>${sets}</div>`;
  }).join("");
- const safeDay=document.createElement("span");safeDay.textContent=workout.dayName||"Workout";
- item.innerHTML=`<div class="history-title">${safeDay.innerHTML} <span style="float:right">⌄</span></div><div class="history-meta">${date.toLocaleDateString()} · ${exercises.length} exercises · ${totalSets} completed sets · ${formatTimer(workout.duration||0)}</div><div class="history-details">${details}</div>`;
+ const safeDay=document.createElement("span");safeDay.textContent=(workout.type==="gym-class"?"◆ GYM CLASS · ":"")+(workout.dayName||"Workout");
+ item.innerHTML=`<div class="history-title">${safeDay.innerHTML} <span style="float:right">⌄</span></div><div class="history-meta">${date.toLocaleDateString()} · ${exercises.length} exercises · ${totalSets} completed sets ${workout.type==="gym-class"?" · Gym Class":" · "+formatTimer(workout.duration||0)}</div><div class="history-details">${details}</div>`;
  item.onclick=()=>item.classList.toggle("open");return item;
 }
 function nrRenderCalendar(){
@@ -3074,14 +3129,15 @@ function nrRenderCalendar(){
  const prs=nrCalendarPRDays(),today=nrDayKey(new Date());
  for(let d=1;d<=count;d++){
   const key=nrDayKey(new Date(year,month,d)),entries=byDay.get(key)||[],pr=prs.has(key);
-  const btn=document.createElement("button");btn.className="nr-cal-day"+(entries.length?" has-workout":"")+(pr?" has-pr":"")+(nrCalendarSelected===key?" selected":"")+(key===today?" today":"");
+  const hasClass=entries.some(w=>w.type==="gym-class");
+  const btn=document.createElement("button");btn.className="nr-cal-day"+(hasClass?" has-class":"")+(entries.length?" has-workout":"")+(pr?" has-pr":"")+(nrCalendarSelected===key?" selected":"")+(key===today?" today":"");
   btn.setAttribute("aria-label",`${d} ${label.textContent}${entries.length?", "+entries.length+" workout(s)":""}${pr?", new personal record":""}`);
   const num=document.createElement("span");num.textContent=d;btn.append(num);
-  if(entries.length){const mark=document.createElement("span");mark.className="nr-cal-mark";mark.textContent=pr?"🏆":"●";btn.append(mark)}
+  if(entries.length){const mark=document.createElement("span");mark.className="nr-cal-mark";mark.textContent=pr?"🏆":hasClass?"◆":"●";if(hasClass)mark.classList.add("nr-cal-classmark");btn.append(mark)}
   btn.onclick=()=>{nrCalendarSelected=key;nrRenderCalendar()};grid.append(btn);
  }
  wrap.append(grid);
- const legend=document.createElement("div");legend.className="nr-cal-legend";legend.innerHTML="<span><b>●</b> Workout logged</span><span><b>🏆</b> New weight PR</span>";wrap.append(legend);
+ const legend=document.createElement("div");legend.className="nr-cal-legend";legend.innerHTML="<span><b>●</b> Workout logged</span><span><b>◆</b> Gym Class</span><span><b>🏆</b> New weight PR</span>";wrap.append(legend);
  const detail=document.createElement("div");detail.className="nr-cal-details";
  const key=nrCalendarSelected||nrDayKey(new Date(year,month,1));
  const selectedDate=nrCalendarSelected?new Date(nrCalendarSelected+"T12:00:00"):null;
@@ -3587,6 +3643,98 @@ window.addEventListener("resize",()=>{if(!document.getElementById("nrTutorial").
  const first=!localStorage.getItem("nextrep_tutorialSeen");
  setTimeout(()=>{splash.classList.add("nr-hide");setTimeout(()=>{splash.remove();if(first)nrTutorialOpen();},450);},950);
 })();
+
+
+/* NEXT//REP V6.1 gym class import: all editable; local-first data */
+let nrGymExercises=[];
+const nrGymStatus=document.getElementById('nrGymStatus');
+const nrGymDate=document.getElementById('nrGymDate');
+const nrGymNow=new Date();nrGymDate.value=nrGymNow.getFullYear()+'-'+String(nrGymNow.getMonth()+1).padStart(2,'0')+'-'+String(nrGymNow.getDate()).padStart(2,'0');
+function nrGymMessage(msg){nrGymStatus.textContent=msg;}
+function nrGymEsc(str){const x=document.createElement('span');x.textContent=String(str??'');return x.innerHTML.replace(/"/g,'&quot;');}
+function nrGymParseLines(raw){
+ const out=[];
+ for(let line of String(raw).split(/\n|;/)){
+  line=line.trim().replace(/^[-•*\d.)\s]+/,'').trim();if(!line)continue;
+  if(/^(round|warm.?up|cool.?down|rest|time|amrap|emom|workout|today|equipment|class)\b/i.test(line))continue;
+  let name=line,sets=3,reps=10,weight=0;
+  let m=line.match(/\b(\d{1,2})\s*(?:x|×|sets?\s*(?:of)?\s*)\s*(\d{1,3})(?:\s*(?:reps?|each))?\b/i);
+  if(m){sets=Number(m[1]);reps=Number(m[2]);name=line.replace(m[0],'').trim()}
+  else {m=line.match(/\b(\d{1,2})\s*sets?\b/i);if(m){sets=Number(m[1]);name=name.replace(m[0],'')}m=line.match(/\b(\d{1,3})\s*reps?\b/i);if(m){reps=Number(m[1]);name=name.replace(m[0],'')}}
+  m=name.match(/\b(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?|kg)\b/i);if(m){weight=Number(m[1]);name=name.replace(m[0],'')}
+  name=name.replace(/^[\s:,.\-–]+|[\s:,.\-–]+$/g,'').replace(/\s+/g,' ');
+  if(!name||name.length>90||/^\d+$/.test(name))continue;
+  out.push({name,sets:Math.min(20,Math.max(1,sets)),reps:Math.min(500,Math.max(1,reps)),weight});
+ }
+ return out.slice(0,35);
+}
+function nrGymRender(){
+ const host=document.getElementById('nrGymRows');host.replaceChildren();
+ nrGymExercises.forEach((ex,i)=>{
+  const box=document.createElement('div');box.className='nr-gym-ex';
+  box.innerHTML=`<div class="nr-gym-ex-head"><input aria-label="Exercise name" data-k="name" value="${nrGymEsc(ex.name)}"><button type="button" class="nr-gym-remove" aria-label="Remove exercise">×</button></div><div class="form-grid"><label>Sets<input type="number" min="1" max="20" data-k="sets" value="${ex.sets}"></label><label>Reps<input type="number" min="1" max="500" data-k="reps" value="${ex.reps}"></label><label>Weight (lb)<input type="number" min="0" step="0.5" data-k="weight" value="${ex.weight}"></label></div>`;
+  box.querySelectorAll('[data-k]').forEach(input=>input.addEventListener('input',()=>{ex[input.dataset.k]=input.dataset.k==='name'?input.value:Number(input.value)}));
+  box.querySelector('button').onclick=()=>{nrGymExercises.splice(i,1);nrGymRender()};host.append(box);
+ });
+}
+document.getElementById('nrGymAdd').onclick=()=>{nrGymExercises.push({name:'',sets:3,reps:10,weight:0});nrGymRender()};
+document.getElementById('nrGymParse').onclick=()=>{
+ const rows=nrGymParseLines(document.getElementById('nrGymText').value);
+ if(!rows.length){nrGymMessage('No exercises found yet. Try one per line, like: Goblet squat 3 x 12.');return}
+ if(nrGymExercises.length&&!confirm('Replace the current class exercises with these '+rows.length+' parsed exercises?'))return;
+ nrGymExercises=rows;nrGymRender();nrGymMessage(rows.length+' exercises ready. Check names, sets, reps, and enter your actual weights.');
+};
+let nrGymImageUrl=null;let nrGymCurrentFile=null;
+function nrGymImageChosen(file){if(!file)return;nrGymCurrentFile=file;if(!file.type.startsWith('image/')){nrGymMessage('Please choose an image.');return}if(nrGymImageUrl)URL.revokeObjectURL(nrGymImageUrl);nrGymImageUrl=URL.createObjectURL(file);document.getElementById('nrGymPhoto').src=nrGymImageUrl;document.getElementById('nrGymPhotoPreview').hidden=false;nrGymMessage('Photo selected. Tap Read Exercises From Photo, or type the class manually.');}
+for(const [btn,input] of [['nrGymCameraBtn','nrGymCameraInput'],['nrGymUploadBtn','nrGymUploadInput']]){document.getElementById(btn).onclick=()=>document.getElementById(input).click();document.getElementById(input).onchange=e=>nrGymImageChosen(e.target.files[0]);}
+function nrGymLoadOCR(){return new Promise((resolve,reject)=>{
+ if(window.Tesseract){resolve();return}
+ const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('Photo reader could not load. Check your connection, or use Talk / Type.'));document.head.append(s);
+})}
+document.getElementById('nrGymReadPhoto').onclick=async()=>{
+ const file=nrGymCurrentFile;
+ if(!file){nrGymMessage('Choose a photo first.');return}
+ const btn=document.getElementById('nrGymReadPhoto');btn.disabled=true;nrGymMessage('Reading photo… this can take a minute on an iPhone.');
+ let worker=null;
+ try{
+  await nrGymLoadOCR();worker=await Tesseract.createWorker('eng');const result=await worker.recognize(file);const text=result.data.text||'';
+  document.getElementById('nrGymText').value=text;
+  const rows=nrGymParseLines(text);
+  if(rows.length){if(!nrGymExercises.length||confirm('Use '+rows.length+' detected lines as your class exercises?')){nrGymExercises=rows;nrGymRender()};nrGymMessage('Photo read. Review every exercise; image text recognition can misread numbers.')}else nrGymMessage('Text extracted but no clear exercise lines found. Edit the text and tap Build Class From Text.');
+ }catch(err){nrGymMessage('Photo reading unavailable: '+(err.message||'Unknown error')+'. You can still enter the class manually.')}finally{if(worker)try{await worker.terminate()}catch(e){}btn.disabled=false}
+};
+document.getElementById('nrGymSave').onclick=()=>{
+ const name=document.getElementById('nrGymName').value.trim()||'Gym Class',date=nrGymDate.value;
+ if(!date){nrGymMessage('Choose the class date first.');return}
+ if(!nrGymExercises.length){nrGymMessage('Add at least one exercise before saving.');return}
+ if(nrGymExercises.some(e=>!String(e.name||'').trim())){nrGymMessage('Give every exercise a name before saving.');return}
+ const exercises=nrGymExercises.map(e=>({name:String(e.name).trim(),muscle:'Gym Class',equipment:'Class',sets:Array.from({length:Math.max(1,Math.min(20,Number(e.sets)||1))},()=>({weight:Math.max(0,Number(e.weight)||0),reps:Math.max(0,Number(e.reps)||0),done:true}))}));
+ const localDate=new Date(date+'T12:00:00');
+ history.push({date:localDate.toISOString(),dayName:name,focus:'Gym Class',type:'gym-class',duration:0,exercises});
+ saveAll();nrGymMessage('Saved! '+name+' is on your History calendar.');nrGymExercises=[];nrGymRender();document.getElementById('nrGymText').value='';
+ nrCalendarMonth=new Date(localDate.getFullYear(),localDate.getMonth(),1);nrCalendarSelected=nrDayKey(localDate);
+ historyView='workouts';document.getElementById('nrHistoryShortcut').click();
+};
+/* Filterable PR overview, details on demand */
+let nrPRSearch='';
+function renderPRs(){
+ const wrap=document.getElementById('prList');wrap.replaceChildren();
+ const all=history.flatMap(w=>w.exercises||[]),cats=[...new Set(all.map(e=>e.muscle).filter(Boolean))].sort(),active=window.nextrepPRCategory||'All';
+ const allNames=[...new Set(all.map(e=>e.name).filter(Boolean))];
+ const records=allNames.map(name=>({name,best:bestSetFor(name),muscle:all.find(e=>e.name===name)?.muscle||'Other'})).filter(x=>x.best&&Number(x.best.weight)>0);
+ const month=new Date();const thisMonth=records.filter(x=>{const d=new Date(x.best.date);return d.getMonth()===month.getMonth()&&d.getFullYear()===month.getFullYear()}).length;
+ const summary=document.createElement('div');summary.className='nr-pr-summary';summary.innerHTML=`<div class="nr-pr-stat">EXERCISES TRACKED<strong>${records.length}</strong></div><div class="nr-pr-stat">BEST LIFTS THIS MONTH<strong>${thisMonth}</strong></div>`;wrap.append(summary);
+ const search=document.createElement('input');search.className='nr-pr-search';search.type='search';search.placeholder='Search your lifts…';search.value=nrPRSearch;wrap.append(search);
+ const select=document.createElement('select');select.className='category-select';select.setAttribute('aria-label','Filter muscle group');for(const c of ['All',...cats]){const op=document.createElement('option');op.value=c;op.textContent=c;op.selected=c===active;select.append(op)}wrap.append(select);
+ const results=document.createElement('div');wrap.append(results);
+ function paint(){results.replaceChildren();const filtered=records.filter(x=>(select.value==='All'||x.muscle===select.value)&&x.name.toLowerCase().includes(search.value.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name));
+ if(!filtered.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=records.length?'No lifts match that filter.':'Your records will appear once you log completed sets with weights.';results.append(empty);return}
+ filtered.forEach(x=>{const card=document.createElement('details');card.className='nr-pr-entry';const summary=document.createElement('summary'),label=document.createElement('b'),best=document.createElement('span');label.textContent=x.name;best.textContent=x.best.weight+' lb × '+x.best.reps;summary.append(label,best);card.append(summary);
+ const meta=document.createElement('div');meta.className='nr-pr-progress';meta.textContent=x.muscle+' · Best recorded '+new Date(x.best.date).toLocaleDateString()+' · Tap to close';card.append(meta);
+ const entries=getExerciseHistory(x.name).slice(-8).reverse();entries.forEach(e=>{const completed=(e.exercise.sets||[]).filter(s=>s.done);if(!completed.length)return;const top=[...completed].sort((a,b)=>(Number(b.weight)||0)-(Number(a.weight)||0)||(Number(b.reps)||0)-(Number(a.reps)||0))[0];const line=document.createElement('div');line.className='nr-pr-progress';line.textContent=new Date(e.workout.date).toLocaleDateString()+' · '+(top.weight||0)+' lb × '+(top.reps||0)+(e.workout.type==='gym-class'?' · Gym Class':'');card.append(line)});results.append(card)});
+ }
+ search.oninput=()=>{nrPRSearch=search.value;paint()};select.onchange=()=>{window.nextrepPRCategory=select.value;paint()};paint();
+}
 
 </script>
 
