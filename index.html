@@ -1327,6 +1327,27 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 .nr81-image-viewer img{display:block;max-width:100%;max-height:80dvh;object-fit:contain}
 #nr81ImageClose{position:absolute;right:14px;top:max(16px,env(safe-area-inset-top));border:1px solid #666;border-radius:10px;background:#292929;color:#ffdc00;font-size:30px;width:44px;height:44px}
 @media(max-height:720px){#workoutScreen #setsContainer{max-height:calc(100dvh - 370px)}#workoutScreen .compact-last{font-size:9px!important}}
+
+/* V8.2: immersive illustration viewer, retains underlying workout position */
+.nr82-viewer{padding:max(10px,env(safe-area-inset-top)) 9px max(10px,env(safe-area-inset-bottom));align-items:center;justify-content:center;background:rgba(0,0,0,.9)}
+.nr82-viewer-panel{width:min(680px,100%);height:min(92dvh,950px);display:flex;flex-direction:column;min-height:0;background:#171819;border:1px solid #484848;border-radius:19px;overflow:hidden;box-shadow:0 20px 70px #000}
+.nr82-viewer-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 15px 10px}
+.nr82-eyebrow{color:#ffda00;font-size:9px;font-weight:900;letter-spacing:1.4px}
+#nr82ViewerTitle{margin:4px 0 0;color:white;font-size:19px;line-height:1.2}
+.nr82-viewer #nr81ImageClose{position:static;flex:0 0 40px;width:40px;height:40px;font-size:26px}
+.nr82-viewer-controls{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 15px 10px}
+.nr82-viewer-controls button{padding:10px 5px;background:#292a2c;color:#fff;border:1px solid #4b4b4b;border-radius:9px;font-weight:800}
+.nr82-viewer-controls button.active{background:#ffda00;color:#121212;border-color:#ffda00}
+.nr82-viewer-controls button:disabled{opacity:.38}
+.nr82-viewer-stage{min-height:0;flex:1;background:#090a0b;margin:0 10px;border:1px solid #333;border-radius:12px;display:flex;flex-direction:column;overflow:hidden}
+#nr82ImageWrap{flex:1;min-height:0;overflow:auto;display:flex;justify-content:center;align-items:center;gap:8px;padding:8px;touch-action:pan-x pan-y pinch-zoom}
+#nr82ImageWrap img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;min-width:0;min-height:0}
+#nr82ImageWrap.nr82-two img{max-width:calc(50% - 5px)}
+#nr82ViewerHint{font-size:10px;color:#aaa;text-align:center;padding:5px 4px 9px}
+.nr82-viewer-foot{padding:10px 15px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#nr82ViewerDetails{font-size:11px;color:#bcbcbc;line-height:1.3}
+#nr82ViewerDone{border:0;background:#ffda00;color:#111;border-radius:9px;padding:11px 12px;font-weight:900;white-space:nowrap}
+@media(max-height:650px){.nr82-viewer-panel{height:95dvh}.nr82-viewer-head{padding:8px 12px}.nr82-viewer-foot{padding:7px 12px}#nr82ViewerTitle{font-size:16px}}
 </style>
 </head>
 
@@ -1350,7 +1371,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.1 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.2 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1730,7 +1751,14 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
   </div>
 </div>
 
-<div id="nr81ImageViewer" class="nr81-image-viewer" hidden><button type="button" id="nr81ImageClose" aria-label="Close illustration">×</button><img alt="Exercise illustration"></div>
+<div id="nr81ImageViewer" class="nr81-image-viewer nr82-viewer" hidden role="dialog" aria-modal="true" aria-label="Expanded exercise illustration">
+ <div class="nr82-viewer-panel">
+  <div class="nr82-viewer-head"><div><div class="nr82-eyebrow">NEXT//REP · EXERCISE GUIDE</div><h2 id="nr82ViewerTitle">Exercise illustration</h2></div><button type="button" id="nr81ImageClose" aria-label="Close illustration">×</button></div>
+  <div class="nr82-viewer-controls"><button id="nr82Single" type="button" class="active">Single View</button><button id="nr82Dual" type="button">Start &amp; Finish</button></div>
+  <div class="nr82-viewer-stage"><div id="nr82ImageWrap"><img alt="Exercise illustration"></div><div id="nr82ViewerHint">Pinch to zoom on your phone</div></div>
+  <div class="nr82-viewer-foot"><div id="nr82ViewerDetails">Highlighted muscles and exercise technique</div><button id="nr82ViewerDone" type="button">Back to guide</button></div>
+ </div>
+</div>
 <!-- EXERCISE GUIDE -->
 <div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div class="nr-guide-switch" role="tablist" aria-label="Exercise guide sections">
 <button type="button" class="active" id="nrGuideMuscleTab">Muscles</button>
@@ -4189,13 +4217,49 @@ function nr81SetGuideView(view){
 }
 document.getElementById('nr81SingleView')?.addEventListener('click',()=>nr81SetGuideView('single'));
 document.getElementById('nr81DualView')?.addEventListener('click',()=>nr81SetGuideView('dual'));
+let nr82ViewerMode='single';
+let nr82ViewerImages=[];
+let nr82PreviousFocus=null;
+function nr82RenderViewer(mode){
+ const modal=document.getElementById('nr81ImageViewer');if(!modal)return;
+ const wrap=document.getElementById('nr82ImageWrap');
+ const single=document.getElementById('nr82Single'),dual=document.getElementById('nr82Dual');
+ const hasTwo=nr82ViewerImages.length>=2;
+ nr82ViewerMode=mode==='dual'&&hasTwo?'dual':'single';
+ single.classList.toggle('active',nr82ViewerMode==='single');dual.classList.toggle('active',nr82ViewerMode==='dual');dual.disabled=!hasTwo;
+ wrap.classList.toggle('nr82-two',nr82ViewerMode==='dual');
+ const images=nr82ViewerMode==='dual'?nr82ViewerImages:nr82ViewerImages.slice(0,1);
+ wrap.replaceChildren(...images.map(item=>{const img=document.createElement('img');img.src=item.src;img.alt=item.alt;return img;}));
+ document.getElementById('nr82ViewerHint').textContent=hasTwo?(nr82ViewerMode==='dual'?'START / FINISH · Pinch to zoom':'Tap Start & Finish to compare both positions'):'Pinch to zoom · More movement positions coming soon';
+}
 function nr81OpenImage(src,alt){
  const modal=document.getElementById('nr81ImageViewer');if(!modal)return;
- const image=modal.querySelector('img');image.src=src;image.alt=alt||'Exercise illustration';
- modal.hidden=false;
+ nr82PreviousFocus=document.activeElement;
+ const guide=document.getElementById('guideIllustration');
+ const imgs=guide?Array.from(guide.querySelectorAll('img')):[];
+ // Use the original markup so hidden finish images remain available in the viewer.
+ const original=guide?.dataset.nr81Original||'';
+ let imageSources=[];
+ if(original){const tmp=document.createElement('div');tmp.innerHTML=original;imageSources=Array.from(tmp.querySelectorAll('img')).map(i=>({src:i.src,alt:i.alt||'Exercise position'}));}
+ if(!imageSources.length)imageSources=imgs.map(i=>({src:i.src,alt:i.alt||'Exercise illustration'}));
+ const chosen=imageSources.find(i=>i.src===src)||{src,alt:alt||'Exercise illustration'};
+ // Single-view opens the exact image tapped; dual mode shows the full sequence when available.
+ nr82ViewerImages=[chosen,...imageSources.filter(i=>i.src!==chosen.src)];
+ const ex=window.nr81CurrentGuide||{};
+ document.getElementById('nr82ViewerTitle').textContent=ex.name||'Exercise illustration';
+ const desc=document.getElementById('guideDescription')?.textContent||'';
+ document.getElementById('nr82ViewerDetails').textContent=desc||'Yellow indicates the main working muscles';
+ modal.hidden=false;document.body.style.overflow='hidden';
+ nr82RenderViewer('single');document.getElementById('nr81ImageClose').focus();
 }
-document.getElementById('nr81ImageClose')?.addEventListener('click',()=>{document.getElementById('nr81ImageViewer').hidden=true;});
-document.getElementById('nr81ImageViewer')?.addEventListener('click',e=>{if(e.target.id==='nr81ImageViewer')e.currentTarget.hidden=true;});
+function nr82CloseViewer(){const modal=document.getElementById('nr81ImageViewer');modal.hidden=true;document.body.style.overflow='';if(nr82PreviousFocus?.focus)nr82PreviousFocus.focus();}
+document.getElementById('nr81ImageClose')?.addEventListener('click',nr82CloseViewer);
+document.getElementById('nr82ViewerDone')?.addEventListener('click',nr82CloseViewer);
+document.getElementById('nr82Single')?.addEventListener('click',()=>nr82RenderViewer('single'));
+document.getElementById('nr82Dual')?.addEventListener('click',()=>nr82RenderViewer('dual'));
+document.getElementById('nr81ImageViewer')?.addEventListener('click',e=>{if(e.target.id==='nr81ImageViewer')nr82CloseViewer();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('nr81ImageViewer').hidden)nr82CloseViewer();});
+
 </script>
 
 </body>
