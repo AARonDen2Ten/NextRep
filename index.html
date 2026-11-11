@@ -1221,6 +1221,23 @@ input::placeholder,textarea::placeholder{color:#888}
 @media(max-width:380px){.screen{padding-left:11px;padding-right:11px}.header{padding-left:12px;padding-right:12px}.nr-v7-stats>div{padding:10px 6px}.nr-v7-greeting h2{font-size:23px}.nav button{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation-duration:.01ms!important}}
 
+
+/* V7.1 — logging-first experience. Dashboard is an optional drawer. */
+.nr-hub-toggle{display:flex;width:100%;align-items:center;gap:10px;padding:9px 12px;margin:0 0 9px;background:linear-gradient(120deg,#242527,#141517);border:1px solid #494a4e;border-radius:12px;color:#fff;text-align:left;min-height:50px;cursor:pointer}
+.nr-hub-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#ffd000;color:#111;font-size:22px;font-weight:900;flex:none}
+.nr-hub-label{display:flex;flex:1;flex-direction:column;gap:2px;min-width:0}.nr-hub-label b{font-size:12px;letter-spacing:.9px}.nr-hub-label small{font-size:10px;color:#aaa}.nr-hub-chevron{color:#ffd000;font-size:22px;transition:transform .2s}.nr-hub-toggle[aria-expanded="true"] .nr-hub-chevron{transform:rotate(180deg)}
+.nr-hub-drawer{margin:0 0 12px}.nr-hub-drawer[hidden]{display:none!important}.nr-hub-drawer .nr-v7-dashboard{margin-bottom:0;padding:13px;background:#151618;border:1px solid #424348;border-radius:15px}
+.workout-screen{padding-top:10px}.workout-screen::before,.workout-screen::after{display:none}
+.compact-timers{margin-bottom:9px}.timer-chip{background:#202124!important;border:1px solid #414348!important;border-radius:11px!important;color:#fff!important}.timer-chip strong{color:#ffd000!important}
+.timer-drawer{background:#191a1d!important;border-color:#44464b!important;color:#fff!important}.timer-drawer-section+.timer-drawer-section{border-color:#424348!important}
+.jump-bar{background:#1a1b1e!important;border:1px solid #414247!important;border-radius:12px!important;padding:9px!important}.jump-bar label>span{color:#a5a5a5!important}.jump-picker{background:#2a2b2e!important;color:#fff!important;border:1px solid #4b4c50!important;border-radius:9px!important}.jump-bar label:first-child .jump-picker{background:#ffd000!important;color:#111!important}
+.exercise-shell{padding:13px!important;border:1px solid #515258!important;background:linear-gradient(160deg,#252629,#111214)!important}.day-kicker{color:#ffd000!important;font-weight:900!important;letter-spacing:.7px}.exercise-title{font-size:clamp(22px,6vw,28px)!important;line-height:1.14!important;letter-spacing:-.7px!important;color:#fff!important;font-weight:900!important}.exercise-meta{color:#b5b6ba!important}.counter-line{color:#ffd000!important}.nr-exercise-heading{align-items:start!important}
+.last-time,.compact-last{background:#1a1b1d!important;border:1px solid #3b3d40!important;border-radius:11px!important;color:#ddd!important}.compact-last .target-title{color:#ffd000!important}.compact-last .details-body{color:#bbb!important}.compact-last .details-toggle{color:#ffd000!important}
+.set-row{grid-template-columns:32px minmax(0,1fr) minmax(0,1fr) 44px!important;gap:6px!important;margin-bottom:9px!important;align-items:end!important;padding:7px 5px;background:#1b1c1f;border:1px solid #383a3e;border-radius:11px}.set-number{color:#ffd000!important;font-size:14px!important}.field label{font-size:10px!important;color:#bbb!important;letter-spacing:.3px}.field input{background:#292a2e!important;color:#fff!important;border:1px solid #56575d!important;border-radius:8px!important;min-height:44px!important;font-size:17px!important;font-weight:750!important;text-align:center!important;padding:7px 3px!important}.field input:focus{border-color:#ffd000!important}.check-btn{height:44px!important;width:42px!important;background:#27282b!important;color:#ffd000!important;border:1px solid #747474!important;border-radius:9px!important;font-size:21px!important}.check-btn.done{background:#ffd000!important;color:#111!important;border-color:#ffd000!important}
+.live-result{background:#302a13!important;color:#ffe270!important;border-left:3px solid #ffd000!important}.warm-block{background:#1c1d20!important;color:#d0d0d0!important;border:1px solid #36383c!important;border-radius:11px!important}.workout-bottom-actions{flex-direction:column;align-items:stretch!important;gap:10px!important}.workout-bottom-actions>.button-row,.workout-bottom-actions>.exercise-nav{width:100%!important;min-width:0!important}.workout-bottom-actions .btn{min-height:44px}.finish-strip{margin-top:12px}
+.nr-v71-quick-guide{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 5px;padding:10px 12px;background:#1b1c1f;border:1px solid #4c4d52;border-radius:11px;color:#eee;text-align:left;font-size:12px;font-weight:750}.nr-v71-quick-guide span{color:#ffd000}.nr-v71-quick-guide svg{flex:none;width:21px;height:21px;stroke:#ffd000}
+@media(max-width:360px){.set-row{grid-template-columns:26px minmax(0,1fr) minmax(0,1fr) 40px!important;gap:4px!important}.check-btn{width:38px!important}.nr-hub-label small{font-size:9px}}
+
 </style>
 </head>
 
@@ -1244,7 +1261,7 @@ input::placeholder,textarea::placeholder{color:#888}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V7.0 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V7.1 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1264,11 +1281,13 @@ input::placeholder,textarea::placeholder{color:#888}
   <!-- WORKOUT -->
   <section id="workoutScreen" class="screen active workout-screen">
 
-    <div id="nrV7Dashboard" class="nr-v7-dashboard">
+    <button id="nrHubToggle" class="nr-hub-toggle" type="button" aria-expanded="false" aria-controls="nrHubDrawer"><span class="nr-hub-icon">▥</span><span class="nr-hub-label"><b>TRAINING HUB</b><small>Weekly progress · Volume · Stats</small></span><span id="nrHubChevron" class="nr-hub-chevron">⌄</span></button>
+    <div id="nrHubDrawer" class="nr-hub-drawer" hidden><div id="nrV7Dashboard" class="nr-v7-dashboard">
       <div class="nr-v7-greeting"><div><span class="nr-v7-eyebrow">YOUR TRAINING HUB</span><h2>BEAT YOUR <em>LAST.</em></h2><p>Every rep counts. Keep showing up.</p></div><div class="nr-v7-bolt">↗</div></div>
       <div class="nr-v7-stats"><div><span>THIS WEEK</span><strong id="nrV7Week">0</strong><small>sessions</small></div><div><span>ALL TIME</span><strong id="nrV7Sessions">0</strong><small>workouts</small></div><div><span>VOLUME</span><strong id="nrV7Volume">0</strong><small>lbs logged</small></div></div>
       <div class="nr-v7-week"><div class="nr-v7-week-head"><b>THIS WEEK</b><button id="nrV7HistoryLink" type="button">VIEW HISTORY ›</button></div><div class="nr-v7-week-dots" id="nrV7WeekDots"></div></div>
     </div>
+    </div><!-- /training hub drawer -->
     <div class="compact-timers">
       <button class="timer-chip" id="workoutTimerChip" type="button">
         <span>WORKOUT</span><strong id="timerDisplay">00:00:00</strong>
@@ -3965,6 +3984,14 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',n
 const nrV7OldSaveAll=saveAll;
 saveAll=function(){nrV7OldSaveAll();nrV7RenderDashboard()};
 nrV7RenderDashboard();
+
+
+/* V7.1 hub toggle: never hides the logging controls */
+(function(){
+ const toggle=document.getElementById('nrHubToggle'), drawer=document.getElementById('nrHubDrawer');
+ if(!toggle||!drawer)return;
+ toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));drawer.hidden=!open;if(open&&typeof nrV7RenderDashboard==='function')nrV7RenderDashboard();});
+})();
 
 </script>
 
