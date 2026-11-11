@@ -976,6 +976,12 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-quick-row-meta {color:var(--muted);font-size:11px;margin-top:4px;}
 .nr-quick-row-actions {display:flex;gap:5px;}
 .nr-quick-row-actions button {border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:9px;padding:8px;font-size:12px;font-weight:750;}
+.nr-quick-edit {display:flex;gap:9px;flex-wrap:wrap;margin-top:8px;align-items:center;}
+.nr-quick-edit label {font-size:11px;color:var(--muted);font-weight:750;}
+.nr-quick-edit input {width:56px;margin-left:5px;padding:6px;border:1px solid var(--line);border-radius:7px;background:var(--surface-2);color:var(--text);font-size:16px;}
+.nr-quick-edit .nr-reps {width:82px;}
+.nr-quick-row {align-items:flex-start;}
+.nr-quick-row-actions {flex-wrap:wrap;justify-content:flex-end;max-width:115px;}
 .nr-quick-apply {margin-top:16px;padding-top:12px;border-top:1px solid var(--line);}
 .nr-quick-apply .btn {width:100%;}
 .nr-quick-apply .subtle {margin:8px 0 0;}
@@ -992,7 +998,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.3 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.4 TEST</div>
       </div>
       <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1139,7 +1145,9 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
         <div class="button-row">
           <button type="button" class="btn outline" id="nrQuickRegenerate">↻ Regenerate</button>
           <button type="button" class="btn outline" id="nrQuickAdd">+ Add Exercise</button>
+          <button type="button" class="btn outline" id="nrQuickSaveLibrary">Save to Library</button>
         </div>
+        <p class="subtle">Adjust sets and reps, change the order, or swap exercises before you use the workout.</p>
         <div class="nr-quick-apply">
           <button type="button" class="btn nr-quick-primary" id="nrQuickUse">Use for Selected Day</button>
           <p class="subtle">Replaces the selected day's exercises only after you confirm. Your other days stay unchanged.</p>
@@ -3123,7 +3131,7 @@ function nrQuickGenerate(){
    for(let j=0;j<count;j++)items.push(pool[(start+j)%pool.length]);
  }
  nrQuickState.sequence++;
- nrQuickState.items=items.map(x=>({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:parsed.sets}));
+ nrQuickState.items=items.map(x=>({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:parsed.sets,reps:x.style==="Strength"?"5-8":"8-12"}));
  status.textContent=items.length?(warnings.length?"Built a preview. Limited matches: "+warnings.join("; ")+".":"Preview ready. Swap or remove anything you don't want."):"No exercises matched those restrictions. Try allowing more equipment.";
  nrQuickRender();
 }
@@ -3134,19 +3142,37 @@ function nrQuickRender(){
  list.innerHTML="";
  items.forEach((item,i)=>{
    const row=document.createElement("div");row.className="nr-quick-row";
-   row.innerHTML='<div class="nr-quick-row-main"><div class="nr-quick-row-name">'+(i+1)+'. '+nrQuickEscape(item.name)+'</div><div class="nr-quick-row-meta">'+nrQuickEscape(item.muscle)+' · '+nrQuickEscape(item.equipment)+' · '+item.sets+' sets</div></div><div class="nr-quick-row-actions"><button type="button" aria-label="Swap exercise">Swap</button><button type="button" aria-label="Remove exercise">✕</button></div>';
+   row.innerHTML='<div class="nr-quick-row-main"><div class="nr-quick-row-name">'+(i+1)+'. '+nrQuickEscape(item.name)+'</div><div class="nr-quick-row-meta">'+nrQuickEscape(item.muscle)+' · '+nrQuickEscape(item.equipment)+'</div><div class="nr-quick-edit"><label>Sets <input type="number" min="1" max="12" inputmode="numeric" class="nr-sets" value="'+item.sets+'"></label><label>Reps <input type="text" maxlength="16" class="nr-reps" value="'+nrQuickEscape(item.reps||"8-12")+'"></label></div></div><div class="nr-quick-row-actions"><button type="button" aria-label="Move up">↑</button><button type="button" aria-label="Move down">↓</button><button type="button" aria-label="Swap exercise">Swap</button><button type="button" aria-label="Remove exercise">✕</button></div>';
    const buttons=row.querySelectorAll("button");
-   buttons[0].onclick=()=>nrQuickSwap(i);
-   buttons[1].onclick=()=>{items.splice(i,1);nrQuickRender();};
+   buttons[0].disabled=i===0;
+   buttons[1].disabled=i===items.length-1;
+   buttons[0].onclick=()=>{[items[i-1],items[i]]=[items[i],items[i-1]];nrQuickRender();};
+   buttons[1].onclick=()=>{[items[i],items[i+1]]=[items[i+1],items[i]];nrQuickRender();};
+   buttons[2].onclick=()=>nrQuickSwap(i);
+   buttons[3].onclick=()=>{items.splice(i,1);nrQuickRender();};
+   row.querySelector(".nr-sets").onchange=e=>{
+     const n=Number(e.target.value);
+     item.sets=Number.isFinite(n)?Math.max(1,Math.min(12,Math.round(n))):3;
+     e.target.value=item.sets;
+   };
+   row.querySelector(".nr-reps").onchange=e=>{
+     item.reps=e.target.value.trim().slice(0,16)||"8-12";
+     e.target.value=item.reps;
+   };
    list.appendChild(row);
  });
 }
+function nrQuickMakeWorkout(name){
+ return {name,focus:nrQuickState.requests.map(r=>r.muscle).join(" + ")||"Quick Build",modeLabel:"QUICK BUILD",
+ exercises:nrQuickState.items.map(item=>ex(item.name,item.muscle,item.equipment,item.sets,item.reps||"8-12"))};
+}
+
 function nrQuickSwap(i){
  const item=nrQuickState.items[i];
  const pool=nrQuickCandidates(item.muscle).filter(x=>!nrQuickState.items.some(y=>y.id===x.id));
  if(!pool.length){document.getElementById("nrQuickStatus").textContent="No other "+item.muscle+" exercises match those equipment choices. Remove the restriction and regenerate for more options.";return;}
  const replacement=pool[Math.floor(Math.random()*pool.length)];
- nrQuickState.items[i]={id:replacement.id,name:replacement.name,muscle:replacement.muscle,equipment:replacement.equipment,sets:item.sets};
+ nrQuickState.items[i]={id:replacement.id,name:replacement.name,muscle:replacement.muscle,equipment:replacement.equipment,sets:item.sets,reps:item.reps};
  document.getElementById("nrQuickStatus").textContent="Swapped "+item.name+" for "+replacement.name+".";
  nrQuickRender();
 }
@@ -3160,19 +3186,33 @@ document.getElementById("nrQuickAdd").onclick=()=>{
  const select=document.createElement("select");select.setAttribute("aria-label","Choose an exercise to add");
  pool.forEach(x=>{const opt=document.createElement("option");opt.value=x.id;opt.textContent=x.name+" · "+x.muscle+" · "+x.equipment;select.appendChild(opt);});
  const add=document.createElement("button");add.className="btn nr-quick-primary";add.style.marginTop="8px";add.textContent="Add to Preview";
- add.onclick=()=>{const x=LIBRARY.find(y=>y.id===select.value);if(x){nrQuickState.items.push({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:nrQuickState.sets});nrQuickRender();}panel.remove();};
+ add.onclick=()=>{const x=LIBRARY.find(y=>y.id===select.value);if(x){nrQuickState.items.push({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:nrQuickState.sets,reps:x.style==="Strength"?"5-8":"8-12"});nrQuickRender();}panel.remove();};
  panel.append(select,add);
  document.getElementById("nrQuickList").after(panel);
+};
+document.getElementById("nrQuickSaveLibrary").onclick=()=>{
+ if(!nrQuickState.items.length)return;
+ const name=prompt("Name this workout for your Library:","Quick Build Workout");
+ if(name===null)return;
+ const clean=name.trim().slice(0,70);
+ if(!clean){alert("Please enter a workout name.");return;}
+ if(savedWorkouts.some(w=>w.name.toLowerCase()===clean.toLowerCase())){
+   if(!confirm("A saved workout already has that name. Save another copy?"))return;
+ }
+ savedWorkouts.push(nrQuickMakeWorkout(clean));
+ saveAll();renderWorkoutLibrary();
+ document.getElementById("nrQuickStatus").textContent="Saved '"+clean+"' to your workout Library. Your training days are unchanged.";
 };
 document.getElementById("nrQuickUse").onclick=()=>{
  const items=nrQuickState.items;
  if(!items.length)return;
  const day=program[programDay];
  if(!confirm("Replace exercises in "+day.name+" with this "+items.length+"-exercise workout? This changes only this day."))return;
- day.exercises=items.map(item=>ex(item.name,item.muscle,item.equipment,item.sets,(libraryItemByName(item.name).style==="Strength"?"5-8":"8-12")));
- day.focus=nrQuickState.requests.map(r=>r.muscle).join(" + ");
+ const workout=nrQuickMakeWorkout(day.name);
+ day.exercises=workout.exercises;
+ day.focus=workout.focus;
  // Clear only this day's in-progress entries, since exercise indices are changing.
- for(const key of Object.keys(currentLog)){if(key.startsWith(programDay+"-")||key.startsWith(programDay+"_"))delete currentLog[key];}
+ for(const key of Object.keys(currentLog)){if(key.startsWith(programDay+"-"))delete currentLog[key];}
  delete temporarySwaps[dayKey(programDay)];
  saveAll();renderProgram();renderWorkout();
  document.getElementById("nrQuickStatus").textContent="Saved to "+day.name+". Your other training days were not changed.";
