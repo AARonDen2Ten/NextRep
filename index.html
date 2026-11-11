@@ -927,6 +927,22 @@ body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; 
 #libraryModal .form-grid { display:block; }
 #libraryModal .form-grid > .form-field:not(.full) { display:none; }
 @media(max-width:430px){.v5-thumb{flex-basis:60px;height:66px}.v5-card-actions .btn{padding:8px 10px}}
+
+
+/* NEXT//REP V5.1 — dedicated settings */
+.nr-header-right {display:flex;align-items:center;gap:12px;}
+.nr-settings-gear {height:42px;width:42px;border-radius:12px;border:1px solid #6b5a24;background:#242424;color:var(--yellow);font-size:24px;line-height:1;cursor:pointer;}
+.nr-settings-gear:focus-visible {outline:2px solid var(--yellow);outline-offset:3px;}
+.nr-settings-panel {max-width:580px;margin:10px 0;padding:18px;background:var(--surface);color:var(--text);}
+.nr-settings-panel .card {margin-bottom:10px;}
+.nr-settings-panel #dataList > .card {margin:0!important;}
+.nr-settings-panel .appearance-row {margin-bottom:7px;}
+.nr-future-setting {display:flex;flex-direction:column;gap:5px;padding:15px;margin-top:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);}
+.nr-future-setting strong {font-size:14px;}
+.nr-future-setting span {font-size:12px;color:var(--muted);}
+.nr-local-note {font-size:12px;color:var(--muted);line-height:1.5;margin:16px 2px 2px;}
+body[data-theme="dark"] .nr-settings-panel .card {background:#202020;color:#f5f5f5;border-color:#3a3a3a;}
+body[data-theme="dark"] .nr-future-setting {background:#292929;border-color:#454133;}
 </style>
 </head>
 
@@ -938,9 +954,9 @@ body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; 
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.1 TEST</div>
       </div>
-      <div id="headerDayCount">0/5</div>
+      <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
 
     <div class="week-progress" id="weeklyText">
@@ -1130,15 +1146,33 @@ body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; 
         <button class="btn active" id="historyWorkoutsTab">WORKOUTS</button>
         <button class="btn outline" id="historyPRsTab">PRs</button>
         <button class="btn outline" id="historyStatsTab">STATS</button>
-        <button class="btn outline" id="historyDataTab">DATA</button>
       </div>
       <div id="historyList"></div>
       <div id="prList" style="display:none"></div>
       <div id="statsList" style="display:none"></div>
-       <div id="dataList" style="display:none">
+
+    </div>
+
+  </section>
+
+</div>
+
+<!-- SETTINGS -->
+<div class="modal" id="settingsModal">
+  <div class="modal-box nr-settings-panel">
+    <div class="modal-header"><h3>⚙ Settings</h3><button type="button" class="close-btn" data-close="settingsModal" aria-label="Close Settings">×</button></div>
+    <p class="subtle">Keep your workout screen focused. Preferences and backups live here.</p>
+           <div id="dataList">
          <div class="card" style="margin:10px 0 0">
-           <div class="section-label">Profile + Backup</div>
+           <div class="section-label">Appearance & Local Profile</div>
            <div class="form-field"><label>Appearance</label><div class="appearance-row"><button type="button" class="appearance-btn" id="themeLightBtn">Light</button><button type="button" class="appearance-btn" id="themeDarkBtn">Dark</button></div></div>
+           <div class="form-field"><label>Exercise demonstration figure</label>
+             <div class="appearance-row" role="group" aria-label="Exercise figure preference">
+               <button type="button" class="appearance-btn" id="figureMaleBtn">Male</button>
+               <button type="button" class="appearance-btn" id="figureFemaleBtn">Female</button>
+             </div>
+             <p class="subtle">Your preference is saved. Exercise-specific male and female artwork is being developed; the current diagrams are placeholders.</p>
+           </div>
            <div class="form-field"><label>Name</label><input id="profileName" placeholder="Your name"></div>
            <div class="form-field"><label>Default Rest</label>
              <select id="profileRest"><option value="30">30 sec</option><option value="60">60 sec</option><option value="90">90 sec</option><option value="120">2 min</option><option value="180">3 min</option></select>
@@ -1151,10 +1185,10 @@ body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; 
            <p class="subtle" id="backupStatus" style="margin-top:10px"></p>
          </div>
        </div>
-    </div>
-
-  </section>
-
+    <div class="nr-future-setting"><strong>Profile & Account</strong><span>Sign-in and multiple profiles — coming later</span></div>
+    <div class="nr-future-setting"><strong>Cloud Sync</strong><span>Sync workouts across devices — coming later</span></div>
+    <p class="nr-local-note">Your workout history and program are still stored on this device. Export a backup before changing phones or clearing Safari data.</p>
+  </div>
 </div>
 
 <!-- EXERCISE LIBRARY MODAL -->
@@ -2485,7 +2519,7 @@ function v5Illustration(exercise){
 function v5OpenGuide(exercise){
   document.getElementById("guideTitle").textContent=exercise.name;
   document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
-  document.getElementById("guideDescription").textContent=exercise.muscle+" · "+exercise.equipment+". Highlighted areas show the general muscle group. Movement-specific instructions and illustrations are planned for the expanded exercise library.";
+  document.getElementById("guideDescription").textContent=exercise.muscle+" · "+exercise.equipment+". Highlighted areas show the general muscle group. Exercise-specific start and finish illustrations are in development. This is a general muscle diagram, not a form demonstration.";
   openModal("guideModal");
 }
 function v5RenderChips(){
@@ -2697,24 +2731,19 @@ let historyView="workouts";
 document.getElementById("historyWorkoutsTab").onclick=()=>{ historyView="workouts"; renderHistory(); };
 document.getElementById("historyPRsTab").onclick=()=>{ historyView="prs"; renderHistory(); };
 document.getElementById("historyStatsTab").onclick=()=>{ historyView="stats"; renderHistory(); };
-document.getElementById("historyDataTab").onclick=()=>{ historyView="data"; renderHistory(); };
 function renderHistory(){
   const workouts=document.getElementById("historyList");
   const prs=document.getElementById("prList");
   const stats=document.getElementById("statsList");
-  const data=document.getElementById("dataList");
-  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab"), dt=document.getElementById("historyDataTab");
+  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab");
   wt.className="btn "+(historyView==="workouts"?"active":"outline");
   pt.className="btn "+(historyView==="prs"?"active":"outline");
   st.className="btn "+(historyView==="stats"?"active":"outline");
-  dt.className="btn "+(historyView==="data"?"active":"outline");
   workouts.style.display=historyView==="workouts"?"block":"none";
   prs.style.display=historyView==="prs"?"block":"none";
   stats.style.display=historyView==="stats"?"block":"none";
-  data.style.display=historyView==="data"?"block":"none";
   if(historyView==="prs"){ renderPRs(); return; }
   if(historyView==="stats"){ renderStats(); return; }
-  if(historyView==="data"){ renderDataPanel(); return; }
   if(!history.length){ workouts.innerHTML='<div class="empty">Finish your first workout and it will show up here.</div>'; return; }
   workouts.innerHTML="";
   [...history].reverse().forEach(workout=>{
@@ -2803,6 +2832,21 @@ function applyTheme(theme){
   if(dark) dark.classList.toggle("active",chosen==="dark");
 }
 applyTheme(localStorage.getItem("nextrep_theme")||"dark");
+
+function applyFigurePreference(figure){
+  const chosen=figure==="female"?"female":"male";
+  localStorage.setItem("nextrep_figurePreference",chosen);
+  const male=document.getElementById("figureMaleBtn"), female=document.getElementById("figureFemaleBtn");
+  if(male) male.classList.toggle("active",chosen==="male");
+  if(female) female.classList.toggle("active",chosen==="female");
+}
+document.getElementById("figureMaleBtn").onclick=()=>applyFigurePreference("male");
+document.getElementById("figureFemaleBtn").onclick=()=>applyFigurePreference("female");
+document.getElementById("openSettingsBtn").onclick=()=>{
+  renderDataPanel();
+  applyFigurePreference(localStorage.getItem("nextrep_figurePreference")||"male");
+  openModal("settingsModal");
+};
 
 function renderDataPanel(){
   const profile=JSON.parse(localStorage.getItem("nextrep_profile")||"{}");
