@@ -1276,6 +1276,57 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 #libraryResults .v5-builder-card{background:linear-gradient(145deg,#252627,#171819)}
 #libraryResults .v5-card-title{font-weight:850}
 #nrV8MenuBtn:focus-visible,.nr-v8-menu button:focus-visible{outline:2px solid #ffdc00;outline-offset:2px}
+
+/* V8.1 compact single-card workout logging. No data schema changes. */
+#workoutScreen{padding:6px 10px 14px!important;min-height:0!important}
+#workoutScreen .nr-hub-toggle{margin:0 0 5px!important;min-height:32px!important;padding:4px 9px!important}
+#workoutScreen .compact-timers{margin:0 0 5px!important;gap:6px!important}
+#workoutScreen .timer-chip{min-height:33px!important;padding:5px 8px!important}
+#workoutScreen .jump-bar{padding:5px 7px!important;margin:0 0 5px!important;gap:6px!important}
+#workoutScreen .jump-bar label>span{display:none!important}
+#workoutScreen .jump-picker{min-height:30px!important;padding:4px 7px!important}
+#workoutScreen .exercise-shell{padding:10px!important;margin-bottom:0!important;display:flex;flex-direction:column;gap:0}
+#workoutScreen .day-kicker{font-size:10px!important;margin-bottom:2px!important}
+#workoutScreen .focus-line,#workoutScreen #workoutModeBadge{display:none!important}
+#workoutScreen .compact-progress{height:4px!important;margin:4px 0!important}
+#workoutScreen .counter-line{font-size:10px!important;margin:2px 0!important}
+#workoutScreen .nr-exercise-heading{margin:3px 0 0!important;gap:5px!important}
+#workoutScreen .exercise-title{font-size:clamp(18px,5vw,23px)!important;margin-bottom:1px!important}
+#workoutScreen .exercise-meta{font-size:10px!important;margin:2px 0 4px!important}
+#workoutScreen .nr-guide-button{font-size:10px!important;padding:7px!important;white-space:nowrap}
+#workoutScreen .compact-last{padding:5px 8px!important;margin:3px 0!important;font-size:10px!important}
+#workoutScreen .live-result{padding:4px 7px!important;margin:2px 0!important;font-size:10px!important}
+#workoutScreen .set-row{margin:0 0 5px!important;padding:4px 5px!important;gap:5px!important;grid-template-columns:26px minmax(0,1fr) minmax(0,1fr) 36px!important}
+#workoutScreen .set-number{height:33px!important;font-size:12px!important}
+#workoutScreen .field label{font-size:9px!important;margin:0 0 1px!important}
+#workoutScreen .field input{min-height:34px!important;height:34px!important;font-size:16px!important;padding:4px!important}
+#workoutScreen .check-btn{width:35px!important;height:35px!important;font-size:18px!important}
+#workoutScreen #setsContainer{max-height:calc(100dvh - 410px);min-height:70px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.nr81-primary-nav{display:grid;grid-template-columns:44px 1fr 44px;gap:7px;align-items:center;margin-top:5px}
+.nr81-primary-nav button{height:36px;border:1px solid #545454;border-radius:10px;background:#252629;color:#ffd000;font-size:26px;line-height:1;cursor:pointer}
+.nr81-primary-nav span{text-align:center;font-size:11px;font-weight:850;color:#ddd;letter-spacing:.4px}
+.nr81-extras{margin-top:5px;border:1px solid #373737;border-radius:9px;background:#18191b}
+.nr81-extras>summary{list-style:none;cursor:pointer;padding:7px 10px;color:#bdbdbd;font-size:10px;font-weight:750;display:flex;justify-content:space-between}
+.nr81-extras>summary::-webkit-details-marker{display:none}
+.nr81-extras[open]>summary{color:#ffd000;border-bottom:1px solid #363636}
+.nr81-extras .workout-bottom-actions{margin:7px!important}
+.nr81-extras .finish-strip{display:flex!important;margin:7px!important;gap:7px!important}
+.nr81-extras .warm-block{margin:7px!important}
+#workoutScreen .nr-hub-drawer:not([hidden]){max-height:40dvh;overflow-y:auto}
+.nr81-view-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 8px}
+.nr81-view-switch button{padding:10px 5px;border:1px solid #494949;border-radius:9px;background:#262626;color:#fff;font-size:12px;font-weight:800}
+.nr81-view-switch button.active{background:#ffdc00;border-color:#ffdc00;color:#111}
+.nr81-view-switch button:disabled{opacity:.42}
+.nr81-visual-status{color:#bdbdbd;font-size:11px;margin:0 0 8px;line-height:1.4}
+#guideIllustration{min-height:130px}
+#guideIllustration img{object-fit:contain!important;max-width:100%;cursor:zoom-in}
+#guideIllustration figure[hidden]{display:none!important}
+#guideIllustration .nr-v8-guide-image .nr-v8-exercise-img{height:auto!important;max-height:320px!important;width:auto!important;margin:auto;min-height:0!important}
+.nr81-image-viewer{position:fixed;inset:0;background:#050505f2;z-index:99999;display:flex;align-items:center;justify-content:center;padding:45px 12px 20px}
+.nr81-image-viewer[hidden]{display:none!important}
+.nr81-image-viewer img{display:block;max-width:100%;max-height:80dvh;object-fit:contain}
+#nr81ImageClose{position:absolute;right:14px;top:max(16px,env(safe-area-inset-top));border:1px solid #666;border-radius:10px;background:#292929;color:#ffdc00;font-size:30px;width:44px;height:44px}
+@media(max-height:720px){#workoutScreen #setsContainer{max-height:calc(100dvh - 370px)}#workoutScreen .compact-last{font-size:9px!important}}
 </style>
 </head>
 
@@ -1299,7 +1350,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.0 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.1 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1395,13 +1446,15 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 
       <div id="setsContainer"></div>
 
-      <div class="workout-bottom-actions">
-        <div class="button-row"><button class="btn outline small" id="swapTodayBtn">↔ Swap Today</button><button class="btn outline small" id="editTodayBtn">✎ Edit Day</button></div>
-        <div class="exercise-nav">
-          <button class="btn secondary small" id="previousExercise">← Prev</button>
-          <button class="btn small" id="nextExercise">Next →</button>
-        </div>
+      <div class="nr81-primary-nav">
+        <button type="button" id="previousExercise" aria-label="Previous exercise">‹</button>
+        <span id="nr81ExercisePosition">EXERCISE</span>
+        <button type="button" id="nextExercise" aria-label="Next exercise">›</button>
       </div>
+      <details class="nr81-extras" id="nr81Extras"><summary>Workout options <span>⌄</span></summary>
+        <div class="workout-bottom-actions"><div class="button-row"><button class="btn outline small" id="swapTodayBtn">↔ Swap Today</button><button class="btn outline small" id="editTodayBtn">✎ Edit Day</button></div></div>
+        <div id="nr81FinishSlot"></div>
+      </details>
     </div>
 
     <div id="cooldownBlock"></div><div class="finish-strip">
@@ -1677,12 +1730,13 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
   </div>
 </div>
 
+<div id="nr81ImageViewer" class="nr81-image-viewer" hidden><button type="button" id="nr81ImageClose" aria-label="Close illustration">×</button><img alt="Exercise illustration"></div>
 <!-- EXERCISE GUIDE -->
 <div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div class="nr-guide-switch" role="tablist" aria-label="Exercise guide sections">
 <button type="button" class="active" id="nrGuideMuscleTab">Muscles</button>
 <button type="button" id="nrGuideFormTab">How To</button>
 </div>
-<div id="nrGuideMusclePanel"><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p></div>
+<div id="nrGuideMusclePanel"><div class="nr81-view-switch" role="group" aria-label="Exercise illustration view"><button id="nr81SingleView" type="button" class="active">Single View</button><button id="nr81DualView" type="button">Start &amp; Finish</button></div><div id="nr81VisualStatus" class="nr81-visual-status" aria-live="polite"></div><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p></div>
 <div id="nrGuideDetails" hidden></div></div></div>
 <!-- WORKOUT JUMP PICKER -->
 <div class="modal" id="jumpPickerModal">
@@ -3046,6 +3100,7 @@ function v5OpenGuide(exercise){
  const details=nrGuideFor(exercise);
  nrGuideShowPanel("muscle");
  document.getElementById("guideTitle").textContent=exercise.name;
+ window.nr81CurrentGuide=exercise;
  const nrV8GuideImage=nrV8ExerciseImage(exercise);
  const benchDemo=/^(?:barbell |smith machine )?bench press$/i.test(exercise.name.trim());
  const dumbbellDemo=/^(dumbbell bench press|db bench press|flat dumbbell press|flat db press)$/i.test(exercise.name.trim());
@@ -3073,6 +3128,8 @@ function v5OpenGuide(exercise){
    document.getElementById('guideIllustration').innerHTML='<div class="nr-v8-guide-image">'+nrV8GuideImage+'<div class="nr-v8-guide-caption">EXERCISE VISUAL · '+exercise.name.replace(/</g,'&lt;')+'</div></div>';
  }
 
+ document.getElementById('guideIllustration').dataset.nr81Exercise='';
+ nr81SetGuideView('single');
 }
 
 function v5RenderChips(){
@@ -4079,6 +4136,66 @@ nrV7RenderDashboard();
   const target=document.querySelector('.nav button[data-screen="'+dest+'"]');if(target)target.click();
  }));
 })();
+
+/* V8.1 - single-card logging and two illustration display modes */
+(function nr81Init(){
+ const shell=document.getElementById('exerciseCard');
+ const slot=document.getElementById('nr81FinishSlot');
+ const finish=document.querySelector('#workoutScreen .finish-strip');
+ const cool=document.getElementById('cooldownBlock');
+ const warm=document.getElementById('warmupBlock');
+ const extras=document.getElementById('nr81Extras');
+ if(slot&&finish)slot.appendChild(finish);
+ if(slot&&cool)slot.insertBefore(cool,finish);
+ if(slot&&warm)slot.insertBefore(warm,slot.firstChild);
+ if(extras){extras.addEventListener('toggle',()=>{if(extras.open)extras.scrollIntoView({block:'nearest',behavior:'smooth'});});}
+ // Keep the focus on the current exercise when moving between exercises.
+ const observer=new MutationObserver(()=>{
+  const counter=document.getElementById('exerciseCounter');
+  const label=document.getElementById('nr81ExercisePosition');
+  if(counter&&label)label.textContent=counter.textContent.toUpperCase();
+ });
+ const counter=document.getElementById('exerciseCounter');
+ if(counter){observer.observe(counter,{childList:true,characterData:true,subtree:true});
+  const label=document.getElementById('nr81ExercisePosition');if(label)label.textContent=counter.textContent.toUpperCase();}
+})();
+function nr81SetGuideView(view){
+ const single=document.getElementById('nr81SingleView'),dual=document.getElementById('nr81DualView');
+ const art=document.getElementById('guideIllustration'),status=document.getElementById('nr81VisualStatus');
+ if(!single||!dual||!art||!status)return;
+ const ex=window.nr81CurrentGuide||{};
+ const name=String(ex.name||'').toLowerCase().trim();
+ const isBarbell=/^(?:barbell |smith machine )?bench press$/.test(name);
+ const isDb=/^(dumbbell bench press|db bench press|flat dumbbell press|flat db press)$/.test(name);
+ // Preserve the rendered guide before switching; it is exercise-specific.
+ if(!art.dataset.nr81Exercise||art.dataset.nr81Exercise!==name){
+  art.dataset.nr81Exercise=name;
+  art.dataset.nr81Original=art.innerHTML;
+ }
+ const hasTwo=isBarbell||isDb;
+ single.classList.toggle('active',view==='single');dual.classList.toggle('active',view==='dual');
+ single.setAttribute('aria-pressed',String(view==='single'));dual.setAttribute('aria-pressed',String(view==='dual'));
+ dual.disabled=!hasTwo;
+ dual.title=hasTwo?'Show both positions':'Two-position artwork is not yet available for this exercise';
+ art.innerHTML=art.dataset.nr81Original;
+ if(view==='single'&&hasTwo){
+  const poses=art.querySelectorAll('figure');
+  if(poses.length>1){for(let i=1;i<poses.length;i++)poses[i].hidden=true;}
+  else {const img=art.querySelector('img');if(img)img.classList.add('nr81-single-art');}
+ }
+ status.textContent=hasTwo?(view==='dual'?'Start and finish positions':'Single illustration · tap Start & Finish for both positions'):'Single illustration available · start/finish artwork coming later';
+ // Artwork from earlier showcase crops has limited native resolution; don't stretch into false sharpness.
+ art.querySelectorAll('img').forEach(img=>{img.addEventListener('click',()=>nr81OpenImage(img.src,img.alt),{once:true});img.setAttribute('title','Tap to enlarge');});
+}
+document.getElementById('nr81SingleView')?.addEventListener('click',()=>nr81SetGuideView('single'));
+document.getElementById('nr81DualView')?.addEventListener('click',()=>nr81SetGuideView('dual'));
+function nr81OpenImage(src,alt){
+ const modal=document.getElementById('nr81ImageViewer');if(!modal)return;
+ const image=modal.querySelector('img');image.src=src;image.alt=alt||'Exercise illustration';
+ modal.hidden=false;
+}
+document.getElementById('nr81ImageClose')?.addEventListener('click',()=>{document.getElementById('nr81ImageViewer').hidden=true;});
+document.getElementById('nr81ImageViewer')?.addEventListener('click',e=>{if(e.target.id==='nr81ImageViewer')e.currentTarget.hidden=true;});
 </script>
 
 </body>
