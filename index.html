@@ -1238,6 +1238,17 @@ input::placeholder,textarea::placeholder{color:#888}
 .nr-v71-quick-guide{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0 5px;padding:10px 12px;background:#1b1c1f;border:1px solid #4c4d52;border-radius:11px;color:#eee;text-align:left;font-size:12px;font-weight:750}.nr-v71-quick-guide span{color:#ffd000}.nr-v71-quick-guide svg{flex:none;width:21px;height:21px;stroke:#ffd000}
 @media(max-width:360px){.set-row{grid-template-columns:26px minmax(0,1fr) minmax(0,1fr) 40px!important;gap:4px!important}.check-btn{width:38px!important}.nr-hub-label small{font-size:9px}}
 
+
+/* V7.2: small collapsible hub strip; workout logging remains the main screen. */
+.nr-hub-toggle{min-height:37px;padding:5px 10px;margin-bottom:8px;border-radius:10px;gap:8px}
+.nr-hub-icon{width:25px;height:25px;font-size:16px;border-radius:6px}
+.nr-hub-label{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
+.nr-hub-label b{font-size:11px;letter-spacing:.7px}
+.nr-hub-label small{font-size:10px;white-space:nowrap}
+.nr-hub-chevron{font-size:18px}
+.nr-hub-collapse{display:block;width:100%;margin:0 0 8px;padding:10px;background:#292a2e;border:1px solid #ffd000;border-radius:10px;color:#ffd000;font-weight:800;font-size:12px;letter-spacing:.6px;cursor:pointer}
+.nr-hub-collapse:active,.nr-hub-toggle:active{opacity:.8}
+
 </style>
 </head>
 
@@ -1261,7 +1272,7 @@ input::placeholder,textarea::placeholder{color:#888}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V7.1 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V7.2 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1281,8 +1292,8 @@ input::placeholder,textarea::placeholder{color:#888}
   <!-- WORKOUT -->
   <section id="workoutScreen" class="screen active workout-screen">
 
-    <button id="nrHubToggle" class="nr-hub-toggle" type="button" aria-expanded="false" aria-controls="nrHubDrawer"><span class="nr-hub-icon">▥</span><span class="nr-hub-label"><b>TRAINING HUB</b><small>Weekly progress · Volume · Stats</small></span><span id="nrHubChevron" class="nr-hub-chevron">⌄</span></button>
-    <div id="nrHubDrawer" class="nr-hub-drawer" hidden><div id="nrV7Dashboard" class="nr-v7-dashboard">
+    <button id="nrHubToggle" class="nr-hub-toggle" type="button" aria-expanded="false" aria-controls="nrHubDrawer"><span class="nr-hub-icon">▥</span><span class="nr-hub-label"><b>TRAINING HUB</b><small id="nrHubToggleHint">Tap to view stats</small></span><span id="nrHubChevron" class="nr-hub-chevron">⌄</span></button>
+    <div id="nrHubDrawer" class="nr-hub-drawer" hidden><button type="button" id="nrHubCollapse" class="nr-hub-collapse">− MINIMIZE HUB ↑</button><div id="nrV7Dashboard" class="nr-v7-dashboard">
       <div class="nr-v7-greeting"><div><span class="nr-v7-eyebrow">YOUR TRAINING HUB</span><h2>BEAT YOUR <em>LAST.</em></h2><p>Every rep counts. Keep showing up.</p></div><div class="nr-v7-bolt">↗</div></div>
       <div class="nr-v7-stats"><div><span>THIS WEEK</span><strong id="nrV7Week">0</strong><small>sessions</small></div><div><span>ALL TIME</span><strong id="nrV7Sessions">0</strong><small>workouts</small></div><div><span>VOLUME</span><strong id="nrV7Volume">0</strong><small>lbs logged</small></div></div>
       <div class="nr-v7-week"><div class="nr-v7-week-head"><b>THIS WEEK</b><button id="nrV7HistoryLink" type="button">VIEW HISTORY ›</button></div><div class="nr-v7-week-dots" id="nrV7WeekDots"></div></div>
@@ -3990,7 +4001,12 @@ nrV7RenderDashboard();
 (function(){
  const toggle=document.getElementById('nrHubToggle'), drawer=document.getElementById('nrHubDrawer');
  if(!toggle||!drawer)return;
- toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));drawer.hidden=!open;if(open&&typeof nrV7RenderDashboard==='function')nrV7RenderDashboard();});
+ const hint=document.getElementById('nrHubToggleHint');
+ const collapse=document.getElementById('nrHubCollapse');
+ const setHub=(open)=>{toggle.setAttribute('aria-expanded',String(open));drawer.hidden=!open;if(hint)hint.textContent=open?'Tap to hide stats':'Tap to view stats';if(open&&typeof nrV7RenderDashboard==='function')nrV7RenderDashboard();};
+ toggle.addEventListener('click',()=>setHub(toggle.getAttribute('aria-expanded')!=='true'));
+ if(collapse)collapse.addEventListener('click',()=>{setHub(false);toggle.scrollIntoView({block:'nearest',behavior:'smooth'});});
+ setHub(false);
 })();
 
 </script>
