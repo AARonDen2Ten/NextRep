@@ -943,6 +943,22 @@ body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; 
 .nr-local-note {font-size:12px;color:var(--muted);line-height:1.5;margin:16px 2px 2px;}
 body[data-theme="dark"] .nr-settings-panel .card {background:#202020;color:#f5f5f5;border-color:#3a3a3a;}
 body[data-theme="dark"] .nr-future-setting {background:#292929;border-color:#454133;}
+
+/* NEXT//REP V5.2 — iPhone safe-area dialogs and workout guide shortcut */
+.modal {padding:calc(env(safe-area-inset-top, 0px) + 18px) 14px calc(env(safe-area-inset-bottom, 0px) + 18px);align-items:flex-start;overscroll-behavior:contain;}
+.modal.open {align-items:flex-start;}
+.modal-box {margin:0 auto 18px;max-height:calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 36px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#settingsModal {z-index:110;}
+#settingsModal .nr-settings-panel {margin:0 auto 18px;}
+#settingsModal .modal-header {position:sticky;top:-18px;z-index:2;background:var(--surface);padding:12px 0;border-bottom:1px solid var(--line);}
+body[data-theme="dark"] #settingsModal .modal-header {background:#202020;}
+.nr-exercise-heading {display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.nr-exercise-heading .exercise-title {flex:1;min-width:0;}
+.nr-guide-button {flex:0 0 auto;background:transparent;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px;font-size:11px;font-weight:800;min-height:36px;}
+.nr-guide-button:disabled {opacity:.4;}
+.nr-guide-button:focus-visible {outline:2px solid var(--yellow);}
+body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
+@media(max-width:380px){.nr-exercise-heading {flex-direction:column;}.nr-guide-button {margin-bottom:8px;}}
 </style>
 </head>
 
@@ -954,7 +970,7 @@ body[data-theme="dark"] .nr-future-setting {background:#292929;border-color:#454
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.1 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.2 TEST</div>
       </div>
       <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1026,7 +1042,7 @@ body[data-theme="dark"] .nr-future-setting {background:#292929;border-color:#454
       <div class="progress-bar compact-progress"><div class="progress-fill" id="exerciseProgress"></div></div>
       <div class="subtle counter-line" id="exerciseCounter"></div>
 
-      <div class="exercise-title" id="exerciseName"></div>
+      <div class="nr-exercise-heading"><div class="exercise-title" id="exerciseName"></div><button type="button" id="viewWorkoutGuideBtn" class="nr-guide-button" aria-label="View exercise details">View exercise ↗</button></div>
       <div class="exercise-meta" id="exerciseMeta"></div>
 
       <div class="last-time compact-last" id="lastTime"></div>
@@ -1981,6 +1997,7 @@ function renderWorkout(){
 
   if(!day.exercises.length){
 
+    document.getElementById("viewWorkoutGuideBtn").disabled=true;
     document.getElementById("exerciseName").textContent="No exercises yet";
     document.getElementById("exerciseMeta").textContent="Tap Edit Day to add exercises.";
     document.getElementById("setsContainer").innerHTML="";
@@ -1991,6 +2008,7 @@ function renderWorkout(){
   }
 
   const exercise=exerciseFor(currentDay,currentExercise);
+  document.getElementById("viewWorkoutGuideBtn").disabled=false;
 
   document.getElementById("exerciseName").textContent=exercise.name;
 
@@ -2516,6 +2534,11 @@ function v5Illustration(exercise){
   const regions={Chest:'<path d="M35 46 Q48 39 58 48 L57 66 Q44 70 35 61Z M62 48 Q72 39 85 46 L85 61 Q75 70 63 66Z"/>',Back:'<path d="M35 43 L55 51 L54 86 L39 79Z M65 51 L85 43 L81 79 L66 86Z"/>',Shoulders:'<ellipse cx="29" cy="49" rx="11" ry="13"/><ellipse cx="91" cy="49" rx="11" ry="13"/>',Biceps:'<ellipse cx="23" cy="75" rx="8" ry="15"/><ellipse cx="97" cy="75" rx="8" ry="15"/>',Triceps:'<ellipse cx="22" cy="76" rx="8" ry="15"/><ellipse cx="98" cy="76" rx="8" ry="15"/>',Quads:'<path d="M40 107 L56 107 L54 151 L43 151Z M64 107 L80 107 L77 151 L66 151Z"/>',Hamstrings:'<path d="M42 111 L55 111 L53 152 L45 152Z M65 111 L78 111 L75 152 L67 152Z"/>',Glutes:'<ellipse cx="49" cy="110" rx="13" ry="12"/><ellipse cx="71" cy="110" rx="13" ry="12"/>',Calves:'<ellipse cx="47" cy="166" rx="7" ry="16"/><ellipse cx="73" cy="166" rx="7" ry="16"/>',Core:'<rect x="44" y="69" width="32" height="35" rx="9"/>','Full Body':'<path d="M36 48 L84 48 L79 105 L41 105Z M42 112 L54 112 L53 153 L44 153Z M66 112 L78 112 L76 153 L67 153Z"/>'};
   return `<svg viewBox="0 0 120 210" role="img" aria-label="${muscle} muscle highlight illustration"><g fill="#6b6b6b" stroke="#a2a2a2" stroke-width="1.5"><circle cx="60" cy="22" r="14"/><path d="M43 39 Q60 34 77 39 L86 51 L79 108 L81 113 L76 152 L77 194 L65 194 L62 150 L60 119 L58 150 L55 194 L43 194 L44 152 L39 113 L41 108 L34 51Z"/><path d="M40 44 L29 47 L18 91 L14 111 L23 115 L30 96 L41 62Z M80 44 L91 47 L102 91 L106 111 L97 115 L90 96 L79 62Z"/></g><g fill="#f4c400" opacity=".94">${regions[muscle]||regions['Full Body']}</g></svg>`;
 }
+document.getElementById("viewWorkoutGuideBtn").addEventListener("click",()=>{
+  const day=program[currentDay];
+  if(!day || !day.exercises.length) return;
+  v5OpenGuide(exerciseFor(currentDay,currentExercise));
+});
 function v5OpenGuide(exercise){
   document.getElementById("guideTitle").textContent=exercise.name;
   document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
