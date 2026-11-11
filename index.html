@@ -987,6 +987,14 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-quick-apply .subtle {margin:8px 0 0;}
 .nr-quick-add-panel {padding:12px;border:1px solid var(--line);border-radius:12px;margin:10px 0;}
 .nr-quick-add-panel select {width:100%;min-height:44px;background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px;}
+
+/* V5.5 — usable exercise guides */
+.nr-guide-heading{font-weight:900;font-size:12px;letter-spacing:.07em;margin:16px 0 8px;color:var(--yellow);}
+.nr-guide-steps{padding-left:22px;margin:8px 0 12px;}
+.nr-guide-steps li{margin:8px 0;line-height:1.5;font-size:13px;}
+.nr-guide-note{border:1px solid var(--line);background:var(--surface-2);padding:12px;border-radius:12px;font-size:12px;line-height:1.5;}
+.nr-guide-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.nr-guide-tag{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:6px 10px;}
 </style>
 </head>
 
@@ -998,7 +1006,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.4 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.5 TEST</div>
       </div>
       <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1307,7 +1315,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 </div>
 
 <!-- EXERCISE GUIDE -->
-<div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p></div></div>
+<div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p><div id="nrGuideDetails"></div></div></div>
 <!-- WORKOUT JUMP PICKER -->
 <div class="modal" id="jumpPickerModal">
   <div class="modal-box">
@@ -2595,12 +2603,50 @@ document.getElementById("viewWorkoutGuideBtn").addEventListener("click",()=>{
   if(!day || !day.exercises.length) return;
   v5OpenGuide(exerciseFor(currentDay,currentExercise));
 });
-function v5OpenGuide(exercise){
-  document.getElementById("guideTitle").textContent=exercise.name;
-  document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
-  document.getElementById("guideDescription").textContent=exercise.muscle+" · "+exercise.equipment+". Highlighted areas show the general muscle group. Exercise-specific start and finish illustrations are in development. This is a general muscle diagram, not a form demonstration.";
-  openModal("guideModal");
+
+const nrGuidePatterns=[
+ {test:/bench press|chest press/i,steps:["Set your shoulders back and down; keep your feet firmly planted.","Lower the weight under control toward mid-chest, with wrists stacked over elbows.","Press up smoothly without bouncing or flaring your elbows excessively."],tip:"Keep your shoulder blades supported and avoid lifting your hips off the bench."},
+ {test:/incline.*press/i,steps:["Set the bench to a moderate incline and brace your feet.","Lower the weights toward your upper chest with controlled elbows.","Press up and slightly inward without clanging the weights together."],tip:"A very steep incline can shift more work toward the shoulders."},
+ {test:/fly|pec deck/i,steps:["Set up with a slight bend in your elbows and a stable torso.","Bring your hands or handles together in a wide hugging motion.","Return slowly until you feel a comfortable chest stretch."],tip:"Keep the elbow angle nearly fixed; avoid overstretching the shoulder."},
+ {test:/pushdown/i,steps:["Stand tall with your elbows close to your sides.","Extend your elbows to push the attachment down.","Return slowly while keeping your upper arms still."],tip:"Avoid using body weight or swinging the shoulders to move the stack."},
+ {test:/overhead.*extension|skull crusher/i,steps:["Position the weight so your elbows can bend comfortably.","Lower the weight by bending your elbows while keeping upper arms mostly still.","Extend your elbows smoothly without snapping into lockout."],tip:"Use a manageable load and keep the motion pain-free for your elbows."},
+ {test:/curl/i,steps:["Stand or sit tall with wrists neutral and elbows near your sides.","Curl the weight without swinging your torso.","Lower slowly to the starting position."],tip:"Choose a weight that lets you control the lowering phase."},
+ {test:/lat pulldown|pulldown/i,steps:["Sit securely with your thighs under the pads and grip the bar.","Pull your elbows down toward your ribs, bringing the bar toward upper chest.","Let your arms extend overhead again under control."],tip:"Keep your chest lifted and avoid yanking the bar behind your neck."},
+ {test:/row/i,steps:["Brace your trunk and start with shoulders controlled, not rounded excessively.","Pull the handle or weight toward your torso, driving elbows backward.","Return to the start slowly without twisting."],tip:"Don't use momentum to turn a row into a full-body swing."},
+ {test:/squat|leg press/i,steps:["Set your feet in a stable, comfortable stance and brace your torso.","Bend hips and knees together, tracking knees in line with your toes.","Push through your whole foot to return to the start."],tip:"Use a range of motion you can control without your lower back rounding."},
+ {test:/deadlift|romanian/i,steps:["Stand tall with weight close to your body and brace your midsection.","Hinge your hips backward while keeping the weight near your legs.","Drive your hips forward to stand tall without leaning backward."],tip:"Keep a neutral, controlled back position; don't chase depth at the cost of form."},
+ {test:/lunge|split squat|step.up/i,steps:["Set your feet so you can balance without wobbling.","Bend through hips and knees to lower under control.","Push through the working foot to rise without bouncing."],tip:"Keep your knee tracking in line with your foot."},
+ {test:/shoulder press|overhead press/i,steps:["Brace your torso and start with the weight around shoulder height.","Press overhead in a controlled path.","Lower to the start without arching your lower back."],tip:"Keep ribs stacked over your pelvis; avoid leaning back to finish the rep."},
+ {test:/lateral raise|front raise|reverse fly/i,steps:["Stand tall with a soft bend in the elbows.","Raise the weights under control without shrugging or swinging.","Lower slowly to the start."],tip:"Lighter weights often give better control for this movement."},
+ {test:/plank/i,steps:["Set elbows under shoulders and extend your legs behind you.","Brace your stomach and glutes, keeping your body in a straight line.","Breathe steadily while holding the position."],tip:"Stop when you can no longer keep your hips and back aligned."}
+];
+function nrGuideFor(exercise){
+ const found=nrGuidePatterns.find(x=>x.test.test(exercise.name));
+ return found||{
+ steps:["Set up the equipment and choose a weight you can move with control.","Move through a comfortable range of motion while keeping your torso stable.","Return to the starting position slowly and repeat without using momentum."],
+ tip:"These are general cues, not exercise-specific coaching. Check the machine instructions or ask a qualified trainer if you're unsure."
+ };
 }
+function v5OpenGuide(exercise){
+ const details=nrGuideFor(exercise);
+ document.getElementById("guideTitle").textContent=exercise.name;
+ document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
+ document.getElementById("guideDescription").textContent="Muscle highlight only — this is not a demonstration of the movement. Exercise-specific start/finish artwork is still being developed.";
+ const container=document.getElementById("nrGuideDetails");
+ container.replaceChildren();
+ const tags=document.createElement("div");tags.className="nr-guide-tags";
+ for(const value of ["Primary: "+exercise.muscle,"Equipment: "+exercise.equipment]){
+  const tag=document.createElement("span");tag.className="nr-guide-tag";tag.textContent=value;tags.appendChild(tag);
+ }
+ container.appendChild(tags);
+ const heading=document.createElement("div");heading.className="nr-guide-heading";heading.textContent="HOW TO PERFORM";container.appendChild(heading);
+ const ol=document.createElement("ol");ol.className="nr-guide-steps";
+ for(const step of details.steps){const li=document.createElement("li");li.textContent=step;ol.appendChild(li);}
+ container.appendChild(ol);
+ const note=document.createElement("div");note.className="nr-guide-note";note.textContent="FORM TIP · "+details.tip;container.appendChild(note);
+ openModal("guideModal");
+}
+
 function v5RenderChips(){
   const host=document.getElementById("v5FilterChips");host.innerHTML="";
   [["muscle","MUSCLE"],["equipment","EQUIPMENT"],["style","TRAINING STYLE"]].forEach(([field,label])=>{
