@@ -995,6 +995,12 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-guide-note{border:1px solid var(--line);background:var(--surface-2);padding:12px;border-radius:12px;font-size:12px;line-height:1.5;}
 .nr-guide-tags{display:flex;gap:6px;flex-wrap:wrap;}
 .nr-guide-tag{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:6px 10px;}
+
+/* V5.6 guide navigation, muscle and form panels */
+.nr-guide-switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0 15px;}
+.nr-guide-switch button{padding:12px 8px;border-radius:11px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-size:13px;font-weight:850;}
+.nr-guide-switch button.active{background:var(--yellow);border-color:var(--yellow);color:#111;}
+#nrGuideDetails[hidden],#nrGuideMusclePanel[hidden]{display:none!important;}
 </style>
 </head>
 
@@ -1006,7 +1012,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.5 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.6 TEST</div>
       </div>
       <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1315,7 +1321,12 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 </div>
 
 <!-- EXERCISE GUIDE -->
-<div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p><div id="nrGuideDetails"></div></div></div>
+<div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div class="nr-guide-switch" role="tablist" aria-label="Exercise guide sections">
+<button type="button" class="active" id="nrGuideMuscleTab">Muscles</button>
+<button type="button" id="nrGuideFormTab">How To</button>
+</div>
+<div id="nrGuideMusclePanel"><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p></div>
+<div id="nrGuideDetails" hidden></div></div></div>
 <!-- WORKOUT JUMP PICKER -->
 <div class="modal" id="jumpPickerModal">
   <div class="modal-box">
@@ -2627,8 +2638,20 @@ function nrGuideFor(exercise){
  tip:"These are general cues, not exercise-specific coaching. Check the machine instructions or ask a qualified trainer if you're unsure."
  };
 }
+function nrGuideShowPanel(panel){
+ const muscle=panel==="muscle";
+ document.getElementById("nrGuideMusclePanel").hidden=!muscle;
+ document.getElementById("nrGuideDetails").hidden=muscle;
+ document.getElementById("nrGuideMuscleTab").classList.toggle("active",muscle);
+ document.getElementById("nrGuideFormTab").classList.toggle("active",!muscle);
+ document.getElementById("nrGuideMuscleTab").setAttribute("aria-selected",String(muscle));
+ document.getElementById("nrGuideFormTab").setAttribute("aria-selected",String(!muscle));
+}
+document.getElementById("nrGuideMuscleTab").onclick=()=>nrGuideShowPanel("muscle");
+document.getElementById("nrGuideFormTab").onclick=()=>nrGuideShowPanel("form");
 function v5OpenGuide(exercise){
  const details=nrGuideFor(exercise);
+ nrGuideShowPanel("muscle");
  document.getElementById("guideTitle").textContent=exercise.name;
  document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
  document.getElementById("guideDescription").textContent="Muscle highlight only — this is not a demonstration of the movement. Exercise-specific start/finish artwork is still being developed.";
@@ -3188,14 +3211,15 @@ function nrQuickRender(){
  list.innerHTML="";
  items.forEach((item,i)=>{
    const row=document.createElement("div");row.className="nr-quick-row";
-   row.innerHTML='<div class="nr-quick-row-main"><div class="nr-quick-row-name">'+(i+1)+'. '+nrQuickEscape(item.name)+'</div><div class="nr-quick-row-meta">'+nrQuickEscape(item.muscle)+' · '+nrQuickEscape(item.equipment)+'</div><div class="nr-quick-edit"><label>Sets <input type="number" min="1" max="12" inputmode="numeric" class="nr-sets" value="'+item.sets+'"></label><label>Reps <input type="text" maxlength="16" class="nr-reps" value="'+nrQuickEscape(item.reps||"8-12")+'"></label></div></div><div class="nr-quick-row-actions"><button type="button" aria-label="Move up">↑</button><button type="button" aria-label="Move down">↓</button><button type="button" aria-label="Swap exercise">Swap</button><button type="button" aria-label="Remove exercise">✕</button></div>';
+   row.innerHTML='<div class="nr-quick-row-main"><div class="nr-quick-row-name">'+(i+1)+'. '+nrQuickEscape(item.name)+'</div><div class="nr-quick-row-meta">'+nrQuickEscape(item.muscle)+' · '+nrQuickEscape(item.equipment)+'</div><div class="nr-quick-edit"><label>Sets <input type="number" min="1" max="12" inputmode="numeric" class="nr-sets" value="'+item.sets+'"></label><label>Reps <input type="text" maxlength="16" class="nr-reps" value="'+nrQuickEscape(item.reps||"8-12")+'"></label></div></div><div class="nr-quick-row-actions"><button type="button" aria-label="Move up">↑</button><button type="button" aria-label="Move down">↓</button><button type="button" aria-label="View exercise guide">Guide</button><button type="button" aria-label="Swap exercise">Swap</button><button type="button" aria-label="Remove exercise">✕</button></div>';
    const buttons=row.querySelectorAll("button");
    buttons[0].disabled=i===0;
    buttons[1].disabled=i===items.length-1;
    buttons[0].onclick=()=>{[items[i-1],items[i]]=[items[i],items[i-1]];nrQuickRender();};
    buttons[1].onclick=()=>{[items[i],items[i+1]]=[items[i+1],items[i]];nrQuickRender();};
-   buttons[2].onclick=()=>nrQuickSwap(i);
-   buttons[3].onclick=()=>{items.splice(i,1);nrQuickRender();};
+   buttons[2].onclick=()=>v5OpenGuide(item);
+   buttons[3].onclick=()=>nrQuickSwap(i);
+   buttons[4].onclick=()=>{items.splice(i,1);nrQuickRender();};
    row.querySelector(".nr-sets").onchange=e=>{
      const n=Number(e.target.value);
      item.sets=Number.isFinite(n)?Math.max(1,Math.min(12,Math.round(n))):3;
