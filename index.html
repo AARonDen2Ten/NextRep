@@ -897,6 +897,36 @@ body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d
 .rest-presets button.active,
 .check-btn.done { background:var(--yellow) !important; color:#111 !important; border-color:var(--yellow) !important; }
 
+
+/* NEXT//REP V5 Stage 1 — builder UI */
+.v5-gold { background:var(--yellow)!important; color:#111!important; border:1px solid var(--yellow)!important; }
+.v5-builder-card { display:flex; gap:11px; align-items:center; padding:11px; border:1px solid var(--line); border-radius:16px; margin-bottom:9px; background:var(--surface); color:var(--text); }
+.v5-thumb { flex:0 0 68px; height:72px; border:1px solid #4d4837; background:#202020; border-radius:12px; display:grid; place-items:center; padding:0; overflow:hidden; }
+.v5-thumb svg { width:100%; height:100%; }
+.v5-card-main { flex:1; min-width:0; }
+.v5-card-title { font-size:14px; font-weight:850; line-height:1.3; }
+.v5-card-meta { font-size:11px; color:var(--muted); margin-top:4px; }
+.v5-card-actions { display:flex; gap:5px; flex-wrap:wrap; margin-top:9px; }
+.v5-icon-btn { min-width:34px; min-height:34px; border-radius:9px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-weight:800; }
+.v5-add-btn { flex:0 0 42px; width:42px; height:42px; border:0; border-radius:12px; background:var(--yellow); color:#111; font-size:25px; font-weight:900; }
+.v5-add-btn.selected { background:#555; color:white; }
+.v5-chip-group { margin:10px 0; }
+.v5-chip-label { font-size:10px; font-weight:850; color:var(--muted); letter-spacing:.8px; margin-bottom:7px; }
+.v5-chip-scroll { display:flex; gap:7px; overflow-x:auto; padding-bottom:5px; scrollbar-width:none; }
+.v5-chip { white-space:nowrap; padding:8px 12px; border-radius:999px; background:var(--surface-2); border:1px solid var(--line); color:var(--text); font-size:12px; font-weight:750; }
+.v5-chip.active { background:var(--yellow); border-color:var(--yellow); color:#111; }
+.v5-selection-bar { position:sticky; top:0; z-index:3; padding:10px; border-radius:12px; background:var(--surface); border:1px solid var(--yellow); align-items:center; justify-content:space-between; gap:8px; font-size:12px; font-weight:800; }
+.v5-library-list { max-height:min(52vh,480px); overflow-y:auto; }
+.v5-guide-art { height:220px; border-radius:16px; background:#202020; display:grid; place-items:center; margin-bottom:14px; }
+.v5-guide-art svg { width:180px; height:200px; }
+.v5-dragging { opacity:.4; }
+body[data-theme="dark"] .v5-builder-card, body[data-theme="dark"] .v5-selection-bar { background:#202020; border-color:#494438; }
+body[data-theme="dark"] .v5-icon-btn, body[data-theme="dark"] .v5-chip { background:#292929; color:#f5f5f5; border-color:#4a4535; }
+body[data-theme="dark"] .v5-chip.active { background:var(--yellow); color:#111; }
+#libraryModal .modal-box { margin:5px 0; }
+#libraryModal .form-grid { display:block; }
+#libraryModal .form-grid > .form-field:not(.full) { display:none; }
+@media(max-width:430px){.v5-thumb{flex-basis:60px;height:66px}.v5-card-actions .btn{padding:8px 10px}}
 </style>
 </head>
 
@@ -908,7 +938,7 @@ body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V4</div>
+        <div class="version">BEAT YOUR LAST. · V5 TEST</div>
       </div>
       <div id="headerDayCount">0/5</div>
     </div>
@@ -989,7 +1019,7 @@ body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d
       <div id="setsContainer"></div>
 
       <div class="workout-bottom-actions">
-        <button class="btn outline small" id="swapTodayBtn">↔ Swap Today</button>
+        <div class="button-row"><button class="btn outline small" id="swapTodayBtn">↔ Swap Today</button><button class="btn outline small" id="editTodayBtn">✎ Edit Day</button></div>
         <div class="exercise-nav">
           <button class="btn secondary small" id="previousExercise">← Prev</button>
           <button class="btn small" id="nextExercise">Next →</button>
@@ -1031,14 +1061,14 @@ body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d
         </div>
       </div>
 
-      <button class="btn" id="saveDayInfo">Save Day Details</button>
+      <button class="btn" id="saveDayInfo">Save Day Details</button><p class="subtle" id="builderSaveStatus" role="status" style="margin:9px 0 0">Changes save automatically on this device.</p>
 
       <div class="summary-box" id="muscleSummary"></div>
     </div>
 
     <div class="card">
       <div class="section-label">Exercises</div>
-      <div id="programExerciseList" class="exercise-list"></div>
+      <p class="subtle">Drag an exercise to reorder, or use the arrows. Tap Edit to change sets and reps.</p><div id="programExerciseList" class="exercise-list"></div>
 
       <div class="button-row">
         <button class="btn" id="openLibraryBtn">+ Add Exercise</button>
@@ -1165,11 +1195,13 @@ body[data-theme="light"] .form-field input { background:#fbfaf6; border-color:#d
 
     </div>
 
-    <div id="libraryResults" class="library-results"></div>
+    <div id="v5FilterChips"></div><div id="v5SelectionBar" class="v5-selection-bar" style="display:none"><span id="v5SelectionCount">0 selected</span><button type="button" class="btn v5-gold small" id="v5AddSelected">Add Selected</button></div><div id="libraryResults" class="library-results"></div>
 
   </div>
 </div>
 
+<!-- EXERCISE GUIDE -->
+<div class="modal" id="guideModal"><div class="modal-box"><div class="modal-header"><h3 id="guideTitle">Exercise Guide</h3><button class="close-btn" data-close="guideModal">×</button></div><div id="guideIllustration" class="v5-guide-art"></div><p id="guideDescription" class="subtle"></p></div></div>
 <!-- WORKOUT JUMP PICKER -->
 <div class="modal" id="jumpPickerModal">
   <div class="modal-box">
@@ -1916,7 +1948,7 @@ function renderWorkout(){
   if(!day.exercises.length){
 
     document.getElementById("exerciseName").textContent="No exercises yet";
-    document.getElementById("exerciseMeta").textContent="Add exercises from the Program tab.";
+    document.getElementById("exerciseMeta").textContent="Tap Edit Day to add exercises.";
     document.getElementById("setsContainer").innerHTML="";
     document.getElementById("lastTime").innerHTML="";
     document.getElementById("exerciseCounter").textContent="0 exercises";
@@ -2287,87 +2319,27 @@ document.getElementById("saveDayInfo").onclick=()=>{
 
 
 function renderProgramExercises(){
-
   const wrap=document.getElementById("programExerciseList");
   const exercises=program[programDay].exercises;
-
-  if(!exercises.length){
-    wrap.innerHTML='<div class="empty">No exercises yet. Add one below.</div>';
-    return;
-  }
-
   wrap.innerHTML="";
-
+  if(!exercises.length){wrap.innerHTML='<div class="empty">No exercises yet. Tap + Add Exercise to get started.</div>';return;}
   exercises.forEach((exercise,index)=>{
-
-    const item=document.createElement("div");
-    item.className="exercise-item";
-
-    item.innerHTML=`
-      <div class="exercise-item-top">
-        <div>
-          <div class="exercise-item-name">
-            ${index+1}. ${exercise.name}
-          </div>
-
-          <div class="subtle">
-            ${exercise.sets} sets · ${exercise.reps} reps
-          </div>
-
-          <div class="tags">
-            <span class="tag">${exercise.muscle}</span>
-            <span class="tag">${exercise.equipment}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="editor-actions">
-        <button class="btn outline small edit">Edit</button>
-        <button class="btn outline small up">↑</button>
-        <button class="btn outline small down">↓</button>
-        <button class="btn danger small delete">Delete</button>
-      </div>
-    `;
-
-    item.querySelector(".edit").onclick=()=>openEdit(index);
-
-    item.querySelector(".up").onclick=()=>{
-      if(index===0) return;
-
-      [exercises[index-1],exercises[index]]=
-      [exercises[index],exercises[index-1]];
-
-      saveAll();
-      renderProgram();
-      renderWorkout();
-    };
-
-    item.querySelector(".down").onclick=()=>{
-      if(index===exercises.length-1) return;
-
-      [exercises[index+1],exercises[index]]=
-      [exercises[index],exercises[index+1]];
-
-      saveAll();
-      renderProgram();
-      renderWorkout();
-    };
-
-    item.querySelector(".delete").onclick=()=>{
-
-      if(!confirm("Delete "+exercise.name+" from this day?")) return;
-
-      exercises.splice(index,1);
-
-      saveAll();
-      renderProgram();
-      renderWorkout();
-    };
-
-    wrap.appendChild(item);
+    const item=document.createElement("div"); item.className="v5-builder-card"; item.draggable=true;
+    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
+    const main=document.createElement("div");main.className="v5-card-main";
+    const title=document.createElement("div");title.className="v5-card-title";title.textContent=(index+1)+". "+exercise.name;
+    const meta=document.createElement("div");meta.className="v5-card-meta";meta.textContent=exercise.sets+" sets · "+exercise.reps+" reps · "+exercise.muscle+" · "+exercise.equipment;
+    const actions=document.createElement("div");actions.className="v5-card-actions";
+    [["Edit",()=>openEdit(index)],["↑",()=>v5MoveExercise(index,-1)],["↓",()=>v5MoveExercise(index,1)],["Remove",()=>{if(confirm("Remove "+exercise.name+" from this day?")){exercises.splice(index,1);v5SaveProgramChange();}}]].forEach(([label,fn])=>{const b=document.createElement("button");b.type="button";b.className=label==="Edit"?"btn outline small":"v5-icon-btn";b.textContent=label;b.onclick=fn;actions.appendChild(b);});
+    main.append(title,meta,actions);item.append(thumb,main);wrap.appendChild(item);
+    item.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",String(index));item.classList.add("v5-dragging");});
+    item.addEventListener("dragend",()=>item.classList.remove("v5-dragging"));
+    item.addEventListener("dragover",e=>e.preventDefault());
+    item.addEventListener("drop",e=>{e.preventDefault();const from=Number(e.dataTransfer.getData("text/plain"));if(!Number.isInteger(from)||from<0||from>=exercises.length||from===index)return;const [moved]=exercises.splice(from,1);exercises.splice(index,0,moved);v5SaveProgramChange();});
   });
 }
-
+function v5MoveExercise(index,delta){const arr=program[programDay].exercises,to=index+delta;if(to<0||to>=arr.length)return;[arr[index],arr[to]]=[arr[to],arr[index]];v5SaveProgramChange();}
+function v5SaveProgramChange(){saveAll();renderProgram();renderWorkout();const status=document.getElementById("builderSaveStatus");if(status)status.textContent="Saved on this device ✓";}
 
 /* =========================================================
    MUSCLE SUMMARY
@@ -2471,6 +2443,8 @@ document.getElementById("openLibraryBtn").onclick=()=>{
   renderLibrary();
 };
 
+document.getElementById("editTodayBtn").onclick=()=>{programDay=currentDay;document.querySelector('[data-screen="program"]').click();};
+
 document.getElementById("swapTodayBtn").onclick=()=>{
 
   if(!program[currentDay].exercises.length) return;
@@ -2501,55 +2475,56 @@ document.getElementById("swapTodayBtn").onclick=()=>{
 });
 
 
-function renderLibrary(){
-
-  const muscle=document.getElementById("muscleFilter").value;
-  const equipment=document.getElementById("equipmentFilter").value;
-  const style=document.getElementById("styleFilter").value;
-  const movement=document.getElementById("movementFilter").value;
-  const search=document.getElementById("librarySearch").value.toLowerCase();
-
-  const results=LIBRARY.filter(x=>
-    (!muscle || x.muscle===muscle) &&
-    (!equipment || x.equipment===equipment) &&
-    (!style || x.style===style) &&
-    (!movement || x.movement===movement) &&
-    (!search || x.name.toLowerCase().includes(search))
-  );
-
-  const wrap=document.getElementById("libraryResults");
-
-  if(!results.length){
-    wrap.innerHTML='<div class="empty">No matching exercises.</div>';
-    return;
-  }
-
-  wrap.innerHTML="";
-
-  results.forEach(item=>{
-
-    const row=document.createElement("div");
-    row.className="library-row";
-
-    row.innerHTML=`
-      <div>
-        <div class="library-name">${item.name}</div>
-        <div class="library-meta">
-          ${item.muscle} · ${item.equipment} · ${item.style}
-        </div>
-      </div>
-
-      <button class="btn small">
-        ${editorMode==="swap" ? "Swap" : editorMode==="edit-replace" ? "Choose" : "Add"}
-      </button>
-    `;
-
-    row.querySelector("button").onclick=()=>selectLibraryExercise(item);
-
-    wrap.appendChild(row);
+const v5Selected=new Set();
+const v5Filters={muscle:"",equipment:"",style:""};
+function v5Illustration(exercise){
+  const muscle=(exercise.muscle||"Full Body");
+  const regions={Chest:'<path d="M35 46 Q48 39 58 48 L57 66 Q44 70 35 61Z M62 48 Q72 39 85 46 L85 61 Q75 70 63 66Z"/>',Back:'<path d="M35 43 L55 51 L54 86 L39 79Z M65 51 L85 43 L81 79 L66 86Z"/>',Shoulders:'<ellipse cx="29" cy="49" rx="11" ry="13"/><ellipse cx="91" cy="49" rx="11" ry="13"/>',Biceps:'<ellipse cx="23" cy="75" rx="8" ry="15"/><ellipse cx="97" cy="75" rx="8" ry="15"/>',Triceps:'<ellipse cx="22" cy="76" rx="8" ry="15"/><ellipse cx="98" cy="76" rx="8" ry="15"/>',Quads:'<path d="M40 107 L56 107 L54 151 L43 151Z M64 107 L80 107 L77 151 L66 151Z"/>',Hamstrings:'<path d="M42 111 L55 111 L53 152 L45 152Z M65 111 L78 111 L75 152 L67 152Z"/>',Glutes:'<ellipse cx="49" cy="110" rx="13" ry="12"/><ellipse cx="71" cy="110" rx="13" ry="12"/>',Calves:'<ellipse cx="47" cy="166" rx="7" ry="16"/><ellipse cx="73" cy="166" rx="7" ry="16"/>',Core:'<rect x="44" y="69" width="32" height="35" rx="9"/>','Full Body':'<path d="M36 48 L84 48 L79 105 L41 105Z M42 112 L54 112 L53 153 L44 153Z M66 112 L78 112 L76 153 L67 153Z"/>'};
+  return `<svg viewBox="0 0 120 210" role="img" aria-label="${muscle} muscle highlight illustration"><g fill="#6b6b6b" stroke="#a2a2a2" stroke-width="1.5"><circle cx="60" cy="22" r="14"/><path d="M43 39 Q60 34 77 39 L86 51 L79 108 L81 113 L76 152 L77 194 L65 194 L62 150 L60 119 L58 150 L55 194 L43 194 L44 152 L39 113 L41 108 L34 51Z"/><path d="M40 44 L29 47 L18 91 L14 111 L23 115 L30 96 L41 62Z M80 44 L91 47 L102 91 L106 111 L97 115 L90 96 L79 62Z"/></g><g fill="#f4c400" opacity=".94">${regions[muscle]||regions['Full Body']}</g></svg>`;
+}
+function v5OpenGuide(exercise){
+  document.getElementById("guideTitle").textContent=exercise.name;
+  document.getElementById("guideIllustration").innerHTML=v5Illustration(exercise);
+  document.getElementById("guideDescription").textContent=exercise.muscle+" · "+exercise.equipment+". Highlighted areas show the general muscle group. Movement-specific instructions and illustrations are planned for the expanded exercise library.";
+  openModal("guideModal");
+}
+function v5RenderChips(){
+  const host=document.getElementById("v5FilterChips");host.innerHTML="";
+  [["muscle","MUSCLE"],["equipment","EQUIPMENT"],["style","TRAINING STYLE"]].forEach(([field,label])=>{
+    const group=document.createElement("div");group.className="v5-chip-group";
+    const heading=document.createElement("div");heading.className="v5-chip-label";heading.textContent=label;
+    const scroll=document.createElement("div");scroll.className="v5-chip-scroll";
+    ["",...unique(field)].forEach(value=>{const chip=document.createElement("button");chip.type="button";chip.className="v5-chip"+(v5Filters[field]===value?" active":"");chip.textContent=value||"All";chip.onclick=()=>{v5Filters[field]=value;document.getElementById(field+"Filter").value=value;renderLibrary();};scroll.appendChild(chip);});
+    group.append(heading,scroll);host.appendChild(group);
   });
 }
-
+function v5UpdateSelection(){const bar=document.getElementById("v5SelectionBar");const count=v5Selected.size;bar.style.display=(editorMode==="add"&&count)?"flex":"none";document.getElementById("v5SelectionCount").textContent=count+" selected";}
+function renderLibrary(){
+  ["muscle","equipment","style"].forEach(f=>v5Filters[f]=document.getElementById(f+"Filter").value);
+  v5RenderChips();v5UpdateSelection();
+  const muscle=v5Filters.muscle,equipment=v5Filters.equipment,style=v5Filters.style;
+  const movement=document.getElementById("movementFilter").value,search=document.getElementById("librarySearch").value.toLowerCase();
+  const results=LIBRARY.filter(x=>(!muscle||x.muscle===muscle)&&(!equipment||x.equipment===equipment)&&(!style||x.style===style)&&(!movement||x.movement===movement)&&(!search||x.name.toLowerCase().includes(search)));
+  const wrap=document.getElementById("libraryResults");wrap.className="library-results v5-library-list";wrap.innerHTML="";
+  if(!results.length){wrap.innerHTML='<div class="empty">No matching exercises. Try clearing a filter.</div>';return;}
+  results.forEach(exercise=>{
+    const row=document.createElement("div");row.className="v5-builder-card";
+    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
+    const main=document.createElement("div");main.className="v5-card-main";
+    const title=document.createElement("div");title.className="v5-card-title";title.textContent=exercise.name;
+    const meta=document.createElement("div");meta.className="v5-card-meta";meta.textContent=exercise.muscle+" · "+exercise.equipment+" · "+exercise.style;
+    main.append(title,meta);
+    const add=document.createElement("button");add.type="button";add.className="v5-add-btn"+(v5Selected.has(exercise.id)&&editorMode==="add"?" selected":"");add.textContent=editorMode==="add"?(v5Selected.has(exercise.id)?"✓":"+"):"↔";
+    add.setAttribute("aria-label",editorMode==="add"?"Select "+exercise.name:"Choose "+exercise.name);
+    add.onclick=()=>{if(editorMode==="add"){if(v5Selected.has(exercise.id))v5Selected.delete(exercise.id);else v5Selected.add(exercise.id);add.classList.toggle("selected",v5Selected.has(exercise.id));add.textContent=v5Selected.has(exercise.id)?"✓":"+";v5UpdateSelection();}else selectLibraryExercise(exercise);};
+    row.append(thumb,main,add);wrap.appendChild(row);
+  });
+}
+document.getElementById("v5AddSelected").onclick=()=>{
+  if(editorMode!=="add")return;
+  LIBRARY.filter(x=>v5Selected.has(x.id)).forEach(x=>program[programDay].exercises.push(makeExerciseFromName(x.name)));
+  v5Selected.clear();closeModal("libraryModal");v5SaveProgramChange();
+};
 
 function selectLibraryExercise(item){
 
