@@ -1082,6 +1082,20 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 #historyScreen .history-tabs{gap:6px}
 #historyScreen .history-tabs .btn{font-size:11px;letter-spacing:.3px;padding:10px 5px}
 
+/* V6.2 — grouped gym class with independent exercise/sets logging */
+.nr-gym-station{border:1px solid #61531d;background:#1b1b1b;border-radius:15px;padding:12px;margin:14px 0}
+.nr-gym-station-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;color:#ffcc00;font-weight:850}
+.nr-gym-station-head button,.nr-gym-set-remove{background:#292929;border:1px solid #555;border-radius:8px;color:#ddd;padding:7px 10px}
+.nr-gym-ex{margin:9px 0!important}
+.nr-gym-set{display:grid;grid-template-columns:34px 1fr 1fr 35px;align-items:end;gap:7px;margin-top:9px}
+.nr-gym-set label{font-size:11px}
+.nr-gym-set-number{color:#ffcc00;font-weight:800;align-self:center}
+.nr-gym-editor-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.nr-gym-editor-actions .btn{font-size:12px;padding:12px 5px}
+.nr-gym-add-set{border:1px solid #b89a21;color:#ffcc00;background:#222;border-radius:8px;padding:8px 10px;margin-top:10px}
+.nr-gym-last{font-size:11px;color:#ffcc00;margin:6px 0}
+.nr-gym-note{border:1px solid #4a4a4a;background:#242424;border-radius:10px;padding:10px;margin:10px 0}
+.nr-gym-note input{width:100%;background:#171717;color:white;border:1px solid #555;border-radius:8px;padding:9px}
 /* V6.1 — brand-consistent gym class + PR organization */
 .nr-history-shortcut{width:120px!important;min-width:120px!important}
 .nr-history-shortcut svg{height:48px!important}
@@ -1135,7 +1149,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V6.1 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V6.2 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 150 58" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History, open training calendar"><defs><linearGradient id="plateMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7a7a7"/><stop offset=".25" stop-color="#3b3b3b"/><stop offset=".55" stop-color="#101010"/><stop offset=".82" stop-color="#555"/><stop offset="1" stop-color="#181818"/></linearGradient><linearGradient id="barMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ddd"/><stop offset=".48" stop-color="#555"/><stop offset="1" stop-color="#aaa"/></linearGradient></defs><rect x="10" y="25" width="130" height="8" rx="4" fill="url(#barMetal)"/><g fill="url(#plateMetal)" stroke="#b6b6b6" stroke-width="1.2"><rect x="7" y="18" width="8" height="22" rx="2"/><rect x="16" y="9" width="12" height="40" rx="3"/><rect x="29" y="4" width="12" height="50" rx="3"/><rect x="109" y="4" width="12" height="50" rx="3"/><rect x="122" y="9" width="12" height="40" rx="3"/><rect x="135" y="18" width="8" height="22" rx="2"/></g><path d="M43 17 L107 17 L114 29 L107 41 L43 41 L36 29 Z" fill="#101010" stroke="#ffcc00" stroke-width="2.6"/><path d="M46 20 H104" stroke="#6b5c1a" stroke-width="1"/><text x="75" y="33.8" text-anchor="middle" font-family="Arial,sans-serif" font-size="12.2" font-weight="900" letter-spacing=".7" fill="#ffcc00">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1346,7 +1360,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
       <div class="card nr-gym-card">
         <div class="section-label">GYM CLASS · BLACK & YELLOW</div>
         <h2>Log a Gym Class</h2>
-        <p class="subtle">Snap the workout board, choose a screenshot, or dictate/type the class. Review the exercises and log your actual weights before saving.</p>
+        <p class="subtle">Snap the workout board, choose a screenshot, or dictate/type the class. Review each station and enter separate weights for every exercise and set before saving.</p>
         <div class="nr-gym-inputs">
           <button type="button" class="btn outline" id="nrGymCameraBtn">📷 Take Photo</button>
           <button type="button" class="btn outline" id="nrGymUploadBtn">▧ Upload Photo</button>
@@ -1360,7 +1374,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
         <div class="form-grid" style="margin-top:15px"><div class="form-field"><label for="nrGymName">Class name</label><input id="nrGymName" value="Gym Class" placeholder="Strength Circuit"></div><div class="form-field"><label for="nrGymDate">Class date</label><input type="date" id="nrGymDate"></div></div>
         <div class="section-label" style="margin-top:16px">REVIEW & LOG WEIGHTS</div>
         <div id="nrGymRows"></div>
-        <button type="button" class="btn outline" id="nrGymAdd">+ Add Exercise</button>
+        <div class="nr-gym-editor-actions"><button type="button" class="btn outline" id="nrGymAdd">+ Add Exercise</button><button type="button" class="btn outline" id="nrGymAddGroup">+ Add Station</button></div>
         <button type="button" class="btn nr-gym-save" id="nrGymSave" style="margin-top:14px">Save Gym Class to Calendar</button>
         <p class="subtle">Gym classes stay separate from your program and count toward History, Stats, and eligible weight PRs. Saved locally on this device.</p>
       </div>
@@ -3647,43 +3661,91 @@ window.addEventListener("resize",()=>{if(!document.getElementById("nrTutorial").
 
 /* NEXT//REP V6.1 gym class import: all editable; local-first data */
 let nrGymExercises=[];
+let nrGymNotes={warmup:'',cooldown:''};
 const nrGymStatus=document.getElementById('nrGymStatus');
 const nrGymDate=document.getElementById('nrGymDate');
 const nrGymNow=new Date();nrGymDate.value=nrGymNow.getFullYear()+'-'+String(nrGymNow.getMonth()+1).padStart(2,'0')+'-'+String(nrGymNow.getDate()).padStart(2,'0');
 function nrGymMessage(msg){nrGymStatus.textContent=msg;}
 function nrGymEsc(str){const x=document.createElement('span');x.textContent=String(str??'');return x.innerHTML.replace(/"/g,'&quot;');}
+function nrGymNewSet(reps='',weight=''){return {reps,weight};}
+function nrGymNewExercise(name='',station=1,sets=null){return {name,station,sets:sets||[nrGymNewSet()]};}
 function nrGymParseLines(raw){
- const out=[];
- for(let line of String(raw).split(/\n|;/)){
-  line=line.trim().replace(/^[-•*\d.)\s]+/,'').trim();if(!line)continue;
-  if(/^(round|warm.?up|cool.?down|rest|time|amrap|emom|workout|today|equipment|class)\b/i.test(line))continue;
-  let name=line,sets=3,reps=10,weight=0;
-  let m=line.match(/\b(\d{1,2})\s*(?:x|×|sets?\s*(?:of)?\s*)\s*(\d{1,3})(?:\s*(?:reps?|each))?\b/i);
-  if(m){sets=Number(m[1]);reps=Number(m[2]);name=line.replace(m[0],'').trim()}
-  else {m=line.match(/\b(\d{1,2})\s*sets?\b/i);if(m){sets=Number(m[1]);name=name.replace(m[0],'')}m=line.match(/\b(\d{1,3})\s*reps?\b/i);if(m){reps=Number(m[1]);name=name.replace(m[0],'')}}
-  m=name.match(/\b(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?|kg)\b/i);if(m){weight=Number(m[1]);name=name.replace(m[0],'')}
-  name=name.replace(/^[\s:,.\-–]+|[\s:,.\-–]+$/g,'').replace(/\s+/g,' ');
-  if(!name||name.length>90||/^\d+$/.test(name))continue;
-  out.push({name,sets:Math.min(20,Math.max(1,sets)),reps:Math.min(500,Math.max(1,reps)),weight});
+ const out=[];let station=1,notes={warmup:'',cooldown:''},previousStation=null;
+ const lines=String(raw).split(/\n|;/).map(x=>x.trim()).filter(Boolean);
+ for(let line of lines){
+  if(/^(?:wed|mon|tue|thu|fri|sat|sun)(?:nesday|day|sday|rsday|urday|iday)?$/i.test(line))continue;
+  if(/warm\s*up\s*:/i.test(line)){notes.warmup=line.replace(/^.*?warm\s*up\s*:/i,'').trim();continue;}
+  if(/cool\s*down\s*:/i.test(line)){notes.cooldown=line.replace(/^.*?cool\s*down\s*:/i,'').trim();continue;}
+  if(/^(?:cool\s*down|stretch|take it easy|fat easy|injury free|wanna burn|burn more|rest|time|amrap|emom|workout|today|equipment|class)\b/i.test(line)){
+   if(/cool\s*down|stretch|injury free|burn more/i.test(line))notes.cooldown=[notes.cooldown,line].filter(Boolean).join(' · ');continue;
+  }
+  // Station heading can be "1", "1:", "Station 1", "Group 1", or "1) Leg curls".
+  let m=line.match(/^(?:station|group|exercise\s*group)\s*#?\s*(\d{1,2})\s*[:.)-]?\s*(.*)$/i);
+  if(!m)m=line.match(/^(\d{1,2})\s*[.):\-]\s*(.*)$/);
+  if(m){station=Number(m[1]);previousStation=station;line=m[2].trim();if(!line)continue;}
+  else if(/^\d{1,2}$/.test(line)){station=Number(line);previousStation=station;continue;}
+  line=line.replace(/^[•*\-\s]+/,'').trim();
+  if(!line||/^\d+$/.test(line)||line.length>100)continue;
+  // Do not guess missing sets/reps; this gym's board usually doesn't supply them.
+  let sets=1,reps='',weight='';
+  m=line.match(/\b(\d{1,2})\s*(?:x|×|sets?\s*(?:of)?\s*)\s*(\d{1,3})\b/i);
+  if(m){sets=Math.min(20,Number(m[1]));reps=Number(m[2]);line=line.replace(m[0],'').trim();}
+  else {m=line.match(/\b(\d{1,3})\s*reps?\b/i);if(m){reps=Number(m[1]);line=line.replace(m[0],'').trim();}}
+  m=line.match(/\b(\d+(?:\.\d+)?)\s*(?:lbs?|pounds?|kg)\b/i);
+  if(m){weight=Number(m[1]);line=line.replace(m[0],'').trim();}
+  m=line.match(/(?:x|×)\s*(\d{1,3})\s*[-–]\s*(\d{1,3})\s*s\b/i);
+  if(m){reps='';line=line.replace(m[0],'').trim()+' ('+m[1]+'–'+m[2]+' sec)';}
+  line=line.replace(/^[\s:,.-]+|[\s:,.-]+$/g,'').replace(/\s+/g,' ');
+  if(!line||/^(?:\d+|l\/r)$/i.test(line))continue;
+  out.push(nrGymNewExercise(line,station,Array.from({length:sets},()=>nrGymNewSet(reps,weight))));
+  if(previousStation===null&&out.filter(e=>e.station===station).length>=2)station++;
  }
- return out.slice(0,35);
+ return {exercises:out.slice(0,50),notes};
+}
+function nrGymLast(name){
+ if(!name.trim())return '';
+ const entries=getExerciseHistory(name).slice(-1);if(!entries.length)return '';
+ const sets=(entries[0].exercise.sets||[]).filter(s=>s.done);
+ return sets.length?'LAST: '+sets.map(s=>(Number(s.weight)||0)+' lb × '+(Number(s.reps)||0)).join(' / '):'';
 }
 function nrGymRender(){
  const host=document.getElementById('nrGymRows');host.replaceChildren();
- nrGymExercises.forEach((ex,i)=>{
-  const box=document.createElement('div');box.className='nr-gym-ex';
-  box.innerHTML=`<div class="nr-gym-ex-head"><input aria-label="Exercise name" data-k="name" value="${nrGymEsc(ex.name)}"><button type="button" class="nr-gym-remove" aria-label="Remove exercise">×</button></div><div class="form-grid"><label>Sets<input type="number" min="1" max="20" data-k="sets" value="${ex.sets}"></label><label>Reps<input type="number" min="1" max="500" data-k="reps" value="${ex.reps}"></label><label>Weight (lb)<input type="number" min="0" step="0.5" data-k="weight" value="${ex.weight}"></label></div>`;
-  box.querySelectorAll('[data-k]').forEach(input=>input.addEventListener('input',()=>{ex[input.dataset.k]=input.dataset.k==='name'?input.value:Number(input.value)}));
-  box.querySelector('button').onclick=()=>{nrGymExercises.splice(i,1);nrGymRender()};host.append(box);
+ const info=document.createElement('div');info.className='nr-gym-note';info.innerHTML='<label>WARM-UP (optional)<input id="nrGymWarmup" placeholder="Ski, bike, row — 2–10 min" value="'+nrGymEsc(nrGymNotes.warmup)+'"></label><label style="display:block;margin-top:8px">COOLDOWN (optional)<input id="nrGymCooldown" placeholder="Stretch / cardio" value="'+nrGymEsc(nrGymNotes.cooldown)+'"></label>';
+ info.querySelector('#nrGymWarmup').oninput=e=>nrGymNotes.warmup=e.target.value;
+ info.querySelector('#nrGymCooldown').oninput=e=>nrGymNotes.cooldown=e.target.value;host.append(info);
+ const stations=[...new Set(nrGymExercises.map(e=>Number(e.station)||1))].sort((a,b)=>a-b);
+ stations.forEach(n=>{
+  const section=document.createElement('div');section.className='nr-gym-station';
+  const head=document.createElement('div');head.className='nr-gym-station-head';
+  const heading=document.createElement('span');heading.textContent='STATION '+n;head.append(heading);
+  const add=document.createElement('button');add.type='button';add.textContent='+ Exercise';add.onclick=()=>{nrGymExercises.push(nrGymNewExercise('',n));nrGymRender()};head.append(add);section.append(head);
+  nrGymExercises.forEach((ex,i)=>{if((Number(ex.station)||1)!==n)return;
+   const box=document.createElement('div');box.className='nr-gym-ex';
+   const eh=document.createElement('div');eh.className='nr-gym-ex-head';
+   const name=document.createElement('input');name.value=ex.name;name.placeholder='Exercise name';name.setAttribute('aria-label','Exercise name');name.oninput=()=>{ex.name=name.value;last.textContent=nrGymLast(ex.name)};eh.append(name);
+   const remove=document.createElement('button');remove.className='nr-gym-remove';remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove exercise');remove.onclick=()=>{nrGymExercises.splice(i,1);nrGymRender()};eh.append(remove);box.append(eh);
+   const last=document.createElement('div');last.className='nr-gym-last';last.textContent=nrGymLast(ex.name);box.append(last);
+   ex.sets.forEach((set,j)=>{
+    const row=document.createElement('div');row.className='nr-gym-set';
+    const number=document.createElement('span');number.className='nr-gym-set-number';number.textContent='#'+(j+1);row.append(number);
+    for(const key of ['reps','weight']){
+     const label=document.createElement('label');label.textContent=key==='reps'?'REPS':'WEIGHT (LB)';
+     const input=document.createElement('input');input.type='number';input.min='0';input.step=key==='weight'?'0.5':'1';input.placeholder='—';input.value=set[key]??'';input.oninput=()=>set[key]=input.value;label.append(input);row.append(label);
+    }
+    const del=document.createElement('button');del.className='nr-gym-set-remove';del.type='button';del.textContent='×';del.setAttribute('aria-label','Remove set');del.onclick=()=>{ex.sets.splice(j,1);if(!ex.sets.length)ex.sets.push(nrGymNewSet());nrGymRender()};row.append(del);box.append(row);
+   });
+   const addSet=document.createElement('button');addSet.className='nr-gym-add-set';addSet.type='button';addSet.textContent='+ Add Set';addSet.onclick=()=>{const prev=ex.sets[ex.sets.length-1];ex.sets.push(nrGymNewSet(prev?.reps??'',prev?.weight??''));nrGymRender()};box.append(addSet);section.append(box);
+  });host.append(section);
  });
 }
-document.getElementById('nrGymAdd').onclick=()=>{nrGymExercises.push({name:'',sets:3,reps:10,weight:0});nrGymRender()};
-document.getElementById('nrGymParse').onclick=()=>{
- const rows=nrGymParseLines(document.getElementById('nrGymText').value);
- if(!rows.length){nrGymMessage('No exercises found yet. Try one per line, like: Goblet squat 3 x 12.');return}
- if(nrGymExercises.length&&!confirm('Replace the current class exercises with these '+rows.length+' parsed exercises?'))return;
- nrGymExercises=rows;nrGymRender();nrGymMessage(rows.length+' exercises ready. Check names, sets, reps, and enter your actual weights.');
-};
+document.getElementById('nrGymAdd').onclick=()=>{nrGymExercises.push(nrGymNewExercise('',nrGymExercises.length?nrGymExercises[nrGymExercises.length-1].station:1));nrGymRender()};
+document.getElementById('nrGymAddGroup').onclick=()=>{const n=Math.max(0,...nrGymExercises.map(e=>Number(e.station)||0))+1;nrGymExercises.push(nrGymNewExercise('',n));nrGymRender()};
+function nrGymApplyParsed(parsed,source){
+ if(!parsed.exercises.length){nrGymMessage('No exercises found. Try "Station 1: Leg curls" on one line and "Side planks" on the next.');return}
+ if(nrGymExercises.length&&!confirm('Replace the current class with '+parsed.exercises.length+' detected exercises?'))return;
+ nrGymExercises=parsed.exercises;nrGymNotes=parsed.notes;nrGymRender();nrGymMessage(source+': '+nrGymExercises.length+' exercises. Check stations, add missing sets, and enter your actual weights.');
+}
+document.getElementById('nrGymParse').onclick=()=>nrGymApplyParsed(nrGymParseLines(document.getElementById('nrGymText').value),'Text parsed');
 let nrGymImageUrl=null;let nrGymCurrentFile=null;
 function nrGymImageChosen(file){if(!file)return;nrGymCurrentFile=file;if(!file.type.startsWith('image/')){nrGymMessage('Please choose an image.');return}if(nrGymImageUrl)URL.revokeObjectURL(nrGymImageUrl);nrGymImageUrl=URL.createObjectURL(file);document.getElementById('nrGymPhoto').src=nrGymImageUrl;document.getElementById('nrGymPhotoPreview').hidden=false;nrGymMessage('Photo selected. Tap Read Exercises From Photo, or type the class manually.');}
 for(const [btn,input] of [['nrGymCameraBtn','nrGymCameraInput'],['nrGymUploadBtn','nrGymUploadInput']]){document.getElementById(btn).onclick=()=>document.getElementById(input).click();document.getElementById(input).onchange=e=>nrGymImageChosen(e.target.files[0]);}
@@ -3692,15 +3754,13 @@ function nrGymLoadOCR(){return new Promise((resolve,reject)=>{
  const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('Photo reader could not load. Check your connection, or use Talk / Type.'));document.head.append(s);
 })}
 document.getElementById('nrGymReadPhoto').onclick=async()=>{
- const file=nrGymCurrentFile;
- if(!file){nrGymMessage('Choose a photo first.');return}
- const btn=document.getElementById('nrGymReadPhoto');btn.disabled=true;nrGymMessage('Reading photo… this can take a minute on an iPhone.');
- let worker=null;
+ const file=nrGymCurrentFile;if(!file){nrGymMessage('Choose a photo first.');return}
+ const btn=document.getElementById('nrGymReadPhoto');btn.disabled=true;nrGymMessage('Reading photo… this can take a minute on an iPhone.');let worker=null;
  try{
-  await nrGymLoadOCR();worker=await Tesseract.createWorker('eng');const result=await worker.recognize(file);const text=result.data.text||'';
-  document.getElementById('nrGymText').value=text;
-  const rows=nrGymParseLines(text);
-  if(rows.length){if(!nrGymExercises.length||confirm('Use '+rows.length+' detected lines as your class exercises?')){nrGymExercises=rows;nrGymRender()};nrGymMessage('Photo read. Review every exercise; image text recognition can misread numbers.')}else nrGymMessage('Text extracted but no clear exercise lines found. Edit the text and tap Build Class From Text.');
+  await nrGymLoadOCR();worker=await Tesseract.createWorker('eng');const result=await worker.recognize(file);const raw=result.data.text||'';
+  document.getElementById('nrGymText').value=raw;
+  nrGymApplyParsed(nrGymParseLines(raw),'Photo read');
+  nrGymMessage('Photo read. Review station numbers, exercise names, and each set. Two-column boards may still need manual corrections.');
  }catch(err){nrGymMessage('Photo reading unavailable: '+(err.message||'Unknown error')+'. You can still enter the class manually.')}finally{if(worker)try{await worker.terminate()}catch(e){}btn.disabled=false}
 };
 document.getElementById('nrGymSave').onclick=()=>{
@@ -3708,10 +3768,10 @@ document.getElementById('nrGymSave').onclick=()=>{
  if(!date){nrGymMessage('Choose the class date first.');return}
  if(!nrGymExercises.length){nrGymMessage('Add at least one exercise before saving.');return}
  if(nrGymExercises.some(e=>!String(e.name||'').trim())){nrGymMessage('Give every exercise a name before saving.');return}
- const exercises=nrGymExercises.map(e=>({name:String(e.name).trim(),muscle:'Gym Class',equipment:'Class',sets:Array.from({length:Math.max(1,Math.min(20,Number(e.sets)||1))},()=>({weight:Math.max(0,Number(e.weight)||0),reps:Math.max(0,Number(e.reps)||0),done:true}))}));
+ const exercises=nrGymExercises.map(e=>({name:String(e.name).trim(),muscle:'Gym Class',equipment:'Class',station:Number(e.station)||1,sets:e.sets.map(s=>({weight:s.weight===''?0:Math.max(0,Number(s.weight)||0),reps:s.reps===''?0:Math.max(0,Number(s.reps)||0),done:s.weight!==''||s.reps!==''}))}));
  const localDate=new Date(date+'T12:00:00');
- history.push({date:localDate.toISOString(),dayName:name,focus:'Gym Class',type:'gym-class',duration:0,exercises});
- saveAll();nrGymMessage('Saved! '+name+' is on your History calendar.');nrGymExercises=[];nrGymRender();document.getElementById('nrGymText').value='';
+ history.push({date:localDate.toISOString(),dayName:name,focus:'Gym Class',type:'gym-class',duration:0,notes:{...nrGymNotes},exercises});
+ saveAll();nrGymMessage('Saved! '+name+' is on your History calendar.');nrGymExercises=[];nrGymNotes={warmup:'',cooldown:''};nrGymRender();document.getElementById('nrGymText').value='';
  nrCalendarMonth=new Date(localDate.getFullYear(),localDate.getMonth(),1);nrCalendarSelected=nrDayKey(localDate);
  historyView='workouts';document.getElementById('nrHistoryShortcut').click();
 };
