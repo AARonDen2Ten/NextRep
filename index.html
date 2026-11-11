@@ -1015,9 +1015,9 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-build-panel[hidden]{display:none!important;}
 .nr-build-panel{scroll-margin-top:15px;}
 .nr-build-intro h2{margin-bottom:4px;}
-/* V5.8 — history dumbbell, iPhone-safe splash and tutorial */
-.nr-history-shortcut{width:100px;height:42px;padding:0 2px;background:transparent;border:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nr-history-shortcut svg{width:100%;height:38px;filter:drop-shadow(0 2px 3px #0008)}
+/* V5.9 — history dumbbell, iPhone-safe splash and guided location tour */
+.nr-history-shortcut{width:110px;height:44px;padding:0 2px;background:transparent;border:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nr-history-shortcut svg{width:100%;height:42px;filter:drop-shadow(0 2px 3px #0008)}
 .nr-header-right{gap:7px}
 .header{padding-top:calc(22px + env(safe-area-inset-top, 0px))!important}
 #nrSplash{position:fixed;inset:0;background:#0c0c0d;z-index:1000;display:grid;place-items:center;pointer-events:none;opacity:1;transition:opacity .45s ease}
@@ -1028,18 +1028,18 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-splash-tag{font-size:13px;letter-spacing:5px;color:#d6d6d6;font-weight:800;margin-top:8px}
 .nr-splash-line{height:3px;width:115px;background:#f4c400;margin:25px auto;border-radius:10px}
 @keyframes nrSplashIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-#nrTutorial{position:fixed;inset:0;z-index:1200;background:#000b;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 20px) 18px calc(env(safe-area-inset-bottom,0px) + 20px)}
+#nrTutorial{position:fixed;inset:0;z-index:1200;background:transparent;display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 78px);pointer-events:none}
 #nrTutorial[hidden]{display:none!important}
-.nr-tutorial-card{width:min(100%,440px);max-height:100%;overflow:auto;background:#202020;color:#fff;border:1px solid #515151;border-radius:20px;padding:22px;box-shadow:0 16px 55px #000b}
+.nr-tutorial-card{pointer-events:auto;width:min(100%,440px);max-height:min(45vh,390px);overflow:auto;background:#202020;color:#fff;border:1px solid #515151;border-radius:20px;padding:22px;box-shadow:0 16px 55px #000b}
 .nr-tutorial-top{display:flex;justify-content:space-between;align-items:center;color:#f4c400;letter-spacing:2px;font-size:12px}
 .nr-tutorial-top button{font-size:28px;border:0;background:transparent;color:#fff}
 .nr-tutorial-progress{height:6px;background:#444;border-radius:20px;overflow:hidden;margin:20px 0 9px}
 #nrTutorialProgress{height:100%;background:#f4c400;transition:width .2s}
 .nr-tutorial-count{font-size:12px;color:#aaa}
-.nr-tutorial-emoji{font-size:46px;margin:26px 0 14px}
+.nr-tutorial-emoji{font-size:28px;margin:10px 0 7px}
 .nr-tutorial-card h2{font-size:23px;margin:0 0 12px}
-#nrTutorialBody{font-size:15px;line-height:1.6;color:#ddd;min-height:100px}
-.nr-tutorial-actions{display:flex;align-items:center;gap:8px;margin-top:25px}
+#nrTutorialBody{font-size:14px;line-height:1.45;color:#ddd;min-height:60px}
+.nr-tutorial-actions{display:flex;align-items:center;gap:8px;margin-top:12px}
 .nr-tutorial-actions button{padding:12px;border:1px solid #555;background:#303030;color:#fff;border-radius:11px;font-weight:800}
 #nrTutorialNext{margin-left:auto;background:#f4c400;color:#111;border-color:#f4c400}
 .nr-demo-poses{display:grid;gap:10px}
@@ -1047,13 +1047,47 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 .nr-demo-poses img{display:block;width:100%;height:auto}
 .nr-demo-poses figcaption{padding:8px 12px;color:#f4c400;font-weight:850;font-size:12px}
 @media(prefers-reduced-motion:reduce){#nrSplash,.nr-splash-center{transition:none;animation:none}}
+
+#nrTourSpotlight{position:fixed;z-index:1198;pointer-events:none;border:2px solid #f4c400;border-radius:12px;box-shadow:0 0 0 200vmax rgba(0,0,0,.60),0 0 22px #f4c40066;transition:top .18s,left .18s,width .18s,height .18s;display:none}
+#nrTutorial{z-index:1200}
+@media(max-height:700px){.nr-tutorial-card{max-height:48vh;padding:14px}.nr-tutorial-card h2{font-size:19px}.nr-tutorial-progress{margin:8px 0}}
+
+/* V6: history calendar + polished app surfaces */
+.nr-history-shortcut{min-width:102px!important;width:102px!important;padding:0!important;background:transparent!important;border:0!important;filter:drop-shadow(0 2px 3px #0008)}
+.nr-history-shortcut svg{height:44px!important;display:block}
+#historyScreen .card:first-child{background:linear-gradient(145deg,#1a1a1b,#0d0d0e)!important;border:1px solid #353535!important;color:#fff!important;border-radius:20px}
+#historyScreen .card:first-child h2{color:#f4c400!important;letter-spacing:.5px}
+#historyScreen .card:first-child .subtle{color:#bcbcbc!important}
+.nr-cal-wrap{background:#151515;border:1px solid #383838;color:white;border-radius:18px;padding:14px 10px 16px;margin:14px 0}
+.nr-cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 3px 14px}
+.nr-cal-head strong{font-size:17px;letter-spacing:.3px}
+.nr-cal-arrow{background:#282828;color:#fff;border:1px solid #454545;border-radius:10px;width:38px;height:36px;font-size:23px;font-weight:800}
+.nr-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.nr-cal-weekday{text-align:center;color:#9e9e9e;font-size:11px;font-weight:800;padding:5px 0 7px}
+.nr-cal-day{position:relative;min-width:0;min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#222;color:#eaeaea;border:1px solid #343434;border-radius:10px;font-size:13px;font-weight:800;padding:3px 0}
+.nr-cal-day.has-workout{background:#36301b;border-color:#8a7425;color:#fff}
+.nr-cal-day.has-pr{border-color:#f4c400;box-shadow:inset 0 0 0 1px #f4c400}
+.nr-cal-day.selected{background:#f4c400;color:#111;border-color:#f4c400}
+.nr-cal-day.today:not(.selected){outline:1px dashed #9a9a9a;outline-offset:-3px}
+.nr-cal-mark{font-size:12px;line-height:12px;color:#f4c400}
+.nr-cal-day.selected .nr-cal-mark{color:#111}
+.nr-cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin:15px 4px 4px;color:#bbb;font-size:11px;font-weight:700}
+.nr-cal-legend b{color:#f4c400}
+.nr-cal-details{background:#202020;border:1px solid #3c3c3c;border-radius:14px;padding:13px;margin-top:14px;color:#fff}
+.nr-cal-details h3{margin:0 0 10px;font-size:15px;color:#f4c400}
+.nr-cal-details .history-item{background:#2b2b2b;border-radius:11px;margin-bottom:8px;padding:10px;border:1px solid #454545}
+.nr-cal-details .history-meta{color:#c0c0c0}
+.nr-cal-empty{color:#aaa;font-size:13px;margin:4px 0}
+/* consistent dark cards with yellow accents */
+#historyScreen .history-tabs{gap:6px}
+#historyScreen .history-tabs .btn{font-size:11px;letter-spacing:.3px;padding:10px 5px}
 </style>
 </head>
 
 <body>
 
 <div id="nrSplash" aria-hidden="true"><div class="nr-splash-center"><div class="nr-splash-logo">NEXT<span>//</span>REP</div><div class="nr-splash-tag">BEAT YOUR LAST.</div><div class="nr-splash-line"></div></div></div>
-<div id="nrTutorial" hidden role="dialog" aria-modal="true" aria-label="NEXT REP tutorial">
+<div id="nrTourSpotlight" aria-hidden="true"></div><div id="nrTutorial" hidden role="dialog" aria-modal="true" aria-label="NEXT REP tutorial">
  <div class="nr-tutorial-card">
   <div class="nr-tutorial-top"><strong>GETTING STARTED</strong><button type="button" id="nrTutorialClose" aria-label="Close tutorial">×</button></div>
   <div class="nr-tutorial-progress"><div id="nrTutorialProgress"></div></div>
@@ -1070,9 +1104,9 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.8 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V6.0 TEST</div>
       </div>
-      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 112 38" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History"><defs><linearGradient id="nrMetal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e1e1e1"/><stop offset=".48" stop-color="#757575"/><stop offset="1" stop-color="#b4b4b4"/></linearGradient><linearGradient id="nrPlate" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#090909"/><stop offset=".55" stop-color="#3a3a3a"/><stop offset="1" stop-color="#101010"/></linearGradient></defs><rect x="12" y="14" width="88" height="10" rx="3" fill="url(#nrMetal)"/><rect x="3" y="8" width="11" height="22" rx="3" fill="url(#nrPlate)" stroke="#555"/><rect x="14" y="4" width="12" height="30" rx="3" fill="url(#nrPlate)" stroke="#626262"/><rect x="86" y="4" width="12" height="30" rx="3" fill="url(#nrPlate)" stroke="#626262"/><rect x="98" y="8" width="11" height="22" rx="3" fill="url(#nrPlate)" stroke="#555"/><rect x="28" y="9" width="56" height="20" rx="5" fill="#242424" stroke="#9c9c9c"/><text x="56" y="22" fill="#f8f8f8" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="900">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
+      <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><svg viewBox="0 0 128 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="History dumbbell"><defs><linearGradient id="nrSteel" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f1f1f1"/><stop offset=".5" stop-color="#757575"/><stop offset="1" stop-color="#d1d1d1"/></linearGradient></defs><rect x="9" y="21" width="110" height="6" rx="2" fill="url(#nrSteel)"/><rect x="4" y="16" width="9" height="16" rx="2" fill="#666" stroke="#aaa"/><rect x="13" y="8" width="13" height="32" rx="3" fill="#222" stroke="#999" stroke-width="1.5"/><rect x="102" y="8" width="13" height="32" rx="3" fill="#222" stroke="#999" stroke-width="1.5"/><rect x="115" y="16" width="9" height="16" rx="2" fill="#666" stroke="#aaa"/><rect x="28" y="14" width="72" height="20" rx="7" fill="#111" stroke="#f4c400" stroke-width="2"/><text x="64" y="27.7" text-anchor="middle" font-family="Arial,sans-serif" font-size="12.3" font-weight="900" letter-spacing=".7" fill="#f4c400">HISTORY</text></svg></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
 
     <div class="week-progress" id="weeklyText">
@@ -1304,15 +1338,15 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 
     <div class="card">
       <div class="section-label">Training History</div>
-      <h2>Your Workouts</h2>
+      <h2>YOUR TRAINING CALENDAR</h2>
       <p class="subtle">
-        Completed sessions and previous performance live here.
+        Your consistency at a glance. Yellow marks workouts; gold trophies mark new records.
       </p>
     </div>
 
     <div class="card">
       <div class="history-tabs">
-        <button class="btn active" id="historyWorkoutsTab">WORKOUTS</button>
+        <button class="btn active" id="historyWorkoutsTab">CALENDAR</button>
         <button class="btn outline" id="historyPRsTab">PRs</button>
         <button class="btn outline" id="historyStatsTab">STATS</button>
       </div>
@@ -2982,36 +3016,89 @@ document.getElementById("resetDayBtn").onclick=()=>{
 ========================================================= */
 
 let historyView="workouts";
+let nrCalendarMonth=new Date(); nrCalendarMonth.setDate(1);
+let nrCalendarSelected=null;
 document.getElementById("historyWorkoutsTab").onclick=()=>{ historyView="workouts"; renderHistory(); };
 document.getElementById("historyPRsTab").onclick=()=>{ historyView="prs"; renderHistory(); };
 document.getElementById("historyStatsTab").onclick=()=>{ historyView="stats"; renderHistory(); };
-function renderHistory(){
-  const workouts=document.getElementById("historyList");
-  const prs=document.getElementById("prList");
-  const stats=document.getElementById("statsList");
-  const wt=document.getElementById("historyWorkoutsTab"), pt=document.getElementById("historyPRsTab"), st=document.getElementById("historyStatsTab");
-  wt.className="btn "+(historyView==="workouts"?"active":"outline");
-  pt.className="btn "+(historyView==="prs"?"active":"outline");
-  st.className="btn "+(historyView==="stats"?"active":"outline");
-  workouts.style.display=historyView==="workouts"?"block":"none";
-  prs.style.display=historyView==="prs"?"block":"none";
-  stats.style.display=historyView==="stats"?"block":"none";
-  if(historyView==="prs"){ renderPRs(); return; }
-  if(historyView==="stats"){ renderStats(); return; }
-  if(!history.length){ workouts.innerHTML='<div class="empty">Finish your first workout and it will show up here.</div>'; return; }
-  workouts.innerHTML="";
-  [...history].reverse().forEach(workout=>{
-    const date=new Date(workout.date);
-    const item=document.createElement("div"); item.className="history-item";
-    const totalSets=workout.exercises.reduce((sum,x)=>sum+x.sets.filter(s=>s.done).length,0);
-    const details=workout.exercises.map(ex=>{
-      const sets=ex.sets.map((s,i)=>`<div class="history-set">Set ${i+1}: ${s.weight||"—"} lb × ${s.reps||"—"} ${s.done?"✓":""}</div>`).join("");
-      return `<div class="history-exercise"><div class="history-exercise-name">${ex.name}</div>${sets}</div>`;
-    }).join("");
-    item.innerHTML=`<div class="history-title">${workout.dayName} <span style="float:right">⌄</span></div><div class="history-meta">${date.toLocaleDateString()} · ${workout.exercises.length} exercises · ${totalSets} completed sets · ${formatTimer(workout.duration)}</div><div class="history-details">${details}</div>`;
-    item.onclick=()=>item.classList.toggle("open");
-    workouts.appendChild(item);
+function nrDayKey(value){ const d=new Date(value); if(Number.isNaN(d.getTime()))return "";return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function nrCalendarPRDays(){
+ const best=new Map(), days=new Set();
+ [...history].sort((a,b)=>new Date(a.date)-new Date(b.date)).forEach(w=>{
+  let record=false;
+  (w.exercises||[]).forEach(ex=>{
+   const name=String(ex.name||"").toLowerCase();
+   (ex.sets||[]).forEach(s=>{
+    if(!s.done)return;
+    const weight=Number(s.weight)||0,reps=Number(s.reps)||0;
+    if(weight<=0||reps<=0)return;
+    // Compare highest completed weight for each exercise; first recorded performance establishes a baseline, not a PR.
+    const previous=best.get(name);
+    if(previous!==undefined && weight>previous)record=true;
+    if(previous===undefined||weight>previous)best.set(name,weight);
+   });
   });
+  if(record)days.add(nrDayKey(w.date));
+ });
+ return days;
+}
+function nrHistorySessionCard(workout){
+ const date=new Date(workout.date), item=document.createElement("div");item.className="history-item";
+ const exercises=workout.exercises||[];
+ const totalSets=exercises.reduce((sum,x)=>sum+(x.sets||[]).filter(s=>s.done).length,0);
+ const details=exercises.map(ex=>{
+  const sets=(ex.sets||[]).map((s,i)=>`<div class="history-set">Set ${i+1}: ${s.weight||"—"} lb × ${s.reps||"—"} ${s.done?"✓":""}</div>`).join("");
+  const name=document.createElement("span");name.textContent=ex.name||"Exercise";
+  return `<div class="history-exercise"><div class="history-exercise-name">${name.innerHTML}</div>${sets}</div>`;
+ }).join("");
+ const safeDay=document.createElement("span");safeDay.textContent=workout.dayName||"Workout";
+ item.innerHTML=`<div class="history-title">${safeDay.innerHTML} <span style="float:right">⌄</span></div><div class="history-meta">${date.toLocaleDateString()} · ${exercises.length} exercises · ${totalSets} completed sets · ${formatTimer(workout.duration||0)}</div><div class="history-details">${details}</div>`;
+ item.onclick=()=>item.classList.toggle("open");return item;
+}
+function nrRenderCalendar(){
+ const host=document.getElementById("historyList");host.replaceChildren();
+ const wrap=document.createElement("div");wrap.className="nr-cal-wrap";
+ const head=document.createElement("div");head.className="nr-cal-head";
+ const prev=document.createElement("button"),next=document.createElement("button"),label=document.createElement("strong");
+ prev.className=next.className="nr-cal-arrow";prev.textContent="‹";next.textContent="›";
+ label.textContent=nrCalendarMonth.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+ prev.onclick=()=>{nrCalendarMonth.setMonth(nrCalendarMonth.getMonth()-1);nrCalendarSelected=null;nrRenderCalendar()};
+ next.onclick=()=>{nrCalendarMonth.setMonth(nrCalendarMonth.getMonth()+1);nrCalendarSelected=null;nrRenderCalendar()};
+ head.append(prev,label,next);wrap.append(head);
+ const grid=document.createElement("div");grid.className="nr-cal-grid";
+ ["S","M","T","W","T","F","S"].forEach(x=>{const e=document.createElement("div");e.className="nr-cal-weekday";e.textContent=x;grid.append(e)});
+ const year=nrCalendarMonth.getFullYear(),month=nrCalendarMonth.getMonth();
+ const start=new Date(year,month,1).getDay(), count=new Date(year,month+1,0).getDate();
+ for(let i=0;i<start;i++){grid.append(document.createElement("div"))}
+ const byDay=new Map();history.forEach(w=>{const k=nrDayKey(w.date);if(!byDay.has(k))byDay.set(k,[]);byDay.get(k).push(w)});
+ const prs=nrCalendarPRDays(),today=nrDayKey(new Date());
+ for(let d=1;d<=count;d++){
+  const key=nrDayKey(new Date(year,month,d)),entries=byDay.get(key)||[],pr=prs.has(key);
+  const btn=document.createElement("button");btn.className="nr-cal-day"+(entries.length?" has-workout":"")+(pr?" has-pr":"")+(nrCalendarSelected===key?" selected":"")+(key===today?" today":"");
+  btn.setAttribute("aria-label",`${d} ${label.textContent}${entries.length?", "+entries.length+" workout(s)":""}${pr?", new personal record":""}`);
+  const num=document.createElement("span");num.textContent=d;btn.append(num);
+  if(entries.length){const mark=document.createElement("span");mark.className="nr-cal-mark";mark.textContent=pr?"🏆":"●";btn.append(mark)}
+  btn.onclick=()=>{nrCalendarSelected=key;nrRenderCalendar()};grid.append(btn);
+ }
+ wrap.append(grid);
+ const legend=document.createElement("div");legend.className="nr-cal-legend";legend.innerHTML="<span><b>●</b> Workout logged</span><span><b>🏆</b> New weight PR</span>";wrap.append(legend);
+ const detail=document.createElement("div");detail.className="nr-cal-details";
+ const key=nrCalendarSelected||nrDayKey(new Date(year,month,1));
+ const selectedDate=nrCalendarSelected?new Date(nrCalendarSelected+"T12:00:00"):null;
+ const title=document.createElement("h3");title.textContent=selectedDate?selectedDate.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"}):"Select a day to view your sessions";detail.append(title);
+ const entries=nrCalendarSelected?(byDay.get(key)||[]):[];
+ if(entries.length){if(prs.has(key)){const trophy=document.createElement("p");trophy.textContent="🏆 New weight PR recorded";trophy.style.color="#f4c400";detail.append(trophy)}entries.forEach(w=>detail.append(nrHistorySessionCard(w)))}
+ else{const empty=document.createElement("p");empty.className="nr-cal-empty";empty.textContent=nrCalendarSelected?"No workout logged on this day.":"Tap any highlighted date to review your workout.";detail.append(empty)}
+ wrap.append(detail);host.append(wrap);
+ if(!history.length){const empty=document.createElement("p");empty.className="nr-cal-empty";empty.textContent="Finish your first workout to start filling your calendar.";host.append(empty)}
+}
+function renderHistory(){
+ const workouts=document.getElementById("historyList"),prs=document.getElementById("prList"),stats=document.getElementById("statsList");
+ const wt=document.getElementById("historyWorkoutsTab"),pt=document.getElementById("historyPRsTab"),st=document.getElementById("historyStatsTab");
+ wt.className="btn "+(historyView==="workouts"?"active":"outline");pt.className="btn "+(historyView==="prs"?"active":"outline");st.className="btn "+(historyView==="stats"?"active":"outline");
+ workouts.style.display=historyView==="workouts"?"block":"none";prs.style.display=historyView==="prs"?"block":"none";stats.style.display=historyView==="stats"?"block":"none";
+ if(historyView==="prs"){renderPRs();return;}if(historyView==="stats"){renderStats();return;}
+ nrRenderCalendar();
 }
 function renderPRs(){
   const wrap=document.getElementById("prList");
@@ -3412,7 +3499,7 @@ paintTimer();
 paintRest();
 
 
-/* V5.8 — guided first-run onboarding */
+/* V5.9 — guided first-run onboarding with contextual navigation */
 const nrTutorialSteps=[
 ["💪","Welcome to NEXT//REP","Track your workouts, build your own training days, and beat your last performance. This quick tour shows you where everything lives."],
 ["🏋️","Workout","Your Workout tab is where you train. Open a day, follow the exercises, and log each set as you go."],
@@ -3423,11 +3510,52 @@ const nrTutorialSteps=[
 ["✏️","Edit Before You Use","Swap or remove exercises, change sets and reps, and reorder the list. Nothing replaces a Program day until you confirm."],
 ["📚","Library","Find your saved workouts and browse exercise options. Save a Quick Build you like so you can use it again."],
 ["⏱️","Track Sets & Rest","Record weight and reps while you train. Use the built-in timers and rest controls to keep moving."],
-["📊","History","Tap the dumbbell in the header to review your previous sessions, progress, and personal records."],
+["📊","History","Tap the dumbbell in the header to open your training calendar. Yellow dots show workout days; trophies show new weight PRs. Tap a day for details."],
 ["🦾","Exercise Guides","Tap an exercise thumbnail or Guide button to see muscles worked, available demonstrations, and form instructions."],
 ["⚙️","Settings & Backup","Use the gear for appearance, figure preference, rest defaults, and JSON backup. Replay this tutorial anytime from Settings."]
 ];
 let nrTutorialIndex=0;
+function nrTourNavigate(screen){
+ const btn=document.querySelector('.nav button[data-screen="'+screen+'"]');
+ if(btn)btn.click();
+ else if(screen==="history")document.getElementById("nrHistoryShortcut").click();
+}
+function nrTourLocate(){
+ const step=nrTutorialIndex;
+ // Each step takes the user to the actual screen or control being described.
+ const screens=["workout","workout","program","build","build","build","build","libraryworkouts","workout","history","workout","workout"];
+ if(step!==11)closeModal("settingsModal");
+ nrTourNavigate(screens[step]);
+ if(step===4||step===6){
+   nrBuildSelect("describe");
+ }else if(step===5){
+   nrBuildSelect("surprise");
+ }
+ if(step===11)openModal("settingsModal");
+ const targets=[
+  ".header","#workoutScreen .card","#programScreen .card",
+  ".nr-build-choices",'[data-build-choice="describe"]',
+  '[data-build-choice="surprise"]',"#nrBuildDescribe",
+  "#libraryworkoutsScreen .card","#workoutScreen .card",
+  "#nrHistoryShortcut","#workoutScreen","#settingsModal .modal-content"
+ ];
+ let el=document.querySelector(targets[step]);
+ if(!el||el.hidden||el.getClientRects().length===0){
+   el=document.getElementById(screens[step]+"Screen")||document.querySelector(".header");
+ }
+ if(!el)return;
+ if(step!==11 && step!==0 && step!==9){
+   el.scrollIntoView({block:"start",behavior:"instant"});
+ }
+ requestAnimationFrame(()=>{
+   const r=el.getBoundingClientRect(), spot=document.getElementById("nrTourSpotlight");
+   const pad=5, top=Math.max(3,r.top-pad), left=Math.max(3,r.left-pad);
+   spot.style.top=top+"px";spot.style.left=left+"px";
+   spot.style.width=Math.max(0,Math.min(innerWidth-left-3,r.width+pad*2))+"px";
+   spot.style.height=Math.max(0,Math.min(innerHeight-top-3,r.height+pad*2))+"px";
+   spot.style.display="block";
+ });
+}
 function nrTutorialRender(){
  const step=nrTutorialSteps[nrTutorialIndex];
  document.getElementById("nrTutorialCount").textContent="Step "+(nrTutorialIndex+1)+" of "+nrTutorialSteps.length;
@@ -3437,14 +3565,23 @@ function nrTutorialRender(){
  document.getElementById("nrTutorialBody").textContent=step[2];
  document.getElementById("nrTutorialBack").hidden=nrTutorialIndex===0;
  document.getElementById("nrTutorialNext").textContent=nrTutorialIndex===nrTutorialSteps.length-1?"Finish ✓":"Next →";
+ nrTourLocate();
 }
-function nrTutorialOpen(){nrTutorialIndex=0;nrTutorialRender();document.getElementById("nrTutorial").hidden=false;}
-function nrTutorialClose(){document.getElementById("nrTutorial").hidden=true;localStorage.setItem("nextrep_tutorialSeen","1");}
+function nrTutorialOpen(){nrTutorialIndex=0;document.getElementById("nrTutorial").hidden=false;nrTutorialRender();}
+function nrTutorialClose(){
+ document.getElementById("nrTutorial").hidden=true;
+ document.getElementById("nrTourSpotlight").style.display="none";
+ closeModal("settingsModal");
+ localStorage.setItem("nextrep_tutorialSeen","1");
+ nrTourNavigate("workout");
+ window.scrollTo(0,0);
+}
 document.getElementById("nrTutorialNext").onclick=()=>{if(nrTutorialIndex===nrTutorialSteps.length-1)nrTutorialClose();else{nrTutorialIndex++;nrTutorialRender();}};
 document.getElementById("nrTutorialBack").onclick=()=>{nrTutorialIndex=Math.max(0,nrTutorialIndex-1);nrTutorialRender();};
 document.getElementById("nrTutorialSkip").onclick=nrTutorialClose;
 document.getElementById("nrTutorialClose").onclick=nrTutorialClose;
 document.getElementById("nrReplayTutorial").onclick=()=>{closeModal("settingsModal");nrTutorialOpen();};
+window.addEventListener("resize",()=>{if(!document.getElementById("nrTutorial").hidden)nrTourLocate();});
 (function nrLaunch(){
  const splash=document.getElementById("nrSplash");
  const first=!localStorage.getItem("nextrep_tutorialSeen");
