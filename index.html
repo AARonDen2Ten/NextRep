@@ -959,6 +959,28 @@ body[data-theme="dark"] #settingsModal .modal-header {background:#202020;}
 .nr-guide-button:focus-visible {outline:2px solid var(--yellow);}
 body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
 @media(max-width:380px){.nr-exercise-heading {flex-direction:column;}.nr-guide-button {margin-bottom:8px;}}
+
+/* NEXT//REP V5.3 — Quick Build */
+.nr-quick-card {border-color:#9b812d;}
+.nr-quick-label {display:block;font-size:12px;font-weight:850;margin:8px 0;}
+#nrQuickPrompt {width:100%;min-height:100px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);color:var(--text);font:inherit;font-size:16px;resize:vertical;}
+#nrQuickPrompt:focus {outline:2px solid var(--yellow);}
+.nr-quick-examples {display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 13px;}
+.nr-example {padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-size:12px;font-weight:750;}
+.nr-quick-primary {background:var(--yellow)!important;color:#111!important;border:1px solid var(--yellow)!important;}
+.nr-quick-preview-heading {display:flex;justify-content:space-between;gap:8px;align-items:center;margin:16px 0 10px;}
+.nr-quick-preview-heading span {font-size:11px;color:var(--muted);}
+.nr-quick-row {display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line);}
+.nr-quick-row-main {flex:1;min-width:0;}
+.nr-quick-row-name {font-weight:850;font-size:13px;}
+.nr-quick-row-meta {color:var(--muted);font-size:11px;margin-top:4px;}
+.nr-quick-row-actions {display:flex;gap:5px;}
+.nr-quick-row-actions button {border:1px solid var(--line);background:var(--surface-2);color:var(--text);border-radius:9px;padding:8px;font-size:12px;font-weight:750;}
+.nr-quick-apply {margin-top:16px;padding-top:12px;border-top:1px solid var(--line);}
+.nr-quick-apply .btn {width:100%;}
+.nr-quick-apply .subtle {margin:8px 0 0;}
+.nr-quick-add-panel {padding:12px;border:1px solid var(--line);border-radius:12px;margin:10px 0;}
+.nr-quick-add-panel select {width:100%;min-height:44px;background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:8px;}
 </style>
 </head>
 
@@ -970,7 +992,7 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V5.2 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V5.3 TEST</div>
       </div>
       <div class="nr-header-right"><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1098,6 +1120,32 @@ body[data-theme="dark"] .nr-guide-button {color:#f4c400;border-color:#6b5a24;}
       <div class="summary-box" id="muscleSummary"></div>
     </div>
 
+    <div class="card nr-quick-card">
+      <div class="section-label">NEW · QUICK BUILD</div>
+      <h2>Describe Your Workout</h2>
+      <p class="subtle">Type what you want, or tap the microphone on your iPhone keyboard to dictate it. Review every exercise before using it.</p>
+      <label for="nrQuickPrompt" class="nr-quick-label">What are we training today?</label>
+      <textarea id="nrQuickPrompt" rows="3" placeholder="3 chest, 4 triceps and 1 biceps. Dumbbells and cables only. 3 sets each."></textarea>
+      <div class="nr-quick-examples">
+        <button type="button" class="nr-example" data-prompt="3 chest, 4 triceps and 1 biceps. Dumbbells and cables only.">Push day</button>
+        <button type="button" class="nr-example" data-prompt="4 back exercises and 2 biceps exercises. Machines and cables only.">Pull day</button>
+        <button type="button" class="nr-example" data-prompt="3 quads, 2 hamstrings, 2 glutes and 1 calves exercise. Machines only.">Leg day</button>
+      </div>
+      <button type="button" class="btn nr-quick-primary" id="nrQuickGenerate">✦ Build My Workout</button>
+      <p class="subtle" id="nrQuickStatus" role="status" aria-live="polite"></p>
+      <div id="nrQuickPreview" hidden>
+        <div class="nr-quick-preview-heading"><strong>Preview · <span id="nrQuickCount">0</span> exercises</strong><span>Nothing saved yet</span></div>
+        <div id="nrQuickList"></div>
+        <div class="button-row">
+          <button type="button" class="btn outline" id="nrQuickRegenerate">↻ Regenerate</button>
+          <button type="button" class="btn outline" id="nrQuickAdd">+ Add Exercise</button>
+        </div>
+        <div class="nr-quick-apply">
+          <button type="button" class="btn nr-quick-primary" id="nrQuickUse">Use for Selected Day</button>
+          <p class="subtle">Replaces the selected day's exercises only after you confirm. Your other days stay unchanged.</p>
+        </div>
+      </div>
+    </div>
     <div class="card">
       <div class="section-label">Exercises</div>
       <p class="subtle">Drag an exercise to reorder, or use the arrows. Tap Edit to change sets and reps.</p><div id="programExerciseList" class="exercise-list"></div>
@@ -2990,6 +3038,145 @@ document.querySelectorAll(".modal").forEach(modal=>{
   });
 });
 
+
+
+/* V5.3 Quick Build: offline, local-library matching. No API or microphone permission needed. */
+const nrQuickState={items:[],requests:[],equipment:[],sets:3,sequence:0};
+const nrQuickMuscles=["Chest","Triceps","Biceps","Back","Shoulders","Quads","Hamstrings","Glutes","Calves","Core","Full Body"];
+const nrQuickAliases={
+ "Chest":["chest","pec","pecs","pectoral"],
+ "Triceps":["tricep","triceps","tri's"],
+ "Biceps":["bicep","biceps","bi's"],
+ "Back":["back","lats","lat"],
+ "Shoulders":["shoulder","shoulders","delts","delt"],
+ "Quads":["quad","quads","quadriceps"],
+ "Hamstrings":["hamstring","hamstrings","hams"],
+ "Glutes":["glute","glutes","gluteus","butt"],
+ "Calves":["calf","calves"],
+ "Core":["core","abs","abdominal","abdominals"],
+ "Full Body":["full body","full-body"]
+};
+const nrQuickEquipment={
+ "Dumbbell":["dumbbell","dumbbells","db"],
+ "Cable":["cable","cables"],
+ "Machine":["machine","machines"],
+ "Barbell":["barbell","barbells"],
+ "Bodyweight":["bodyweight","body weight","no equipment"],
+ "Kettlebell":["kettlebell","kettlebells"],
+ "Resistance Band":["resistance band","resistance bands","bands"],
+ "Smith Machine":["smith machine"]
+};
+function nrQuickEscape(str){return String(str).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function nrQuickParse(input){
+ const text=input.toLowerCase().replace(/[’]/g,"'");
+ const wordNum={a:1,an:1,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+ const countPattern="(\\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten)";
+ const requests=[];
+ for(const muscle of nrQuickMuscles){
+   const aliases=nrQuickAliases[muscle].slice().sort((a,b)=>b.length-a.length);
+   let best=0;
+   for(const alias of aliases){
+     const a=alias.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+     const before=new RegExp("\\b"+countPattern+"\\s+(?:\\w+\\s+){0,2}"+a+"\\b","i").exec(text);
+     const after=new RegExp("\\b"+a+"\\s*(?:exercises?|movements?|workouts?|lifts?)?\\s*[:=-]?\\s*"+countPattern+"\\b","i").exec(text);
+     const m=before||after;
+     if(m){const n=Number(m[1])||wordNum[m[1]]||0;best=Math.max(best,Math.min(12,n));}
+   }
+   if(best)requests.push({muscle,count:best});
+ }
+ if(!requests.length){
+   for(const muscle of nrQuickMuscles){
+     if(nrQuickAliases[muscle].some(a=>new RegExp("\\b"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b").test(text))) requests.push({muscle,count:4});
+   }
+ }
+ const negations=/\b(no|without|avoid|exclude|don't use|do not use)\b/g;
+ const banned=[];
+ let match;
+ while((match=negations.exec(text))){
+   const next=text.slice(match.index+match[0].length).split(/[.,;]/)[0].slice(0,48);
+   for(const [eq,aliases] of Object.entries(nrQuickEquipment))if(aliases.some(a=>new RegExp("\\b"+a+"s?\\b").test(next)))banned.push(eq);
+ }
+ let allowed=Object.entries(nrQuickEquipment).filter(([eq,aliases])=>aliases.some(a=>new RegExp("\\b"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b").test(text))&&!banned.includes(eq)).map(([eq])=>eq);
+ const restrictive=/\b(only|just|using|with|equipment|stick to)\b/.test(text);
+ if(!restrictive)allowed=[];
+ const setsMatch=/\b(\d+|two|three|four|five)\s+sets?\b/.exec(text);
+ const sets=setsMatch?Math.min(8,Math.max(1,Number(setsMatch[1])||wordNum[setsMatch[1]]||3)):3;
+ return {requests,allowed,banned,sets};
+}
+function nrQuickCandidates(muscle){
+ const allowed=nrQuickState.equipment,banned=nrQuickState.banned||[];
+ return LIBRARY.filter(x=>x.muscle===muscle&&!banned.includes(x.equipment)&&(!allowed.length||allowed.includes(x.equipment)));
+}
+function nrQuickGenerate(){
+ const prompt=document.getElementById("nrQuickPrompt").value.trim(),status=document.getElementById("nrQuickStatus");
+ if(!prompt){status.textContent="Describe the muscles or exercises you want first.";return;}
+ const parsed=nrQuickParse(prompt);
+ if(!parsed.requests.length){status.textContent="Try something like: 3 chest, 2 triceps, dumbbells only.";return;}
+ nrQuickState.requests=parsed.requests;nrQuickState.equipment=parsed.allowed;nrQuickState.banned=parsed.banned;nrQuickState.sets=parsed.sets;
+ const items=[],warnings=[];
+ for(const req of parsed.requests){
+   const pool=nrQuickCandidates(req.muscle).filter(x=>!items.some(item=>item.id===x.id));
+   const count=Math.min(req.count,pool.length);
+   if(count<req.count)warnings.push(req.muscle+": found "+count+" of "+req.count);
+   // Rotate starting index for a different selection on regeneration.
+   const start=pool.length?nrQuickState.sequence%pool.length:0;
+   for(let j=0;j<count;j++)items.push(pool[(start+j)%pool.length]);
+ }
+ nrQuickState.sequence++;
+ nrQuickState.items=items.map(x=>({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:parsed.sets}));
+ status.textContent=items.length?(warnings.length?"Built a preview. Limited matches: "+warnings.join("; ")+".":"Preview ready. Swap or remove anything you don't want."):"No exercises matched those restrictions. Try allowing more equipment.";
+ nrQuickRender();
+}
+function nrQuickRender(){
+ const list=document.getElementById("nrQuickList"),items=nrQuickState.items;
+ document.getElementById("nrQuickPreview").hidden=!items.length;
+ document.getElementById("nrQuickCount").textContent=items.length;
+ list.innerHTML="";
+ items.forEach((item,i)=>{
+   const row=document.createElement("div");row.className="nr-quick-row";
+   row.innerHTML='<div class="nr-quick-row-main"><div class="nr-quick-row-name">'+(i+1)+'. '+nrQuickEscape(item.name)+'</div><div class="nr-quick-row-meta">'+nrQuickEscape(item.muscle)+' · '+nrQuickEscape(item.equipment)+' · '+item.sets+' sets</div></div><div class="nr-quick-row-actions"><button type="button" aria-label="Swap exercise">Swap</button><button type="button" aria-label="Remove exercise">✕</button></div>';
+   const buttons=row.querySelectorAll("button");
+   buttons[0].onclick=()=>nrQuickSwap(i);
+   buttons[1].onclick=()=>{items.splice(i,1);nrQuickRender();};
+   list.appendChild(row);
+ });
+}
+function nrQuickSwap(i){
+ const item=nrQuickState.items[i];
+ const pool=nrQuickCandidates(item.muscle).filter(x=>!nrQuickState.items.some(y=>y.id===x.id));
+ if(!pool.length){document.getElementById("nrQuickStatus").textContent="No other "+item.muscle+" exercises match those equipment choices. Remove the restriction and regenerate for more options.";return;}
+ const replacement=pool[Math.floor(Math.random()*pool.length)];
+ nrQuickState.items[i]={id:replacement.id,name:replacement.name,muscle:replacement.muscle,equipment:replacement.equipment,sets:item.sets};
+ document.getElementById("nrQuickStatus").textContent="Swapped "+item.name+" for "+replacement.name+".";
+ nrQuickRender();
+}
+document.getElementById("nrQuickGenerate").onclick=nrQuickGenerate;
+document.getElementById("nrQuickRegenerate").onclick=nrQuickGenerate;
+document.querySelectorAll("[data-prompt]").forEach(btn=>btn.onclick=()=>{document.getElementById("nrQuickPrompt").value=btn.dataset.prompt;nrQuickGenerate();});
+document.getElementById("nrQuickAdd").onclick=()=>{
+ const pool=LIBRARY.filter(x=>!nrQuickState.items.some(y=>y.id===x.id));
+ if(!pool.length)return;
+ const panel=document.createElement("div");panel.className="nr-quick-add-panel";
+ const select=document.createElement("select");select.setAttribute("aria-label","Choose an exercise to add");
+ pool.forEach(x=>{const opt=document.createElement("option");opt.value=x.id;opt.textContent=x.name+" · "+x.muscle+" · "+x.equipment;select.appendChild(opt);});
+ const add=document.createElement("button");add.className="btn nr-quick-primary";add.style.marginTop="8px";add.textContent="Add to Preview";
+ add.onclick=()=>{const x=LIBRARY.find(y=>y.id===select.value);if(x){nrQuickState.items.push({id:x.id,name:x.name,muscle:x.muscle,equipment:x.equipment,sets:nrQuickState.sets});nrQuickRender();}panel.remove();};
+ panel.append(select,add);
+ document.getElementById("nrQuickList").after(panel);
+};
+document.getElementById("nrQuickUse").onclick=()=>{
+ const items=nrQuickState.items;
+ if(!items.length)return;
+ const day=program[programDay];
+ if(!confirm("Replace exercises in "+day.name+" with this "+items.length+"-exercise workout? This changes only this day."))return;
+ day.exercises=items.map(item=>ex(item.name,item.muscle,item.equipment,item.sets,(libraryItemByName(item.name).style==="Strength"?"5-8":"8-12")));
+ day.focus=nrQuickState.requests.map(r=>r.muscle).join(" + ");
+ // Clear only this day's in-progress entries, since exercise indices are changing.
+ for(const key of Object.keys(currentLog)){if(key.startsWith(programDay+"-")||key.startsWith(programDay+"_"))delete currentLog[key];}
+ delete temporarySwaps[dayKey(programDay)];
+ saveAll();renderProgram();renderWorkout();
+ document.getElementById("nrQuickStatus").textContent="Saved to "+day.name+". Your other training days were not changed.";
+};
 
 /* =========================================================
    INITIALIZE
