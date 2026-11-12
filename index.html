@@ -1373,6 +1373,15 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 .nr84-art-figure{margin:0;min-width:0;background:#101114;border:1px solid #383a3d;border-radius:14px;overflow:hidden}
 .nr84-art-figure img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain;cursor:zoom-in}
 @media(max-width:360px){.nr84-art-pair{gap:4px}}
+
+/* V8.6: make start/finish diagrams genuinely usable on phone. */
+.nr86-art-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%}
+.nr86-art-pair .nr84-art-figure{margin:0;min-width:0;border:1px solid #45464a;border-radius:14px;overflow:hidden;background:#101114}
+.nr86-art-pair .nr84-art-figure img{width:100%;height:auto;display:block;object-fit:contain;cursor:zoom-in}
+.nr86-art-pair .nr84-art-figure[hidden]{display:none!important}
+.nr86-art-pair:has(.nr84-art-figure[hidden]){grid-template-columns:minmax(0,1fr);max-width:420px;margin:auto}
+.nr86-art-pair:has(.nr84-art-figure[hidden]) .nr84-art-figure img{max-height:60vh;object-fit:contain}
+.nr81-view-switch button:disabled{opacity:.45}
 </style>
 </head>
 
@@ -1396,7 +1405,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.5 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.6 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1712,7 +1721,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
                <button type="button" class="appearance-btn" id="figureMaleBtn">Male</button>
                <button type="button" class="appearance-btn" id="figureFemaleBtn">Female</button>
              </div>
-             <p class="subtle">Your preference is saved. Exercise-specific male and female artwork is being developed; the current diagrams are placeholders.</p>
+             <p class="subtle">Your preference is saved. Exercise diagrams show movement positions. Detailed anatomical illustrations are still being developed.</p>
            </div>
            <div class="form-field"><label>Name</label><input id="profileName" placeholder="Your name"></div>
            <div class="form-field"><label>Default Rest</label>
@@ -3208,10 +3217,10 @@ function nr84Svg(ex,phase){
  const anatomy=`${line(...shoulder,...leftEl,13)}${line(...leftEl,...leftHand,10)}${line(...shoulder,...rightEl,13)}${line(...rightEl,...rightHand,10)}${torso}${line(...hip,...leftKnee,16)}${line(...leftKnee,...leftFoot,12)}${line(...hip,...rightKnee,16)}${line(...rightKnee,...rightFoot,12)}<circle cx="${head[0]}" cy="${head[1]}" r="17" fill="#b9bbc0" stroke="#595b60" stroke-width="3"/>${[shoulder,hip,leftEl,rightEl,leftKnee,rightKnee].map(p=>joint(...p)).join('')}`;
  const torsoX=shoulder[0],torsoY=shoulder[1]+18;
  const regionOverlay=`<ellipse cx="${torsoX}" cy="${torsoY}" rx="${muscle==='Chest'?19:muscle==='Back'?22:muscle==='Core'?12:8}" ry="${muscle==='Core'?20:12}" fill="${yellow}" opacity=".87"/>`;
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 278" role="img" aria-label="${phase} position, ${family} movement"><rect width="240" height="278" rx="18" fill="#101114"/><path d="M18 258h204" stroke="#383a3d" stroke-width="2"/>${gear}${anatomy}${regionOverlay}<text x="15" y="22" fill="${yellow}" font-family="Arial,sans-serif" font-size="12" font-weight="bold">${end?'FINISH':'START'}</text><text x="225" y="267" fill="#8f9196" font-family="Arial,sans-serif" font-size="9" text-anchor="end">MOVEMENT SCHEMATIC</text></svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 278" role="img" aria-label="${phase} position, ${family} movement"><rect width="240" height="278" rx="18" fill="#101114"/><path d="M18 258h204" stroke="#383a3d" stroke-width="2"/>${gear}${anatomy}${regionOverlay}<text x="15" y="22" fill="${yellow}" font-family="Arial,sans-serif" font-size="12" font-weight="bold">${end?'FINISH':'START'}</text><text x="225" y="267" fill="#8f9196" font-family="Arial,sans-serif" font-size="9" text-anchor="end">MOVEMENT GUIDE</text></svg>`;
 }
 function nr84Fallback(ex){
- return '<div class="nr84-art-pair">'+['start','finish'].map(p=>'<figure class="nr84-art-figure"><img loading="lazy" alt="'+p+' position for '+String(ex.name||'exercise').replace(/"/g,'')+' (schematic)" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(nr84Svg(ex,p))+'"></figure>').join('')+'</div>';
+ return '<div class="nr84-art-pair nr86-art-pair">'+['start','finish'].map(p=>'<figure class="nr84-art-figure"><img loading="lazy" alt="'+p+' position for '+String(ex.name||'exercise').replace(/"/g,'')+' (schematic)" src="data:image/svg+xml;charset=utf-8,'+encodeURIComponent(nr84Svg(ex,p))+'"></figure>').join('')+'</div>';
 }
 
 function v5Illustration(exercise){
@@ -3274,7 +3283,7 @@ function v5OpenGuide(exercise){
  if(dumbbellDemo){
   document.getElementById("guideIllustration").innerHTML='<div class="nr-v7-illustration"><img alt="Dumbbell bench press start and finish positions, chest muscles highlighted" src="'+NR_V7_DB_BENCH+'"><div class="nr-v7-art-caption">DUMBBELL BENCH PRESS · START / FINISH</div></div>';
  }
- document.getElementById("guideDescription").textContent=(benchDemo||dumbbellDemo)?"Exercise-specific movement illustration. Check How To for technique cues.":"Scalable movement-family schematic with start and finish poses. Dedicated anatomical artwork is still being developed.";
+ document.getElementById("guideDescription").textContent=(benchDemo||dumbbellDemo)?"Exercise-specific movement illustration. Check How To for technique cues.":"Start and finish movement diagrams are available. These are scalable guides, not finished anatomical illustrations.";
  const container=document.getElementById("nrGuideDetails");
  container.replaceChildren();
  const tags=document.createElement("div");tags.className="nr-guide-tags";
@@ -4343,7 +4352,7 @@ function nr81SetGuideView(view){
   art.dataset.nr81Exercise=name;
   art.dataset.nr81Original=art.innerHTML;
  }
- const hasTwo=isBarbell||isDb;
+ const hasTwo=isBarbell||isDb||art.querySelectorAll('.nr84-art-figure').length===2;
  single.classList.toggle('active',view==='single');dual.classList.toggle('active',view==='dual');
  single.setAttribute('aria-pressed',String(view==='single'));dual.setAttribute('aria-pressed',String(view==='dual'));
  dual.disabled=!hasTwo;
@@ -4354,7 +4363,7 @@ function nr81SetGuideView(view){
   if(poses.length>1){for(let i=1;i<poses.length;i++)poses[i].hidden=true;}
   else {const img=art.querySelector('img');if(img)img.classList.add('nr81-single-art');}
  }
- status.textContent=hasTwo?(view==='dual'?'Start and finish positions':'Single illustration · tap Start & Finish for both positions'):'Single illustration available · start/finish artwork coming later';
+ status.textContent=hasTwo?(view==='dual'?'START / FINISH · Compare both positions':'START · Tap Start & Finish to compare movement'):'Single illustration available';
  // Artwork from earlier showcase crops has limited native resolution; don't stretch into false sharpness.
  art.querySelectorAll('img').forEach(img=>{img.addEventListener('click',()=>nr81OpenImage(img.src,img.alt),{once:true});img.setAttribute('title','Tap to enlarge');});
 }
