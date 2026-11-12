@@ -1462,6 +1462,13 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 #nrSplash .nr-splash-shadow{position:absolute;left:50%;top:50%;transform:translate(-50%,-53%);width:240px;height:240px;opacity:.15;z-index:-1;pointer-events:none}
 #nrSplash .nr-splash-shadow svg{width:100%;height:100%;filter:drop-shadow(0 0 18px #e6bd1d55)}
 
+/* V8.9.7: compact exercise guide; remove duplicate incline hero and settings reminder */
+#guideModal #guideDescription:empty{display:none!important}
+#guideModal #guideIllustration{margin:4px 0 8px}
+#guideModal #guideIllustration .nr87-phase-heading{margin:6px 0 8px}
+#guideModal #nrGuideDetails{margin-top:8px!important;padding-top:8px!important}
+#guideModal #nrGuideDetails .nr-guide-heading{margin:8px 0 5px}
+#guideModal #nrGuideDetails .nr-guide-steps li{margin-bottom:4px}
 /* V8.9.6: unified exercise guide and improved welcome artwork */
 #guideModal .nr-guide-switch{display:none!important}
 #guideModal #nrGuideMusclePanel,#guideModal #nrGuideDetails{display:block!important}
@@ -1498,7 +1505,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.9.6 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.9.7 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -3399,15 +3406,15 @@ function v5OpenGuide(exercise){
  for(const step of details.steps){const li=document.createElement("li");li.textContent=step;ol.appendChild(li);}
  container.appendChild(ol);
  const note=document.createElement("div");note.className="nr-guide-note";note.textContent="FORM TIP · "+details.tip;container.appendChild(note);
- const figureHint=document.createElement("p");figureHint.className="subtle nr-figure-settings-hint";figureHint.textContent="Want a male or female demonstration? Choose your figure in Settings → Exercise demonstration figure. Available artwork will follow your selection.";container.appendChild(figureHint);
+ 
  openModal("guideModal");
  if(nrV8GuideImage && !benchDemo && !dumbbellDemo){
    document.getElementById('guideIllustration').innerHTML='<div class="nr87-premium-hero">'+nrV8GuideImage+'</div><div class="nr87-phase-heading">MOVEMENT POSITIONS</div>'+nr84Fallback(exercise);
  }
 
  if(/^incline dumbbell press$/i.test(exercise.name.trim())){
-  document.getElementById('guideIllustration').innerHTML=nr88InclineGuide();
-  document.getElementById('guideDescription').textContent='New detailed movement artwork: lower dumbbells with control, then press up above your upper chest.';
+  document.getElementById('guideIllustration').innerHTML=nr88InclineGuide().replace(/^<div class="nr87-premium-hero nr88-hero">[\s\S]*?<\/div>/,'');
+  document.getElementById('guideDescription').textContent='';
  }
  // Remove any legacy figure switch accidentally inserted into the guide by an older build.
  document.querySelectorAll('#guideModal .nr89-switch, #guideModal .nr89-figure-toggle, #guideModal [data-figure-selector]').forEach(el=>el.remove());
