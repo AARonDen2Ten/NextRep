@@ -1395,7 +1395,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 #guideIllustration .nr84-art-figure[hidden]{display:none}
 @media(max-width:420px){.nr87-premium-hero .nr-v8-exercise-img{max-height:250px}}
 
-/* V8.7.1 — large, scrollable exercise guide; prevent artwork collisions. */
+/* V8.7.2 — large, scrollable exercise guide; prevent artwork collisions. */
 #guideModal{padding:calc(env(safe-area-inset-top,0px) + 8px) 9px calc(env(safe-area-inset-bottom,0px) + 8px);align-items:center;overflow:hidden;background:rgba(0,0,0,.82)}
 #guideModal.open{align-items:center}
 #guideModal>.modal-box{box-sizing:border-box;width:100%;max-width:740px;height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px);max-height:none;margin:0;padding:14px 13px 18px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:#202020;color:#f7f7f7;border:1px solid #414141;border-radius:18px;-webkit-overflow-scrolling:touch}
@@ -1413,6 +1413,27 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 #guideModal .nr81-visual-status{position:static;min-height:0;margin:8px 0}
 #guideModal .nr-guide-switch,#guideModal .nr81-view-switch{position:relative;z-index:1}
 @media(max-width:480px){#guideModal>.modal-box{padding:12px 11px 16px}#guideModal .nr84-art-pair{gap:7px}#guideModal #guideIllustration .nr87-premium-hero img{max-height:220px!important}}
+
+
+/* V8.7.2: preserve original proportions of small embedded artwork.
+   These assets are low-resolution, so avoid stretching them to fill a wide frame. */
+#guideModal #guideIllustration .nr87-premium-hero{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-height:230px;padding:12px;box-sizing:border-box;
+  background:#111214;
+}
+#guideModal #guideIllustration .nr87-premium-hero .nr-v8-exercise-img{
+  display:block!important;width:auto!important;height:auto!important;
+  max-width:min(100%,340px)!important;max-height:320px!important;
+  min-height:0!important;object-fit:contain!important;
+  margin:0 auto!important;image-rendering:auto;
+}
+#guideModal #guideIllustration .nr87-premium-hero:has(img){overflow:hidden}
+#guideModal #guideIllustration .nr84-art-figure img{aspect-ratio:auto!important;object-fit:contain!important}
+@media(max-width:480px){
+ #guideModal #guideIllustration .nr87-premium-hero{min-height:205px;padding:10px}
+ #guideModal #guideIllustration .nr87-premium-hero .nr-v8-exercise-img{max-width:min(100%,300px)!important;max-height:250px!important}
+}
 
 </style>
 </head>
@@ -1437,7 +1458,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.7.1 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.7.2 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
