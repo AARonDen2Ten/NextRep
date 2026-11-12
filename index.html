@@ -1396,7 +1396,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.4 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.5 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -2239,6 +2239,42 @@ let completedDays =
 let temporarySwaps =
   JSON.parse(localStorage.getItem("nextrep_swaps")) || {};
 let savedWorkouts = JSON.parse(localStorage.getItem("nextrep_savedWorkouts")) || [];
+// V8.5 migration: earlier releases could leave a temporary swap shadowing
+// the permanently edited Program. Archive rather than silently discard it.
+if(!localStorage.getItem("nextrep_v85_swapMigration")){
+  if(Object.keys(temporarySwaps).length){
+    localStorage.setItem("nextrep_v85_previousSwaps",JSON.stringify(temporarySwaps));
+    temporarySwaps={};
+  }
+  localStorage.setItem("nextrep_v85_swapMigration","1");
+}
+// Bind active set entries to the exercise identity, never just its position.
+const nrExerciseIdentity=x=>x?String(x.name||"").trim().toLowerCase()+"|"+String(x.equipment||"").trim().toLowerCase():"";
+let nrProgramSnapshot=program.map(d=>(d.exercises||[]).map(nrExerciseIdentity));
+function nrReconcileProgramLogs(){
+  let changed=false;
+  program.forEach((day,di)=>{
+    const old=nrProgramSnapshot[di]||[];
+    const fresh=(day.exercises||[]).map(nrExerciseIdentity);
+    if(old.join("\u001f")===fresh.join("\u001f"))return;
+    // Reuse logs only for the SAME exercise, including after reorder.
+    const previous={};
+    old.forEach((id,i)=>{
+      const k=exerciseLogKey(di,i);
+      if(currentLog[k]) (previous[id]||(previous[id]=[])).push(currentLog[k]);
+      delete currentLog[k];
+    });
+    fresh.forEach((id,i)=>{
+      const prior=previous[id]&&previous[id].shift();
+      if(prior){prior.exerciseId=id;currentLog[exerciseLogKey(di,i)]=prior;}
+    });
+    delete temporarySwaps[dayKey(di)];
+    changed=true;
+  });
+  nrProgramSnapshot=program.map(d=>(d.exercises||[]).map(nrExerciseIdentity));
+  if(changed)saveAll();
+}
+
 
 let currentDay = 0;
 let currentExercise = 0;
@@ -2278,6 +2314,7 @@ document.querySelectorAll(".nav button").forEach(btn=>{
     document.getElementById(btn.dataset.screen+"Screen").classList.add("active");
 
     if(btn.dataset.screen==="program") renderProgram();
+    if(btn.dataset.screen==="workout") {nrReconcileProgramLogs();renderWorkout();}
     if(btn.dataset.screen==="history") renderHistory();
     if(btn.dataset.screen==="libraryworkouts") renderWorkoutLibrary();
   });
@@ -2509,8 +2546,16 @@ function ensureLog(day,index,sets){
 
   const key=exerciseLogKey(day,index);
 
+  const identity=nrExerciseIdentity(exerciseFor(day,index));
+  if(currentLog[key] && currentLog[key].exerciseId && currentLog[key].exerciseId!==identity){
+    // Retain a recoverable copy; never assign the old lift's weights to the replacement.
+    const archive=JSON.parse(localStorage.getItem("nextrep_v85_orphanLogs")||"[]");
+    archive.push({date:new Date().toISOString(),day,index,exerciseId:currentLog[key].exerciseId,log:currentLog[key]});
+    localStorage.setItem("nextrep_v85_orphanLogs",JSON.stringify(archive.slice(-100)));
+    delete currentLog[key];
+  }
   if(!currentLog[key]){
-    currentLog[key]={
+    currentLog[key]={exerciseId:identity,
       sets:Array.from({length:sets},()=>({
         weight:"",
         reps:"",
@@ -2518,6 +2563,9 @@ function ensureLog(day,index,sets){
       }))
     };
   }
+  // Older logs did not store exercise names. Assign only on first touch;
+  // program-edit reconciliation above protects later changes.
+  if(!currentLog[key].exerciseId)currentLog[key].exerciseId=identity;
 
   while(currentLog[key].sets.length<sets){
     currentLog[key].sets.push({
@@ -2924,6 +2972,7 @@ document.getElementById("saveDayInfo").onclick=()=>{
   program[programDay].focus=
     document.getElementById("dayFocusInput").value.trim();
 
+  nrReconcileProgramLogs();
   saveAll();
   renderProgram();
   renderWorkout();
@@ -2951,7 +3000,7 @@ function renderProgramExercises(){
   });
 }
 function v5MoveExercise(index,delta){const arr=program[programDay].exercises,to=index+delta;if(to<0||to>=arr.length)return;[arr[index],arr[to]]=[arr[to],arr[index]];v5SaveProgramChange();}
-function v5SaveProgramChange(){saveAll();renderProgram();renderWorkout();const status=document.getElementById("builderSaveStatus");if(status)status.textContent="Saved on this device ✓";}
+function v5SaveProgramChange(){nrReconcileProgramLogs();saveAll();renderProgram();renderWorkout();const status=document.getElementById("builderSaveStatus");if(status)status.textContent="Saved on this device ✓";}
 
 /* =========================================================
    MUSCLE SUMMARY
@@ -3316,6 +3365,13 @@ function selectLibraryExercise(item){
       temporarySwaps[key]={};
     }
 
+    const oldLogKey=exerciseLogKey(swapTarget.day,swapTarget.index);
+    if(currentLog[oldLogKey]){
+      const archive=JSON.parse(localStorage.getItem("nextrep_v85_orphanLogs")||"[]");
+      archive.push({date:new Date().toISOString(),day:swapTarget.day,index:swapTarget.index,exerciseId:currentLog[oldLogKey].exerciseId||"legacy",log:currentLog[oldLogKey]});
+      localStorage.setItem("nextrep_v85_orphanLogs",JSON.stringify(archive.slice(-100)));
+      delete currentLog[oldLogKey];
+    }
     temporarySwaps[key][swapTarget.index]=newExercise;
 
     saveAll();
