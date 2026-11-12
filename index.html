@@ -1482,6 +1482,13 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 #guideModal #guideDescription{font-size:13px;line-height:1.4;margin:12px 0 0}
 #nrSplash .nr-splash-shadow{width:270px;height:300px;opacity:.46;transform:translate(-50%,-50%)}
 #nrSplash .nr-splash-shadow svg{filter:drop-shadow(0 0 16px #f4c40030)}
+/* V8.9.8: let the guide fit its content rather than filling the screen. */
+#guideModal>.modal-box{
+  height:auto;
+  max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 16px);
+  margin:0;
+}
+#guideModal #nrGuideDetails .nr-guide-note{margin-bottom:0}
 </style>
 </head>
 
@@ -1505,7 +1512,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.9.7 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.9.8 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
