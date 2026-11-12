@@ -1382,6 +1382,18 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 .nr86-art-pair:has(.nr84-art-figure[hidden]){grid-template-columns:minmax(0,1fr);max-width:420px;margin:auto}
 .nr86-art-pair:has(.nr84-art-figure[hidden]) .nr84-art-figure img{max-height:60vh;object-fit:contain}
 .nr81-view-switch button:disabled{opacity:.45}
+
+/* V8.7: premium-art integration, real thumbnails and clear movement comparison */
+.v5-thumb:has(.nr-v8-exercise-img){overflow:hidden;background:#151619;border:1px solid #34363b;padding:0;border-radius:12px}
+.v5-thumb .nr-v8-exercise-img{width:100%;height:100%;min-height:64px;object-fit:cover;display:block}
+.nr87-premium-hero{margin:8px auto 16px;max-width:480px;background:linear-gradient(160deg,#242528,#101114);border:1px solid #3d3e42;border-radius:16px;overflow:hidden}
+.nr87-premium-hero .nr-v8-exercise-img{width:100%;max-height:300px;object-fit:contain;display:block}
+.nr87-phase-heading{color:#f4c400;font-size:12px;letter-spacing:.14em;font-weight:800;margin:18px 0 10px}
+#guideIllustration .nr84-art-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#guideIllustration .nr84-art-figure{min-width:0;margin:0;border-radius:12px;overflow:hidden;border:1px solid #35363a;background:#101114}
+#guideIllustration .nr84-art-figure img{width:100%;height:auto;display:block}
+#guideIllustration .nr84-art-figure[hidden]{display:none}
+@media(max-width:420px){.nr87-premium-hero .nr-v8-exercise-img{max-height:250px}}
 </style>
 </head>
 
@@ -1405,7 +1417,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.6 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.7 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -2995,7 +3007,7 @@ function renderProgramExercises(){
   if(!exercises.length){wrap.innerHTML='<div class="empty">No exercises yet. Tap + Add Exercise to get started.</div>';return;}
   exercises.forEach((exercise,index)=>{
     const item=document.createElement("div"); item.className="v5-builder-card"; item.draggable=true;
-    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
+    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=nrV8ExerciseImage(exercise)||v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
     const main=document.createElement("div");main.className="v5-card-main";
     const title=document.createElement("div");title.className="v5-card-title";title.textContent=(index+1)+". "+exercise.name;
     const meta=document.createElement("div");meta.className="v5-card-meta";meta.textContent=exercise.sets+" sets · "+exercise.reps+" reps · "+exercise.muscle+" · "+exercise.equipment;
@@ -3298,11 +3310,11 @@ function v5OpenGuide(exercise){
  const note=document.createElement("div");note.className="nr-guide-note";note.textContent="FORM TIP · "+details.tip;container.appendChild(note);
  openModal("guideModal");
  if(nrV8GuideImage && !benchDemo && !dumbbellDemo){
-   document.getElementById('guideIllustration').innerHTML='<div class="nr-v8-guide-image">'+nrV8GuideImage+'<div class="nr-v8-guide-caption">EXERCISE VISUAL · '+exercise.name.replace(/</g,'&lt;')+'</div></div>';
+   document.getElementById('guideIllustration').innerHTML='<div class="nr87-premium-hero">'+nrV8GuideImage+'</div><div class="nr87-phase-heading">MOVEMENT POSITIONS</div>'+nr84Fallback(exercise);
  }
 
  document.getElementById('guideIllustration').dataset.nr81Exercise='';
- nr81SetGuideView('single');
+ nr81SetGuideView('dual');
 }
 
 function v5RenderChips(){
@@ -3326,7 +3338,7 @@ function renderLibrary(){
   if(!results.length){wrap.innerHTML='<div class="empty">No matching exercises. Try clearing a filter.</div>';return;}
   results.forEach(exercise=>{
     const row=document.createElement("div");row.className="v5-builder-card";
-    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
+    const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=nrV8ExerciseImage(exercise)||v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
     const main=document.createElement("div");main.className="v5-card-main";
     const title=document.createElement("div");title.className="v5-card-title";title.textContent=exercise.name;
     const meta=document.createElement("div");meta.className="v5-card-meta";meta.textContent=exercise.muscle+" · "+exercise.equipment+" · "+exercise.style;
