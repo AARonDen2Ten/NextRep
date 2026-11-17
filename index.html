@@ -1507,6 +1507,13 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 }
 .v5-thumb:has(.nr8914-thumb){padding:0!important;background:#08090b!important;overflow:hidden!important}
 .v5-thumb .nr8914-thumb{width:100%!important;height:100%!important;min-height:0!important;object-fit:contain!important;object-position:center center!important;object-fit:contain!important}
+
+/* V8.9.19: readable photo previews. The frame clips only excess black letterboxing;
+   detailed full-size movement illustrations are unchanged. */
+.v5-thumb:has(.nr8914-thumb){position:relative;isolation:isolate;}
+.v5-thumb .nr8914-thumb{object-fit:cover!important;object-position:50% 50%!important;}
+/* Vectors have their own frame and labels, so avoid cropping those. */
+.v5-thumb .nr8914-thumb[src^="data:image/svg+xml"]{object-fit:contain!important;}
 </style>
 </head>
 
@@ -1530,7 +1537,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.9.18 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.9.19 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
