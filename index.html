@@ -1516,6 +1516,12 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 .v5-thumb .nr8914-thumb[src^="data:image/svg+xml"]{object-fit:contain!important;}
 /* V8.9.22: keep the complete Day 2 exercise and equipment visible in thumbnails. */
 .v5-thumb .nr8914-thumb.nr8922-day2{object-fit:contain!important;object-position:center center!important;transform:scale(1.12);transform-origin:center center;}
+/* V8.9.23 exercise-guide photo presentation */
+#guideIllustration .nr8923-guide{align-items:stretch}
+#guideIllustration .nr8923-photo-figure{display:flex;flex-direction:column;justify-content:center}
+#guideIllustration .nr8923-photo-figure img{width:100%;height:clamp(155px,36vw,300px);object-fit:contain;background:#101114}
+#guideIllustration .nr8923-photo-figure figcaption{font-size:11px;font-weight:800;letter-spacing:.04em;color:#f3cb21;text-align:center;padding:8px 4px}
+#guideIllustration .nr8923-guide:has(figure:only-child){grid-template-columns:minmax(0,1fr);max-width:370px;margin:auto}
 </style>
 </head>
 
@@ -3572,6 +3578,25 @@ function v5OpenGuide(exercise){
  // Remove any legacy figure switch accidentally inserted into the guide by an older build.
  document.querySelectorAll('#guideModal .nr89-switch, #guideModal .nr89-figure-toggle, #guideModal [data-figure-selector]').forEach(el=>el.remove());
  if(NR8912_ART[exercise.name.trim()]){document.getElementById('guideIllustration').innerHTML=nr8912Guide(exercise);document.getElementById('guideDescription').textContent='';}
+ // V8.9.23: Prefer the actual high-detail exercise artwork over the old stick-figure guide.
+ // Where no separately verified finish image exists, reuse the reference image rather
+ // than inventing an incorrect finish position.
+ const guideName=String(exercise.name||'').trim();
+ const guidePhoto=NR8916_THUMBS[guideName] || NR8921_ART[guideName] ||
+   ((NR8912_ART[guideName]||[])[0]) || null;
+ if(guidePhoto){
+   const safeName=guideName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+   const samePosition=/bag walk|farmer.*carry|suitcase carry|sled push|sled pull|hold|walk/i.test(guideName);
+   const guideFigure=(label)=>'<figure class="nr84-art-figure nr8923-photo-figure"><img loading="lazy" src="'+guidePhoto+'" alt="'+safeName+' exercise reference image"><figcaption>'+label+'</figcaption></figure>';
+   document.getElementById('guideIllustration').innerHTML=
+     '<div class="nr87-phase-heading">EXERCISE REFERENCE</div>'+
+     '<div class="nr84-art-pair nr88-poses nr8923-guide">'+
+     (samePosition?guideFigure('MOVEMENT REFERENCE'):guideFigure('START · REFERENCE')+guideFigure('FINISH · REFERENCE'))+
+     '</div>';
+   document.getElementById('guideDescription').textContent=
+     samePosition?'Continuous movement · Follow the technique steps below.':
+     'Reference artwork shown in both panels until a verified second position is available. Follow the technique steps below.';
+ }
  document.getElementById('guideIllustration').dataset.nr81Exercise='';
  nr81SetGuideView('dual');
 }
