@@ -1544,7 +1544,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 @keyframes nrLoad25{from{transform:scaleX(.12)}to{transform:scaleX(1)}}
 @media(prefers-reduced-motion:reduce){#nrSplash .nr-splash-line:after{animation:none}}
 </style>
-</head>
+<style>#libraryResults.nr929-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;touch-action:pan-y}#libraryResults.nr929-grid .v5-builder-card{display:flex!important;flex-direction:column;align-items:stretch;min-width:0;padding:5px;gap:4px;position:relative}#libraryResults.nr929-grid .v5-thumb{width:100%!important;height:auto!important;aspect-ratio:1.15;min-width:0;overflow:hidden}#libraryResults.nr929-grid .v5-thumb img{width:100%!important;height:100%!important;object-fit:contain!important;transform:none!important}#libraryResults.nr929-grid .v5-card-main{min-width:0;width:100%;flex:1}#libraryResults.nr929-grid .v5-card-title{font-size:12px;line-height:1.2;overflow-wrap:anywhere}#libraryResults.nr929-grid .v5-card-meta{font-size:10px;line-height:1.2}#libraryResults.nr929-grid .v5-add-btn{align-self:flex-end;min-height:30px;height:30px;width:100%;font-size:16px}.nr929-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0;font-size:12px}.nr929-nav button:disabled{opacity:.35}#libraryResults.nr929-grid .empty{grid-column:1/-1}</style></head>
 
 <body>
 
@@ -1566,7 +1566,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.9.28 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.9.29 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1941,7 +1941,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 
     </div>
 
-    <div id="v5FilterChips"></div><div id="v5SelectionBar" class="v5-selection-bar" style="display:none"><span id="v5SelectionCount">0 selected</span><button type="button" class="btn v5-gold small" id="v5AddSelected">Add Selected</button></div><div id="libraryResults" class="library-results"></div>
+    <div id="v5FilterChips"></div><div id="v5SelectionBar" class="v5-selection-bar" style="display:none"><span id="v5SelectionCount">0 selected</span><button type="button" class="btn v5-gold small" id="v5AddSelected">Add Selected</button></div><div class="nr929-nav"><button type="button" id="nr929Prev" class="btn outline small">‹ Prev</button><span id="nr929Page" aria-live="polite"></span><button type="button" id="nr929Next" class="btn outline small">Next ›</button></div><div id="libraryResults" class="library-results"></div>
 
   </div>
 </div>
@@ -3655,15 +3655,25 @@ function v5RenderChips(){
   });
 }
 function v5UpdateSelection(){const bar=document.getElementById("v5SelectionBar");const count=v5Selected.size;bar.style.display=(editorMode==="add"&&count)?"flex":"none";document.getElementById("v5SelectionCount").textContent=count+" selected";}
+let nr929Page=0,nr929Signature="",nr929Touch=null;
 function renderLibrary(){
   ["muscle","equipment","style"].forEach(f=>v5Filters[f]=document.getElementById(f+"Filter").value);
   v5RenderChips();v5UpdateSelection();
   const muscle=v5Filters.muscle,equipment=v5Filters.equipment,style=v5Filters.style;
   const movement=document.getElementById("movementFilter").value,search=document.getElementById("librarySearch").value.toLowerCase();
   const results=LIBRARY.filter(x=>(!muscle||x.muscle===muscle)&&(!equipment||x.equipment===equipment)&&(!style||x.style===style)&&(!movement||x.movement===movement)&&(!search||x.name.toLowerCase().includes(search)));
-  const wrap=document.getElementById("libraryResults");wrap.className="library-results v5-library-list";wrap.innerHTML="";
+  const wrap=document.getElementById("libraryResults");wrap.className="library-results nr929-grid";wrap.innerHTML="";
+  const sig=JSON.stringify([muscle,equipment,style,movement,search,editorMode]);if(sig!==nr929Signature){nr929Page=0;nr929Signature=sig;}
+  const pages=Math.max(1,Math.ceil(results.length/9));nr929Page=Math.max(0,Math.min(nr929Page,pages-1));
+  const prev=document.getElementById('nr929Prev'),next=document.getElementById('nr929Next');
+  document.getElementById('nr929Page').textContent=results.length?`${nr929Page+1} / ${pages} · ${results.length} exercises`:'0 exercises';
+  prev.disabled=nr929Page===0;next.disabled=nr929Page>=pages-1;
+  prev.onclick=()=>{nr929Page--;renderLibrary();};next.onclick=()=>{nr929Page++;renderLibrary();};
+  wrap.ontouchstart=e=>{const t=e.changedTouches[0];nr929Touch=[t.clientX,t.clientY];};
+  wrap.ontouchend=e=>{if(!nr929Touch)return;const t=e.changedTouches[0],dx=t.clientX-nr929Touch[0],dy=t.clientY-nr929Touch[1];nr929Touch=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){if(dx<0&&!next.disabled)next.click();else if(dx>0&&!prev.disabled)prev.click();}};
+
   if(!results.length){wrap.innerHTML='<div class="empty">No matching exercises. Try clearing a filter.</div>';return;}
-  results.forEach(exercise=>{
+  results.slice(nr929Page*9,nr929Page*9+9).forEach(exercise=>{
     const row=document.createElement("div");row.className="v5-builder-card";
     const thumb=document.createElement("button");thumb.type="button";thumb.className="v5-thumb";thumb.setAttribute("aria-label","View "+exercise.name+" guide");thumb.innerHTML=nr8914Thumbnail(exercise)||nrV8ExerciseImage(exercise)||v5Illustration(exercise);thumb.onclick=()=>v5OpenGuide(exercise);
     const main=document.createElement("div");main.className="v5-card-main";
