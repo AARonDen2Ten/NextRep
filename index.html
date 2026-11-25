@@ -1558,7 +1558,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 @keyframes nr31trail{0%,100%{opacity:0}35%{opacity:.85}60%{opacity:0}}
 @keyframes nr31pulse{0%,43%{opacity:0;transform:scale(.5)}48%{opacity:.7}85%,100%{opacity:0;transform:scale(1.4)}}
 @media(prefers-reduced-motion:reduce){#nrSplash .nr-splash-logo,#nrSplash .nr-splash-logo:after,#nrSplash .nr-splash-tag,#nrSplash .nr-rep-weight,.nr31trail,.nr31pulse{animation:none}.nr31trail,.nr31pulse,#nrSplash .nr-splash-logo:after{opacity:0}}
-</style></head>
+</style><style>#libraryworkoutsScreen [hidden]{display:none!important}.nr932-switch,.nr932-pages{display:flex;gap:8px;align-items:center}.nr932-switch button{flex:1;min-width:0;padding:14px 5px;border:1px solid #777;border-radius:12px;background:#252525;color:#fff;font-weight:800;font-size:16px}.nr932-switch button[aria-pressed=true]{border-color:#ffcf00;color:#ffcf00}.nr932-switch small{display:block;font-size:11px;font-weight:400;margin-top:5px;color:#bbb}#nr932Gallery input,#nr932Gallery select{width:100%;margin:5px 0 8px}#nr932Tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;touch-action:pan-y}.nr932-tile{min-width:0;padding:0;overflow:hidden;border:1px solid #555;border-radius:10px;background:#202020;color:white;text-align:left;display:flex;flex-direction:column}.nr932-art{width:100%;aspect-ratio:1.18;overflow:hidden;background:#080808;display:grid;place-items:center}.nr932-art img,.nr932-art svg{width:100%!important;height:100%!important;max-height:none!important;object-fit:contain!important;transform:none!important}.nr932-name{padding:5px;font-size:12px;font-weight:800;overflow-wrap:anywhere}.nr932-meta{padding:0 5px 6px;color:#bbb;font-size:10px}.nr932-pages{justify-content:space-between;margin-top:10px}.nr932-pages button{background:#ffcf00;color:#111;border:0;border-radius:8px;padding:10px 8px;font-weight:800}.nr932-pages button:disabled{opacity:.35}.nr932-pages span{font-size:12px;text-align:center}</style></head>
 
 <body>
 
@@ -1580,7 +1580,7 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
     <div class="header-top">
       <div>
         <div class="logo">NEXT<span class="slash">//</span>REP</div>
-        <div class="version">BEAT YOUR LAST. · V8.9.31 TEST</div>
+        <div class="version">BEAT YOUR LAST. · V8.9.32 TEST</div>
       </div>
       <div class="nr-header-right"><button type="button" id="nrHistoryShortcut" class="nr-history-shortcut" aria-label="Open training history"><span class="nr-history-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 15 2 2 4-4"/></svg></span><span class="nr-history-word">HISTORY<small>CALENDAR + PRs</small></span></button><div id="headerDayCount">0/5</div><button type="button" id="openSettingsBtn" class="nr-settings-gear" aria-label="Open Settings" title="Settings">⚙</button></div>
     </div>
@@ -1836,6 +1836,8 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
 
   <!-- WORKOUT LIBRARY -->
   <section id="libraryworkoutsScreen" class="screen">
+<div class="card nr932-nav"><div class="section-label">LIBRARY</div><div class="nr932-switch"><button type="button" id="nr932Work" aria-pressed="true">Workouts<small>Programs &amp; routines</small></button><button type="button" id="nr932Ex" aria-pressed="false">Exercises<small>Visual exercise catalog</small></button></div></div>
+<div id="nr932Gallery" hidden class="card"><div class="section-label">EXERCISE CATALOG</div><input id="nr932Search" placeholder="Search exercises…" aria-label="Search exercises"><select id="nr932Muscle" aria-label="Muscle group"></select><div id="nr932Tiles"></div><div class="nr932-pages"><button type="button" id="nr932Prev">‹ Previous</button><span id="nr932Page" aria-live="polite"></span><button type="button" id="nr932Next">Next ›</button></div></div><div id="nr932Workouts">
     <div class="card mode-card">
       <div class="section-label" style="color:#aaa">Workout Library</div>
       <h2>Choose Your Training</h2>
@@ -1853,7 +1855,8 @@ body{background:radial-gradient(ellipse 90% 25% at 50% -10%,#35321d 0%,transpare
       <div class="section-label">Your Saved Workouts</div>
       <div class="form-field"><label>Save current day as</label><input id="nrSavedName" placeholder="Workout name"></div><button class="btn outline" id="saveCurrentCustom">Save Current Day</button><div id="savedWorkoutLibrary" style="margin-top:12px"></div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- HISTORY -->
   <section id="historyScreen" class="screen">
@@ -4786,6 +4789,8 @@ document.getElementById('nr82Dual')?.addEventListener('click',()=>nr82RenderView
 document.getElementById('nr81ImageViewer')?.addEventListener('click',e=>{if(e.target.id==='nr81ImageViewer')nr82CloseViewer();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('nr81ImageViewer').hidden)nr82CloseViewer();});
 
+
+(function(){const $=id=>document.getElementById(id);let page=0,touch=null;const tiles=$('nr932Tiles'),muscle=$('nr932Muscle'),search=$('nr932Search');muscle.add(new Option('All muscle groups',''));[...new Set(LIBRARY.map(x=>x.muscle))].sort().forEach(m=>muscle.add(new Option(m,m)));function draw(){const q=search.value.trim().toLowerCase(),m=muscle.value;const rows=LIBRARY.filter(x=>(!m||x.muscle===m)&&(!q||x.name.toLowerCase().includes(q)));const pages=Math.max(1,Math.ceil(rows.length/9));page=Math.min(Math.max(0,page),pages-1);tiles.replaceChildren();$('nr932Page').textContent=rows.length?`${page+1} / ${pages} · ${rows.length}`:'No matches';$('nr932Prev').disabled=page===0;$('nr932Next').disabled=page>=pages-1;rows.slice(page*9,page*9+9).forEach(x=>{const b=document.createElement('button');b.type='button';b.className='nr932-tile';const art=document.createElement('div');art.className='nr932-art';art.innerHTML=nr8914Thumbnail(x)||nrV8ExerciseImage(x)||v5Illustration(x);const n=document.createElement('div');n.className='nr932-name';n.textContent=x.name;const meta=document.createElement('div');meta.className='nr932-meta';meta.textContent=x.muscle;b.append(art,n,meta);b.onclick=()=>v5OpenGuide(x);tiles.append(b);});}function switchTo(ex){$('nr932Workouts').hidden=ex;$('nr932Gallery').hidden=!ex;$('nr932Work').setAttribute('aria-pressed',String(!ex));$('nr932Ex').setAttribute('aria-pressed',String(ex));if(ex)draw();}$('nr932Work').onclick=()=>switchTo(false);$('nr932Ex').onclick=()=>switchTo(true);search.oninput=muscle.onchange=()=>{page=0;draw();};$('nr932Prev').onclick=()=>{page--;draw();};$('nr932Next').onclick=()=>{page++;draw();};tiles.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touch=[t.clientX,t.clientY];},{passive:true});tiles.addEventListener('touchend',e=>{if(!touch)return;const t=e.changedTouches[0],dx=t.clientX-touch[0],dy=t.clientY-touch[1];touch=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5){page+=dx<0?1:-1;draw();}},{passive:true});})();
 </script>
 
 </body>
